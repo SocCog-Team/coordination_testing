@@ -34,13 +34,13 @@ function [sideChoiceIndependence, targetChoiceIndependence] = ...
   nOwnOther = nnz(isOwnChoice(1, :) & (~isOwnChoice(2, :)));
   nOtherOwn = nnz((~isOwnChoice(1, :)) & isOwnChoice(2, :));
   nOtherOther = nnz((~isOwnChoice(1, :)) & (~isOwnChoice(2, :)));
-  contMatrix = [nOwnOwn, nOwnOther; nOtherOwn, nOtherOther];
+  contMatrix = [nOwnOwn, nOwnOther; nOtherOwn, nOtherOther]
   [~, targetChoiceIndependence] = fishertest(contMatrix);
   
-  nSide1Side1 = nnz(sideChoice(1, :) & sideChoice(2, :));
-  nSide1Side2 = nnz(sideChoice(1, :) & (~sideChoice(2, :)));
-  nSide2Side1 = nnz((~sideChoice(1, :)) & sideChoice(2, :));
-  nSide2Side2 = nnz((~sideChoice(1, :)) & (~sideChoice(2, :)));
-  contMatrix = [nSide1Side1, nSide1Side2; nSide2Side1, nSide2Side2];
+  nSide2Side2 = nnz(sideChoice(1, :) & sideChoice(2, :));
+  nSide2Side1 = nnz(sideChoice(1, :) & (~sideChoice(2, :)));
+  nSide1Side2 = nnz((~sideChoice(1, :)) & sideChoice(2, :));
+  nSide1Side1 = nnz((~sideChoice(1, :)) & (~sideChoice(2, :)));
+  contMatrix = [nSide1Side1, nSide1Side2; nSide2Side1, nSide2Side2]
   [~, sideChoiceIndependence] = fishertest(contMatrix);
 end
