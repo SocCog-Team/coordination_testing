@@ -1,3 +1,129 @@
+function coordinationStruct = check_coordination(isOwnChoice, sideChoice, varargin)
+% check_coordination tests whether there is a coordination between two players. 
+% The test is compound and consists of 7 subtests
+% 1) Test of target choice independendence: 
+%    Fisher test on target choices contingency table (TCCT),  
+%    rejecting null hypothesis is an indication of coordination.
+%    Outcome: pValue. pValue > alpha => independent choices;
+%                     pValue < alpha => coordinated choices. 
+% 2) Test of side choice independendence: 
+%    Fisher test on side choices contingency table,
+%    rejecting null hypothesis is an indication of coordination.
+%    Outcome: pValue. pValue > alpha => independent choices;
+%                     pValue < alpha => coordinated choices. 
+% 3) Test of same choice preference: 
+%    Upper-tailed binomial test: 
+%    is proportion of same choices (sum over TCCT anti-diagonal) higher than  
+%    chance (0.5)? If same choices are significantly more frequent than 50%,  
+%    this indicates that players effectively coordinate to increase total payoff.
+%    Outcome: pValue. pValue > alpha => uneffective or non-pay-off driven coordination;
+%                     pValue < alpha => effective coordination.
+% 4-5) Tests of selfishness for each player: 
+%    Two-tailed binomial test: 
+%    is proportion of OWN choices (sum over TCCT 1st row/column) higher than 
+%    chance (0.5)? If OWN choices are significantly more frequent than 50%, 
+%    this indicates player selfishness. If tests 1-2 indicate coordination, 
+%    prevalence of OWN choices for one player indicates that coordination is 
+%    unfair and beneficial for him.
+%    Outcome: zScore. zScore > epsilon => selfish choices;
+%                     epsilon > zScore > -epsilon => may indicate fair coordination; 
+%                     zScore < -epsilon => self-sacrificing choices.
+% 6-7) Tests of matching avoidance for each player: 
+%    Upper-tailed Binomial test: 
+%    is proportion of different choices among other choices higher than 
+%    chance (0.5)? If different choices of a player are significantly more 
+%    frequent than 50% of other choices, this indicates matching avoidance.
+%    Outcome: pValue. pValue > alpha => no matching avoidance;
+%                     pValue < alpha => matching avoidance.
+%
+% INPUT
+%   - isOwnChoice - 2xN array of booleans, 
+%     isOwnChoice(i,j) = 1 indicated that player i at trial j selected own target;
+%   - sideChoice - 2xN array of booleans, 
+%     sideChoice(i,j) = 1 indicated that player i at trial j selected side 1;
+%
+% OUTPUT:
+%   coordinationStruct - a structure with 5 fields:
+%   - sideChoiceIndependence - pValue for independence of side choices of two players;
+%   - partnerInluenceOnTarget - pValue for independence of target choices of two players;
+%   - samePreference - pValue for proportion of same choices being significantly 
+%     higher than 50%;
+%   - ownPreference - 1x2 array of zScores for proportions of OWN choices of
+%     each player being significantly higher than 50%;
+%   - matchingAvoidance - 1x2 array of pValues for proportions of different 
+%     choices among other choices of each player being significantly higher 
+%     than 50%.
+
+%
+% EXAMPLE of use 
+%{
+ N = 200;
+ target1 = randi(2, 1, N) - 1; %random choices
+ side1 = randi(2, 1, N) - 1; %random choices
+ target2 = (~target1) | side1; %P2 selects own target if P1 selects other target
+                               %or P1 selects right target
+ side2 = xor(side1, ~xor(target1, target2));
+ isOwnChoice = [target1; target2]; 
+ sideChoice = [side1; side2];
+ [sideChoiceIndep, targetChoiceIndep] = check_independence(isOwnChoice, sideChoice);
+ % both values should be near to zero
+%}
+  if (~(isempty(varargin)) && (isnumeric(varargin{1})) && (varargin{1} >= 0) && (varargin{1} <= 1))
+    alpha = varargin{1};
+  else
+    alpha = 0.05;
+  end
+  
+  % Test 1: target choice independendence
+  nOwnOwn = nnz(isOwnChoice(1, :) & isOwnChoice(2, :));
+  nOwnOther = nnz(isOwnChoice(1, :) & (~isOwnChoice(2, :)));
+  nOtherOwn = nnz((~isOwnChoice(1, :)) & isOwnChoice(2, :));
+  nOtherOther = nnz((~isOwnChoice(1, :)) & (~isOwnChoice(2, :)));
+  contMatrix = [nOwnOwn, nOwnOther; nOtherOwn, nOtherOther];
+  [~, coordinationStruct.targetChoiceIndependence] = fishertest(contMatrix);
+  
+  % Test 2: side choice independendence 
+  nSide2Side2 = nnz(sideChoice(1, :) & sideChoice(2, :));
+  nSide2Side1 = nnz(sideChoice(1, :) & (~sideChoice(2, :)));
+  nSide1Side2 = nnz((~sideChoice(1, :)) & sideChoice(2, :));
+  nSide1Side1 = nnz((~sideChoice(1, :)) & (~sideChoice(2, :)));
+  contMatrix = [nSide1Side1, nSide1Side2; nSide2Side1, nSide2Side2];
+  [~, coordinationStruct.sideChoiceIndependence] = fishertest(contMatrix);
+  
+  % Test 3: same choice preference  
+  nSame = nOwnOther + nOtherOwn;
+  nTotal = nOwnOwn + nSame + nOtherOther;
+  pChance = 0.5;
+  pValue = binocdf(nTotal - nSame, nTotal, pChance);
+  coordinationStruct.samePreference = pValue;
+
+  % Test 4-5: selfishness for each player
+  nOwnChoice = [nOwnOwn + nOwnOther,  nOwnOwn + nOtherOwn];
+  zScore = (nOwnChoice/nTotal - pChance)/sqrt(pChance*(1-pChance)/nTotal);
+  coordinationStruct.ownPreference = zScore;
+    
+  % Test 6-7: matching avoidance for each player  
+  nOtherTotal = [nOtherOwn + nOtherOther, nOwnOther + nOtherOther];
+  pValue = zeros(1, 2);
+  for i = 1:2
+    pValue(i) = binocdf(nOtherTotal(i) - nOtherOther, nOtherTotal(i), pChance);
+  end
+  coordinationStruct.matchingAvoidance = pValue;
+  
+  zCritical = -norminv(alpha/2);
+  coordinationStruct.shortOutcome = zeros(1, 7);
+  coordinationStruct.shortOutcome(1) = coordinationStruct.targetChoiceIndependence < alpha;
+  coordinationStruct.shortOutcome(2) = coordinationStruct.sideChoiceIndependence < alpha;
+  coordinationStruct.shortOutcome(3) = coordinationStruct.samePreference < alpha;
+  ownPreferenceTestOutcome = zeros(1, 2);
+  ownPreferenceTestOutcome(coordinationStruct.ownPreference < -zCritical) = -1;
+  ownPreferenceTestOutcome(coordinationStruct.ownPreference > zCritical) = 1;
+  coordinationStruct.shortOutcome(4:5) = ownPreferenceTestOutcome;
+  coordinationStruct.shortOutcome(6:7) = coordinationStruct.matchingAvoidance < alpha;
+end
+%% old version
+%{
+
 % check_coordination tests whether there is a coordination between two players 
 % or if they are making choices ignoring each other 
 %
@@ -61,3 +187,4 @@ function [partnerInluenceOnSide, partnerInluenceOnTarget] = ...
     end   
   end  
 end
+%}
