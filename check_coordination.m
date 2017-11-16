@@ -41,19 +41,28 @@ function coordinationStruct = check_coordination(isOwnChoice, sideChoice, vararg
 %     isOwnChoice(i,j) = 1 indicated that player i at trial j selected own target;
 %   - sideChoice - 2xN array of booleans, 
 %     sideChoice(i,j) = 1 indicated that player i at trial j selected side 1;
+% OPTIONAL INPUT
+%  - alpha - significance level (by default alpha = 0.05) 
 %
 % OUTPUT:
-%   coordinationStruct - a structure with 5 fields:
-%   - sideChoiceIndependence - pValue for independence of side choices of two players;
-%   - partnerInluenceOnTarget - pValue for independence of target choices of two players;
-%   - samePreference - pValue for proportion of same choices being significantly 
-%     higher than 50%;
+%   coordinationStruct - a structure with 6 fields:
+%   - targetChoiceIndependence - pValue for independence of side choices of two players;
+%   - sideChoiceIndependence - pValue for independence of target choices of two players;
+%   - noSamePreference - pValue for proportion of same choices being at chance 
+%      level (50%) or below;
 %   - ownPreference - 1x2 array of zScores for proportions of OWN choices of
 %     each player being significantly higher than 50%;
-%   - matchingAvoidance - 1x2 array of pValues for proportions of different 
-%     choices among other choices of each player being significantly higher 
-%     than 50%.
-
+%   - noMatchingAvoidance - 1x2 array of pValues for proportions of different 
+%     choices among other choices of each player being at chance level (50%)
+%     or below.
+%   - shortOutcome - 1x7 array with short description of players' interaction:
+%        shortOutcome[1] = 1 for coordinated target choice, 0 otherwise 
+%        shortOutcome[2] = 1 for coordinated side choice, 0 otherwise
+%        shortOutcome[3] = 1 for joint prefernce of choosing same, 0 otherwise
+%        shortOutcome[4-5] = 1 for own target preference, 
+%                           -1 for other side preference, 
+%                            0 otherwise (one value for each player)
+%        shortOutcome[6-7] = 1 for matching avoidence, 0 otherwise (one value for each players)
 %
 % EXAMPLE of use 
 %{
@@ -65,8 +74,13 @@ function coordinationStruct = check_coordination(isOwnChoice, sideChoice, vararg
  side2 = xor(side1, ~xor(target1, target2));
  isOwnChoice = [target1; target2]; 
  sideChoice = [side1; side2];
- [sideChoiceIndep, targetChoiceIndep] = check_independence(isOwnChoice, sideChoice);
- % both values should be near to zero
+ coord = check_coordination(isOwnChoice, sideChoice);
+ % expected outcomes:
+ % coord.targetChoiceIndependence, coord.sideChoiceIndependence - almost 0; 
+ % coord.noSamePreference - almost 0;
+ % coord.ownPreference[1] in [-1, 1], coord.ownPreference[2] > 2;
+ % coord.noMatchingAvoidance - almost 1;
+ % coord.shortOutcome
 %}
   if (~(isempty(varargin)) && (isnumeric(varargin{1})) && (varargin{1} >= 0) && (varargin{1} <= 1))
     alpha = varargin{1};
@@ -95,7 +109,7 @@ function coordinationStruct = check_coordination(isOwnChoice, sideChoice, vararg
   nTotal = nOwnOwn + nSame + nOtherOther;
   pChance = 0.5;
   pValue = binocdf(nTotal - nSame, nTotal, pChance);
-  coordinationStruct.samePreference = pValue;
+  coordinationStruct.noSamePreference = pValue;
 
   % Test 4-5: selfishness for each player
   nOwnChoice = [nOwnOwn + nOwnOther,  nOwnOwn + nOtherOwn];
@@ -108,18 +122,19 @@ function coordinationStruct = check_coordination(isOwnChoice, sideChoice, vararg
   for i = 1:2
     pValue(i) = binocdf(nOtherTotal(i) - nOtherOther, nOtherTotal(i), pChance);
   end
-  coordinationStruct.matchingAvoidance = pValue;
+  coordinationStruct.noMatchingAvoidance = pValue;
   
-  zCritical = -norminv(alpha/2);
+  % Total outcome in simplified form 
   coordinationStruct.shortOutcome = zeros(1, 7);
   coordinationStruct.shortOutcome(1) = coordinationStruct.targetChoiceIndependence < alpha;
   coordinationStruct.shortOutcome(2) = coordinationStruct.sideChoiceIndependence < alpha;
-  coordinationStruct.shortOutcome(3) = coordinationStruct.samePreference < alpha;
+  coordinationStruct.shortOutcome(3) = coordinationStruct.noSamePreference < alpha;
+  coordinationStruct.shortOutcome(6:7) = coordinationStruct.noMatchingAvoidance < alpha;
+  zCritical = -norminv(alpha/2);
   ownPreferenceTestOutcome = zeros(1, 2);
   ownPreferenceTestOutcome(coordinationStruct.ownPreference < -zCritical) = -1;
   ownPreferenceTestOutcome(coordinationStruct.ownPreference > zCritical) = 1;
   coordinationStruct.shortOutcome(4:5) = ownPreferenceTestOutcome;
-  coordinationStruct.shortOutcome(6:7) = coordinationStruct.matchingAvoidance < alpha;
 end
 %% old version
 %{
