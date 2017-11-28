@@ -135,6 +135,23 @@ function coordinationStruct = check_coordination(isOwnChoice, sideChoice, vararg
   ownPreferenceTestOutcome(coordinationStruct.ownPreference < -zCritical) = -1;
   ownPreferenceTestOutcome(coordinationStruct.ownPreference > zCritical) = 1;
   coordinationStruct.shortOutcome(4:5) = ownPreferenceTestOutcome;
+  
+  % now create a textual representation of the data
+  outString = ['p(TargetChoiceInd): ', num2str(coordinationStruct.targetChoiceIndependence), '; p(sideChoiceInd): ', num2str(coordinationStruct.sideChoiceIndependence), ...
+      '; p(SameChoiceInd): ', num2str(coordinationStruct.noSamePreference), '; Selfishness Zcrit: ', num2str(zCritical),'; Selfishness A Z: ', num2str(zScore(1)), '; Selfishness B Z: ', num2str(zScore(2)), ...
+      '; p(MatchAvoidance) A: ', num2str(coordinationStruct.noMatchingAvoidance(1)), '; p(MatchAvoidance) B: ', num2str(coordinationStruct.noMatchingAvoidance(2))];
+  
+  
+  
+  % multi line outout
+  outCell = {['Coordination summary: ', num2str(coordinationStruct.shortOutcome)]; ...
+      ['p(TargetChoiceInd): ', num2str(coordinationStruct.targetChoiceIndependence), '; p(sideChoiceInd): ', num2str(coordinationStruct.sideChoiceIndependence), ...
+      '; p(SameChoiceInd): ', num2str(coordinationStruct.noSamePreference)]; ...
+            ['Selfishness Zcrit: ', num2str(zCritical),'; Selfishness A Z: ', num2str(zScore(1)), '; Selfishness B Z: ', num2str(zScore(2)), ...
+      '; p(MatchAvoidance) A: ', num2str(coordinationStruct.noMatchingAvoidance(1)), '; p(MatchAvoidance) B: ', num2str(coordinationStruct.noMatchingAvoidance(2))]};
+  coordinationStruct.SummaryString = outString;
+  coordinationStruct.SummaryCell = outCell;
+  
 end
 %% old version
 %{
