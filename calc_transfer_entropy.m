@@ -1,6 +1,6 @@
-function transferEntropy = calc_local_transfer_entropy(x, y, order, windowSize)
-% calc_local_transfer_entropy computes local transfer entropy (LTE).
-% Given integer-valued signals x and y, LTE(x, y) characterizes causal
+function transferEntropy = calc_transfer_entropy(x, y, order, windowSize)
+% calc_transfer_entropy computes  transfer entropy (TE).
+% Given integer-valued signals x and y, TE(x, y) characterizes average causal
 % influence of y on x (strictly speaking: the amount of uncertainty reduced 
 % in values of x by knowing the past values of y given past values of x.)
 %
@@ -25,9 +25,9 @@ function transferEntropy = calc_local_transfer_entropy(x, y, order, windowSize)
 %{
  x = [ones(1, 40), zeros(1, 40), ones(1, 40), zeros(1, 40)];
  y = [0 x(1:end-1)];
- localTE = calc_local_transfer_entropy(y, x, 1, 30);
- plot(localTE);
- % result: signal with clear peaks at 42,82 and 122
+ TE = calc_transfer_entropy(y, x, 1, 30);
+ plot(TE);
+ % result: signal with clear peaks at 41,81 and 121
 %}
   x = x - min(x) + 1; %make numbers in x start from 1 if it was not so
   y = y - min(y) + 1; %make numbers in x start from 1 if it was not so
@@ -43,10 +43,10 @@ function transferEntropy = calc_local_transfer_entropy(x, y, order, windowSize)
   end
   
   % initialize distributions allowing for finite sample size
-  nAllX = (1/cardX)*ones(cardX, cardX^order);
-  nPrevX = ones(1, cardX^order);
-  nAllXY = (1/cardX)*ones(cardX, (cardY^order)*(cardX^order));
-  nPrevXY = ones(1, (cardY^order)*(cardX^order));
+  nAllX = zeros(cardX, cardX^order); %joint distribution of current and previous OP
+  nPrevX = zeros(1, cardX^order); %distribution of previous OP
+  nAllXY = zeros(cardX, (cardY^order)*(cardX^order)); %joint distribution of current and previous OP in x and previous OP in y
+  nPrevXY = zeros(1, (cardY^order)*(cardX^order)); %joint distribution of previous OP in x and in y
   
   allPrevXstr = zeros(1, lengthX);
   allPrevYstr = zeros(1, lengthX);
@@ -56,6 +56,9 @@ function transferEntropy = calc_local_transfer_entropy(x, y, order, windowSize)
   lastXstr = sum((x(1:order) - 1).*(cardX.^(0:order-1)));
   lastYstr = sum((y(1:order) - 1).*(cardY.^(0:order-1)));
   lastXYstr = lastXstr + lastYstr*(cardX^order);
+  
+  %denomAllXY = numel(nAllXY) + windowSize;
+  %denomAllX = numel(nAllX) + windowSize;
   for i = order+1:lengthX
     % add new symbols to the probability distribution
     allPrevXstr(i) = lastXstr + 1;
@@ -73,21 +76,25 @@ function transferEntropy = calc_local_transfer_entropy(x, y, order, windowSize)
     if (i >= order+windowSize) %recompute nX each time
       condProbX = bsxfun(@rdivide, nAllX, nPrevX);
       condProbXY = bsxfun(@rdivide, nAllXY, nPrevXY);
-      if (i == order+windowSize) %compute surprise for first samples
-        for j = order+1:i-1
-          transferEntropy(j) = -log2(condProbX(x(j), allPrevXstr(j)) ... 
-                                    /condProbXY(x(j), allPrevXYstr(j)));
-        end  
-      end  
+ 
+      transferEntropy(i) = condEntropy(nAllXY./windowSize, condProbXY) - ...
+                           condEntropy(nAllX./windowSize, condProbX);
+      
       % remove last symbols from the probability distribution      
       j = i - windowSize + 1;      
       nAllX(x(j), allPrevXstr(j)) = nAllX(x(j), allPrevXstr(j)) - 1;
       nPrevX(allPrevXstr(j)) = nPrevX(allPrevXstr(j)) - 1;
       nAllXY(x(j), allPrevXYstr(j)) = nAllXY(x(j), allPrevXYstr(j)) - 1;
       nPrevXY(allPrevXYstr(j)) = nPrevXY(allPrevXYstr(j)) - 1;    
-      
-      transferEntropy(i) = -log2(condProbX(x(i), allPrevXstr(i)) ... 
-                                    /condProbXY(x(i), allPrevXYstr(i)));
     end
   end  
+  transferEntropy(1:order+windowSize) = transferEntropy(order+windowSize);
 end
+
+function value = condEntropy(probDistrFull, probDistrCond)
+  value = nansum(nansum(probDistrFull.*log2(probDistrCond)));
+end  
+
+%function value = entropyValue(p)
+%  value = -sum(sum(p.*log2(p)));
+%end  
