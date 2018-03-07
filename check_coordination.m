@@ -45,7 +45,7 @@ function coordinationStruct = check_coordination(isOwnChoice, sideChoice, alpha)
 %  - alpha - significance level (by default alpha = 0.05)
 %
 % OUTPUT:
-%   coordinationStruct - a structure with 6 fields:
+%   coordinationStruct - a structure with fields:
 %   - targetChoiceIndependence - pValue for independence of side choices of two players;
 %   - sideChoiceIndependence - pValue for independence of target choices of two players;
 %   - noSamePreference - pValue for proportion of same choices being at chance
@@ -55,6 +55,8 @@ function coordinationStruct = check_coordination(isOwnChoice, sideChoice, alpha)
 %   - noMatchingAvoidance - 1x2 array of pValues for proportions of different
 %     choices among other choices of each player being at chance level (50%)
 %     or below.
+%   - SummaryString - test results condensed to a single-line string; 
+%   - SummaryCell - test results condensed to a cell array (multi-line string);
 %   - shortOutcome - 1x7 array with short description of players' interaction:
 %        shortOutcome[1] = 1 for coordinated target choice, 0 otherwise
 %        shortOutcome[2] = 1 for coordinated side choice, 0 otherwise
@@ -88,13 +90,6 @@ if (nargin >= 3) && isnumeric(alpha) && (alpha >= 0) && (alpha <= 1)
 else
     alpha = 0.05;
 end
-
-%
-%   if (~(isempty(varargin)) && (isnumeric(varargin{1})) && (varargin{1} >= 0) && (varargin{1} <= 1))
-%     alpha = varargin{1};
-%   else
-%     alpha = 0.05;
-%   end
 
 % Test 1: target choice independendence
 nOwnOwn = nnz(isOwnChoice(1, :) & isOwnChoice(2, :));

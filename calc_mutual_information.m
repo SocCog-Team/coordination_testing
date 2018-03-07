@@ -1,6 +1,6 @@
-function mutualInf = calc_local_mutual_information(x, y, windowSize)
-% calc_local_mutual_information computes local mutual information (LMI).
-% Given integer-valued signals x and y, LMI(x, y) characterizes mutual dependence 
+function mutualInf = calc_mutual_information(x, y, windowSize)
+% calc_local_mutual_information computes  mutual information (MI).
+% Given integer-valued signals x and y, MI(x, y) characterizes mutual dependence 
 % between x and y (the "amount of information" obtained about one signal, 
 % through the other signal)
 %
@@ -9,15 +9,14 @@ function mutualInf = calc_local_mutual_information(x, y, windowSize)
 % OPTIONAL INPUT
 %   - windowSize - length of the sliding window used for estimating probabilities of 
 %     x and y; by default windowSize = 5*cardX*cardY is used, since this length 
-%     provides reliable estimation of probabilities
-%
+%     provides reliable estimation of probabilities;
+%  
 % OUTPUT:
 %   mutualInf - values of local transfer entropy. 
 %   - values mutualInf(1:windowSize) are computed for probabilities of
 %     x and y values calculated in x(1:windowSize) and y(1:windowSize); 
 %   - values transferEntropy(i) for i > order+windowSize are computed for 
 %     probabilities calculated in x(i-windowSize:i), y(i-order+windowSize:i); 
-%
 %
 % EXAMPLE of use 
 %{
@@ -41,7 +40,7 @@ function mutualInf = calc_local_mutual_information(x, y, windowSize)
   end
   if (windowSize > lengthX)
     windowSize = lengthX;
-  end
+  end 
   
   % initialize distributions allowing for finite sample size  
   nX = (1/cardX)*ones(cardX, 1);
@@ -55,19 +54,14 @@ function mutualInf = calc_local_mutual_information(x, y, windowSize)
     nY(y(i)) = nY(y(i)) + 1;
     nXY(x(i), y(i)) = nXY(x(i), y(i)) + 1;       
     
-    if (i >= windowSize) % recompute distribution of x and y in current window
+    if (i >= windowSize) %recompute distribution of x and y in current window
       pX = nX/(windowSize + 1);
       pY = nY/(windowSize + 1);
       pXY = nXY/(windowSize + 1);
-      
-      % compute MI
-      if (i == windowSize) % compute MI for first samples
-        for j = 1:i-1
-          mutualInf(j) = log2(pXY(x(j), y(j))/(pX(x(j))*pY(y(j))));
-        end  
-      end              
-      mutualInf(i) = log2(pXY(x(i), y(i))/(pX(x(i))*pY(y(i)))); 
-      
+
+      % compute MI      
+      mutualInf(i) = sum(sum(pXY.*log2(pXY))) - sum(pX.*log2(pX)) - sum(pY.*log2(pY));
+     
       % remove last symbols from the probability distribution
       j = i - windowSize + 1;
       nX(x(j)) = nX(x(j)) - 1;
@@ -75,4 +69,5 @@ function mutualInf = calc_local_mutual_information(x, y, windowSize)
       nXY(x(j), y(j)) = nXY(x(j), y(j)) - 1;   
     end
   end  
+  mutualInf(1:windowSize-1) = mutualInf(windowSize);
 end
