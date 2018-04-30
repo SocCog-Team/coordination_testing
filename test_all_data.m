@@ -7,7 +7,8 @@ order = 1;
 minSampleNum = 6*(2.^(order+1))*(2.^order);
 
 %folder = '';
-folder = 'Z:\taskcontroller\SCP_DATA\ANALYSES\PC1000\2018\CoordinationCheck\';
+folder = 'Z:\taskcontroller\SCP_DATA\ANALYSES\PC1000\2018\CoordinationCheck';
+%folder = fullfile('/', 'Volumes', 'social_neuroscience_data', 'taskcontroller', 'SCP_DATA', 'ANALYSES', 'PC1000', '2018', 'CoordinationCheck');
                  
 magnusCurius = {'DATA_20171108T140407.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
   'DATA_20171109T133052.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -58,6 +59,8 @@ flaffusCurius = {'DATA_20171019T132932.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaf
   'DATA_20180419T141311.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice',...
   'DATA_20180420T151954.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice',...
   'DATA_20180424T121937.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice',...
+  'DATA_20180425T133936.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice',...
+  'DATA_20180426T171117.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice'
   };
   
 flaffusCuriusCaption = {'2017.10.19', ...
@@ -398,7 +401,7 @@ for iSet = 1:nSet
         break;
       end      
       clear isOwnChoiceArray sideChoiceObjectiveArray
-      load([folder, filename{iSet}{i}, '.mat'], 'isOwnChoiceArray', 'sideChoiceObjectiveArray', 'PerTrialStruct'); 
+      load(fullfile(folder, [filename{iSet}{i}, '.mat']), 'isOwnChoiceArray', 'sideChoiceObjectiveArray', 'PerTrialStruct'); 
       if (exist('isOwnChoiceArray', 'var'))
         isOwnChoice = [isOwnChoice, isOwnChoiceArray];
       else
