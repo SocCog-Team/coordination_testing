@@ -18,13 +18,14 @@ deltaTotalReward = averageTotalReward - chanceReward;
 %[shareOwnSide(1), shareSide(1) - shareOwnSide(1); shareOwn(1) - shareOwnSide(1), 1 - shareSide(1) + shareOwnSide(1) - shareOwn(1)]
 %[shareOwnSide(2), shareSide(2) - shareOwnSide(2); shareOwn(2) - shareOwnSide(2), 1 - shareSide(2) + shareOwnSide(2) - shareOwn(2)]
 
+%compute significance for non-random reward for given alpha
 n = length(isOwnChoice);
 if (~exist('alpha', 'var'))
   alpha = 0.05;
 end
 zScore = norminv((1-alpha/2));
 
-%compute 
+%compute confidence intervals for non-random reward
 dltShare = zScore*sqrt(shareSide.*(1-shareSide)./n);
 shareSideInt = [shareSide(1) - dltShare(1), shareSide(1) - dltShare(1), ... 
                 shareSide(1) + dltShare(1), shareSide(1) + dltShare(1); ...
@@ -50,8 +51,13 @@ for iOwn = 1:4
     shareOwnSideCurr = shareOwnSide + ...
       0.5*(shareOwnInt(:,iOwn) + shareSideInt(:,iSide) - shareOwn - shareSide);
     currChanceReward = calc_chance_reward(shareOwnInt(:,iOwn), ...
-                           shareSideInt(:,iSide), shareOwnSideCurr);
-
+                           shareSideInt(:,iSide), shareOwnSideCurr);  
+    if (maxChanceReward < currChanceReward);
+      maxChanceReward = currChanceReward;
+    end  
+    if (minChanceReward > currChanceReward);
+      minChanceReward = currChanceReward;
+    end 
     if (minChanceReward < 1)
       minChanceReward = 1;
       warning('wrong chance reward!')
@@ -59,13 +65,7 @@ for iOwn = 1:4
     if (maxChanceReward > 3.5)
       maxChanceReward = 3.5;
       warning('wrong chance reward!')
-    end     
-    if (maxChanceReward < currChanceReward);
-      maxChanceReward = currChanceReward;
-    end  
-    if (minChanceReward > currChanceReward);
-      minChanceReward = currChanceReward;
-    end     
+    end      
   end
 end  
 
@@ -75,15 +75,10 @@ maxChanceReward - minChanceReward
 end
 
 function chanceReward = calc_chance_reward(shareOwn,shareSide,shareOwnSide)
-%  sameFractionTarget = shareOwn(1)*(1-shareOwn(2)) + (1-shareOwn(1))*shareOwn(2);
-%  chanceRewardTarget = 1 + shareOwn + 2*sameFractionTarget;
+  % compute frequency for each of two possible target locations
   shareLocationType = shareOwnSide + (1-shareSide - shareOwn + shareOwnSide);
   
-%  chanceReward = 2*( shareOwnSide.*flip(2*shareSide+shareOwn-3*shareOwnSide)./shareLocationType + ... 
-%                    (shareOwn - shareOwnSide).*flip(2 - 2*shareSide - 2*shareOwn + 3*shareOwnSide)./(1 - shareLocationType)) + ...
-%                   ((shareSide - shareOwnSide).*flip(1 - shareSide - shareOwn + 4*shareOwnSide)./(1 - shareLocationType) + ...
-%                    (1 - shareSide - shareOwn + shareOwnSide).*flip(shareSide + 3*shareOwn - 4*shareOwnSide)./shareLocationType)
-                  
+  % compute chance reward obtained for each of two locations                  
   chanceRewardSide = 2.5*(shareOwnSide.*flip(shareSide-shareOwnSide) + ...
                       (1 - shareSide - shareOwn + shareOwnSide).*flip(shareOwn-shareOwnSide)) + ...
                  shareOwnSide.*flip(shareOwn - shareOwnSide);
