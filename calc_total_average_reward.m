@@ -70,7 +70,7 @@ for iOwn = 1:4
 end  
 
 deltaTotalSignif = (averageTotalReward < minChanceReward) | (averageTotalReward > maxChanceReward);
-maxChanceReward - minChanceReward             
+%maxChanceReward - minChanceReward             
 %disp('************************')
 end
 

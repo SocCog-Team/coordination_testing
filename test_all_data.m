@@ -1,15 +1,14 @@
-FontSize = 11;
-lineWidth = 1.0;
+% Common abbreviations: MI - mutual information, TE - transfer entropy
 
-order = 1;
-%minSampleNum = 1.5*(2.^(order+1))*(2.^order);
-%minSampleNum = 6*(2.^(order+1))*(2.^order);
-minSampleNum = 6*(2.^(order+1))*(2.^order);
-
+%% prepare dataset for processing
 %folder = '';
-folder = 'Z:\taskcontroller\SCP_DATA\ANALYSES\PC1000\2018\CoordinationCheck';
-%folder = fullfile('/', 'Volumes', 'social_neuroscience_data', 'taskcontroller', 'SCP_DATA', 'ANALYSES', 'PC1000', '2018', 'CoordinationCheck');
-                 
+addpath(genpath('WhittleSurrogates'));
+if ispc
+  folder = 'Z:\taskcontroller\SCP_DATA\ANALYSES\PC1000\2018\CoordinationCheck';
+else
+  folder = fullfile('/', 'Volumes', 'social_neuroscience_data', 'taskcontroller', 'SCP_DATA', 'ANALYSES', 'PC1000', '2018', 'CoordinationCheck');
+end
+
 magnusCurius = {'DATA_20171108T140407.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
   'DATA_20171109T133052.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
   'DATA_20171110T145559.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -43,7 +42,6 @@ magnusCuriusCaption = { '08.11.17', ...
             '12.02.18',...
             '13.02.18',... 
             '14.02.18'};    
-
 
 
 flaffusCurius = {'DATA_20171019T132932.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -85,6 +83,7 @@ flaffusCuriusCaption = {'2017.10.19', ...
   '2018.04.27',...
   '2018.05.01'};
 
+
 flaffusEC = {'DATA_20171116T115210.A_EC.B_Flaffus.SCP_01.triallog.A.EC.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
   'DATA_20171117T093215.A_EC.B_Flaffus.SCP_01.triallog.A.EC.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
   'DATA_20171121T133541.A_EC.B_Flaffus.SCP_01.triallog.A.EC.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -96,6 +95,7 @@ flaffusECCaption = {'2017.11.16, 11:52:10', ...
   '2017.11.21, 13:35:41', ...
   '2017.11.22, 13:39:49', ...
   '2017.11.24, 13:12:00'};
+
 
 SMCurius = {'DATA_20171124T094821.A_SM.B_Curius.SCP_01.triallog.A.SM.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
             'DATA_20171128T143855.A_SM.B_Curius.SCP_01.triallog.A.SM.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -188,27 +188,8 @@ SMFlaffusCaption = {'31.01.18', ...
                    '23.02.18', ...
                    '27.02.18', ...                   
                    '28.02.18'};                 
-                 
-                 
-SMFlaffusBlock = {'DATA_20180301T122505.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice',...  
-                  'DATA_20180302T151740.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice',...
-                  'DATA_20180306T112342.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice',...
-                  'DATA_20180307T100718.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice',...
-                  'DATA_20180308T121753.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice',...
-                  'DATA_20180309T110024.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice'...
-                 };
-SMFlaffusBlockCaption = {'01.03.18', ...
-                         '02.03.18', ...
-                         '06.03.18', ...
-                         '07.03.18', ...                         
-                         '08.03.18', ...                         
-                         '09.03.18' ... 
-                  };               
-    
-%Last points in each block
-SMFlaffusBlockBorder = [172,	332; 164,	299; 166,	332; 162,	321; 168,	328; 161,	323];                
-                  
 
+                 
 FlaffusSM = {'DATA_20180406T111431.A_Flaffus.B_SM.SCP_01.triallog.A.Flaffus.B.SM_IC_JointTrials.isOwnChoice_sideChoice',...
              'DATA_20180409T145457.A_Flaffus.B_SM.SCP_01.triallog.A.Flaffus.B.SM_IC_JointTrials.isOwnChoice_sideChoice',...
              'DATA_20180410T125708.A_Flaffus.B_SM.SCP_01.triallog.A.Flaffus.B.SM_IC_JointTrials.isOwnChoice_sideChoice',...
@@ -228,8 +209,24 @@ FlaffusSMCaption = {'06.04.18', ...
                    '16.04.18', ...
                    '16.04.18', ...
                    '17.04.18', ...
-                   '23.04.18'};                                               
-
+                   '23.04.18'};                            
+                 
+                 
+SMFlaffusBlock = {'DATA_20180301T122505.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice',...  
+                  'DATA_20180302T151740.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice',...
+                  'DATA_20180306T112342.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice',...
+                  'DATA_20180307T100718.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice',...
+                  'DATA_20180308T121753.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice',...
+                  'DATA_20180309T110024.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice'...
+                 };
+               
+SMFlaffusBlockCaption = {'01.03.18', ...
+                         '02.03.18', ...
+                         '06.03.18', ...
+                         '07.03.18', ...                         
+                         '08.03.18', ...                         
+                         '09.03.18' ... 
+                  };               
 
 TNCurius = {'DATA_20180406T135926.A_TN.B_Curius.SCP_01.triallog.A.TN.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
             'DATA_20180410T144850.A_TN.B_Curius.SCP_01.triallog.A.TN.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -295,12 +292,13 @@ humanPairBlockedCaption = {'01vs02', ...
                            '07vs08', ...
                            '09vs10'};       
                          
+                         
 SMhumanBlocked = {'DATA_20180417T185908.A_SM.B_52001.SCP_01.triallog.A.SM.B.52001_IC_JointTrials.isOwnChoice_sideChoice',...
                   'DATA_20180418T111112.A_SM.B_52002.SCP_01.triallog.A.SM.B.52002_IC_JointTrials.isOwnChoice_sideChoice',...
                   'DATA_20180419T112118.A_SM.B_51003.SCP_01.triallog.A.SM.B.51003_IC_JointTrials.isOwnChoice_sideChoice',...
                   'DATA_20180420T171629.A_SM.B_52004.SCP_01.triallog.A.SM.B.52004_IC_JointTrials.isOwnChoice_sideChoice',...
                   'DATA_20180420T192826.A_SM.B_52005.SCP_01.triallog.A.SM.B.52005_IC_JointTrials.isOwnChoice_sideChoice'...
-                    };
+                 };
 
 SMhumanBlockedCaption = {'Human Confederate 1', ...
                          'Human Confederate 2', ...
@@ -308,11 +306,14 @@ SMhumanBlockedCaption = {'Human Confederate 1', ...
                          'Human Confederate 4', ...
                          'Human Confederate 5'};                        
                     
+                       
+% flag indicating whether to scan all datasets or only selected ones
+SCAN_ALL_DATASET = 1; 
+%SCAN_ALL_DATASET = 0;
+
 % filename - list of all files related to specific Set
 % fileCaption - captions of files, adjacent files may have the same caption
 % but the they are merged
-SCAN_ALL_DATASET = 1;
-%SCAN_ALL_DATASET = 0;
 if (SCAN_ALL_DATASET)
   filename = {magnusCurius, flaffusCurius, flaffusEC, SMCurius, SMCuriusBlock, TNCurius, SMFlaffus, SMFlaffusBlock, FlaffusSM, humanPair, humanPairBlocked, SMhumanBlocked};
   fileCaption = {magnusCuriusCaption, flaffusCuriusCaption, flaffusECCaption, SMCuriusCaption, SMCuriusBlockCaption, TNCuriusCaption, SMFlaffusCaption, SMFlaffusBlockCaption, FlaffusSMCaption, humanPairCaption, humanPairBlockedCaption, SMhumanBlockedCaption};
@@ -324,51 +325,73 @@ else
 end
 plotName = {'TEtarget', 'MutualInf', 'surprise_pos'};             
 
+%% plotting parameters
+FontSize = 11;
+lineWidth = 1.0;
+
+%% set parameters of the methods
+pValueForMI = 0.01;
+memoryLength = 1; % number of previous trials that affect the choices on the current trils
+%minSampleNum = 1.5*(2.^(memoryLength+1))*(2.^memoryLength);
+minSampleNum = 6*(2.^(memoryLength+1))*(2.^memoryLength);
+stationarySegmentLength = 200;  % number of last trials supposedly corresponding to equilibrium state
+minStationarySegmentStart = 20; % earliest possible start of equilibrium state
+
+%% initialization
 nSet = length(setName);
 nFile = cell2mat(cellfun(@(x) length(unique(x)), fileCaption, 'UniformOutput',false));
-playerStrategy = cell(nSet, max(nFile));
-playerNStateVisit = cell(nSet, max(nFile));
-targetTE1 = cell(nSet, max(nFile));
+
+% by-trial quantities
+allOwnChoice = cell(nSet, max(nFile));  % target choice (0 - other, 1 - own)
+allSideChoice = cell(nSet, max(nFile)); % side choice (0 - objective right, 1 - objective left)
+
+% by-trial coordination metrics computed over window of minSampleNum trials 
+mutualInf = cell(nSet, max(nFile));       % target local MI
+locMutualInf = cell(nSet, max(nFile));    % target MI
+targetTE1 = cell(nSet, max(nFile));       % target (averaged) TE
 targetTE2 = cell(nSet, max(nFile));
-localTargetTE1 = cell(nSet, max(nFile));
+localTargetTE1 = cell(nSet, max(nFile));  % target local TE
 localTargetTE2 = cell(nSet, max(nFile));
-locMutualInf = cell(nSet, max(nFile));
-mutualInf = cell(nSet, max(nFile));
-allOwnChoice = cell(nSet, max(nFile));
-allSideChoice = cell(nSet, max(nFile));
-averReward = cell(nSet, max(nFile));
-dltRewardBlock = cell(nSet, max(nFile));
-dltSignif = cell(nSet, max(nFile));
 
-miValueWhole = cell(nSet, max(nFile));
-miSignifWhole = cell(nSet, max(nFile));
-teWhole1 = cell(nSet, max(nFile));
-teWhole2 = cell(nSet, max(nFile));
-sideMIvalueWhole = cell(nSet, max(nFile));
-sideMIsignifWhole = cell(nSet, max(nFile));
-sideTEwhole1 = cell(nSet, max(nFile));
+% coordination metrics computed for each session (over supposedly equilibrium trials) 
+miValueWhole = cell(nSet, max(nFile));      % target MI
+miSignifWhole = cell(nSet, max(nFile));     % target MI significance
+sideMIvalueWhole = cell(nSet, max(nFile));  % side MI
+sideMIsignifWhole = cell(nSet, max(nFile)); % side MI significance
+teWhole1 = cell(nSet, max(nFile));          % target TE
+teWhole2 = cell(nSet, max(nFile));          
+sideTEwhole1 = cell(nSet, max(nFile));      % side TE
 sideTEwhole2 = cell(nSet, max(nFile));
+averReward = cell(nSet, max(nFile));    % average reward of two players
+dltReward = cell(nSet, max(nFile));     % non-random reward component of each player
+dltSignif = cell(nSet, max(nFile));     % significance of non-random reward components
+% strategy - probability to select own target given the state, incorporating 
+% previous outcome, current stimuli location and current partner's choice (if visible)
+playerStrategy = cell(nSet, max(nFile));    % estimated strategy
+playerNStateVisit = cell(nSet, max(nFile)); % number of state visits
 
-
-miValueBlock = cell(nSet, 1);
-miSignifBlock = cell(nSet, 1);
-teBlock1 = cell(nSet, 1);
+% coordination metrics computed for a block within session. 
+% In a block equilibrium trials start from minStationarySegmentStart. 
+% this means that if there are now blocks (whole session is asingle block), 
+% the value of coordination metrics may still differe from the one
+% computed for the whole session: the former is computed for all trials
+% starting from minStationarySegmentStart, while the latter - for the last 200 trials (if available) 
+miValueBlock = cell(nSet, 1);       % target MI
+miSignifBlock = cell(nSet, 1);      % target MI significance
+sideMIvalueBlock = cell(nSet, 1);   % side MI
+sideMIsignifBlock = cell(nSet, 1);  % side MI significance
+teBlock1 = cell(nSet, 1);           % target TE
 teBlock2 = cell(nSet, 1);
-
-sideMIvalueBlock = cell(nSet, 1);
-sideMIsignifBlock = cell(nSet, 1);
-sideTEblock1 = cell(nSet, 1);
+sideTEblock1 = cell(nSet, 1);       % side TE
 sideTEblock2 = cell(nSet, 1);
-
-coordStructBlock = cell(nSet, 3);
-averageRewardBlock = cell(nSet, 1);
-deltaRewardBlock = cell(nSet, 1);
-deltaSignifBlock = cell(nSet, 1);
+averageRewardBlock = cell(nSet, 1); % average reward of two players
+deltaRewardBlock = cell(nSet, 1);   % non-random reward component of each player
+deltaSignifBlock = cell(nSet, 1);   % significance of non-random reward components
+coordStructBlock = cell(nSet, 3);   % outcomes of coordination tests
 
 blockBorder = cell(nSet, 1);
 
-pValueForMI = 0.01;
-
+%% dataset processing
 totalFileIndex = 1;
 for iSet = 1:nSet 
   disp(['Processing dataset' num2str(iSet)]);
@@ -377,12 +400,13 @@ for iSet = 1:nSet
   minMIvalue = 0;
   maxMIvalue = 0;
 
+  % preallocate blockwise quanities
   miValueBlock{iSet} = NaN(nFile(iSet), 3);
   miSignifBlock{iSet} = NaN(nFile(iSet), 3);
-  teBlock1{iSet} = NaN(nFile(iSet), 3);
-  teBlock2{iSet} = NaN(nFile(iSet), 3);
   sideMIvalueBlock{iSet} = NaN(nFile(iSet), 3);
   sideMIsignifBlock{iSet} = NaN(nFile(iSet), 3);
+  teBlock1{iSet} = NaN(nFile(iSet), 3);
+  teBlock2{iSet} = NaN(nFile(iSet), 3);
   sideTEblock1{iSet} = NaN(nFile(iSet), 3);
   sideTEblock2{iSet} = NaN(nFile(iSet), 3);
   averageRewardBlock{iSet} = NaN(nFile(iSet), 3);
@@ -390,20 +414,21 @@ for iSet = 1:nSet
   deltaSignifBlock{iSet} = NaN(nFile(iSet), 3);
   
   if (strcmp(setName{iSet}, 'SMCuriusBlock'))  
-    blockBorder{iSet} = SMCuriusBlockBorder;  
+    blockBorder{iSet} = SMCuriusBlockBorder;   % predefined by constants
   else  
-    blockBorder{iSet} = zeros(nFile(iSet), 2);
+    blockBorder{iSet} = zeros(nFile(iSet), 2); % will be taken from file
   end
   
   playerStrategy{iSet} = zeros(nFile(iSet), 8);
   playerNStateVisit{iSet} = zeros(nFile(iSet), 8);
   
+  % analyse all sessions for the given players pair
   filenameIndex = 1;
   for iFile = 1:nFile(iSet)
+    % merge data for all files having the same caption
     i = filenameIndex;
     isOwnChoice = [];
     sideChoice = [];
-    % merge data for all files having the same caption
     while(length(filename{iSet}) >= i)
       if (~strcmp(fileCaption{iSet}{i}, fileCaption{iSet}{filenameIndex}))
         break;
@@ -425,12 +450,15 @@ for iSet = 1:nSet
       end       
       i = i + 1;
     end 
-    filenameIndex = i;
+    filenameIndex = i;    
     allOwnChoice{iSet, iFile} = isOwnChoice;
     allSideChoice{iSet, iFile} = sideChoice;
     
-    % here we consider only stationary (stabilized) values
-    testIndices = max(20, length(isOwnChoice) - 200):length(isOwnChoice);
+    % here we consider only equilibrium (stabilized) values
+    testIndices = max(minStationarySegmentStart, length(isOwnChoice) - stationarySegmentLength):length(isOwnChoice);
+    nTestIndices = length(testIndices);
+
+    % estimate strategy over equilibrium trials
     [playerStrategy{iSet, iFile}, ...
      playerNStateVisit{iSet, iFile}] = ...
          estimate_strategy(isOwnChoice(:, testIndices), sideChoice(:,testIndices));
@@ -439,16 +467,15 @@ for iSet = 1:nSet
      dltReward{iSet, iFile}, ...
      dltSignif{iSet, iFile}] = ...
        calc_total_average_reward(isOwnChoice(:,testIndices), sideChoice(:,testIndices));    
-
+   
+    %target choices quantities
     x = isOwnChoice(1, testIndices);
     y = isOwnChoice(2, testIndices);
-    nTestIndices = length(testIndices);
-    %target choices quantities
     [miValueWhole{iSet, iFile}, miSignifWhole{iSet, iFile}] = ...
         calc_whole_mutual_information(x, y, pValueForMI);            
-    teValue = calc_transfer_entropy(y, x, order, nTestIndices);        
+    teValue = calc_transfer_entropy(y, x, memoryLength, nTestIndices);        
     teWhole1{iSet, iFile} = teValue(1);
-    teValue = calc_transfer_entropy(x, y, order, nTestIndices); 
+    teValue = calc_transfer_entropy(x, y, memoryLength, nTestIndices); 
     teWhole2{iSet, iFile} = teValue(1);
         
     %side choices quantities
@@ -456,35 +483,30 @@ for iSet = 1:nSet
     y = sideChoice(2, testIndices);
     [sideMIvalueWhole{iSet, iFile}, sideMIsignifWhole{iSet, iFile}] = ...
          calc_whole_mutual_information(x, y, pValueForMI);            
-    teValue = calc_transfer_entropy(y, x, order, nTestIndices);        
+    teValue = calc_transfer_entropy(y, x, memoryLength, nTestIndices);        
     sideTEwhole1{iSet, iFile} = teValue(1);
-    teValue = calc_transfer_entropy(x, y, order, nTestIndices); 
+    teValue = calc_transfer_entropy(x, y, memoryLength, nTestIndices); 
     sideTEwhole2{iSet, iFile} = teValue(1);
      
-     
+    % perform coordination tests. 
+    % To simplify visual inspection, results of all tests are qathered in single table 
     coordStruct(totalFileIndex) = ...
             check_coordination(isOwnChoice(:,testIndices), sideChoice(:,testIndices));
     totalFileIndex = totalFileIndex + 1;
-    
-    %average joint reward
-    totalReward = 1 + 2.5*(isOwnChoice(1,:)+isOwnChoice(2,:));
-    totalReward(totalReward == 6) = 2;
 
-    % compute local TE, MI and TE in windows
+    % compute MI and TE, as well as local MI and TE in windows
     x = isOwnChoice(1, :);
     y = isOwnChoice(2, :);
-    targetTE1{iSet, iFile} = calc_transfer_entropy(y, x, order, minSampleNum);
-    targetTE2{iSet, iFile} = calc_transfer_entropy(x, y, order, minSampleNum);
-    localTargetTE1{iSet, iFile} = calc_local_transfer_entropy(y, x, order, minSampleNum);
-    localTargetTE2{iSet, iFile} = calc_local_transfer_entropy(x, y, order, minSampleNum);
-    
+    targetTE1{iSet, iFile} = calc_transfer_entropy(y, x, memoryLength, minSampleNum);
+    targetTE2{iSet, iFile} = calc_transfer_entropy(x, y, memoryLength, minSampleNum);
+    localTargetTE1{iSet, iFile} = calc_local_transfer_entropy(y, x, memoryLength, minSampleNum);
+    localTargetTE2{iSet, iFile} = calc_local_transfer_entropy(x, y, memoryLength, minSampleNum);    
     locMutualInf{iSet, iFile} = calc_local_mutual_information(x, y, minSampleNum);
     mutualInf{iSet, iFile} = calc_mutual_information(x, y, minSampleNum);
     minValue = min([minValue, min(localTargetTE1{iSet, iFile}), min(localTargetTE2{iSet, iFile})]);
     maxValue = max([maxValue, max(localTargetTE1{iSet, iFile}), max(localTargetTE2{iSet, iFile})]);
     minMIvalue = min([minMIvalue, min(locMutualInf{iSet, iFile})]);
     maxMIvalue = max([maxMIvalue, max(locMutualInf{iSet, iFile})]);
-
     
     % if there are blocked segments, compute statistics for each blcok       
     dataLength = length(x);
@@ -497,13 +519,12 @@ for iSet = 1:nSet
     end  
     if (~isempty(invisibleEnd))
       blockBorder{iSet}(iFile,2) = invisibleEnd;
-    end  
-    
+    end      
     if (blockBorder{iSet}(iFile,1) > 0)   
-      blockIndices{1} = 20:invisibleStart-1;
-      blockIndices{2} = (invisibleStart+20):invisibleEnd;
-      if (invisibleEnd+21+minBlockLength <= dataLength)
-      	blockIndices{3} = (invisibleEnd+21):dataLength;
+      blockIndices{1} = minStationarySegmentStart:invisibleStart-1;
+      blockIndices{2} = (invisibleStart+minStationarySegmentStart):invisibleEnd;
+      if (invisibleEnd+1+minStationarySegmentStart+minBlockLength <= dataLength)
+      	blockIndices{3} = (invisibleEnd+1+minStationarySegmentStart):dataLength;
         nBlock = 3;       
       else  
         nBlock = 2;
@@ -522,17 +543,17 @@ for iSet = 1:nSet
         %target choices quantities
         [miValueBlock{iSet}(iFile, iBlock), miSignifBlock{iSet}(iFile, iBlock)] = ...
             calc_whole_mutual_information(x(index), y(index), pValueForMI);            
-        teValue = calc_transfer_entropy(y(index), x(index), order, blockLength);        
+        teValue = calc_transfer_entropy(y(index), x(index), memoryLength, blockLength);        
         teBlock1{iSet}(iFile, iBlock) = teValue(1);
-        teValue = calc_transfer_entropy(x(index), y(index), order, blockLength); 
+        teValue = calc_transfer_entropy(x(index), y(index), memoryLength, blockLength); 
         teBlock2{iSet}(iFile, iBlock) = teValue(1);
         
         %side choices quantities
         [sideMIvalueBlock{iSet}(iFile, iBlock), sideMIsignifBlock{iSet}(iFile, iBlock)] = ...
             calc_whole_mutual_information(sideChoice(1,index), sideChoice(2,index), pValueForMI);            
-        teValue = calc_transfer_entropy(sideChoice(2,index), sideChoice(1,index), order, blockLength);        
+        teValue = calc_transfer_entropy(sideChoice(2,index), sideChoice(1,index), memoryLength, blockLength);        
         sideTEblock1{iSet}(iFile, iBlock) = teValue(1);
-        teValue = calc_transfer_entropy(sideChoice(1,index), sideChoice(2,index), order, blockLength); 
+        teValue = calc_transfer_entropy(sideChoice(1,index), sideChoice(2,index), memoryLength, blockLength); 
         sideTEblock2{iSet}(iFile, iBlock) = teValue(1);
         
         coordStructBlock{iSet, iBlock}(iFile) = ...
@@ -542,6 +563,58 @@ for iSet = 1:nSet
     %isBottomChoice = sideChoiceObjectiveArray;    
   end  
   
+  %---------------------
+  %---- plot resuts ----
+  %---------------------
+  
+  % plot per-session MI, TE, average and non-random reward 
+  figure('Name',[setName{iSet}, ' per-session summary']);
+  set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times'); 
+
+  nPlot = 6;
+  maxTE = max(max([teWhole2{iSet, :}; teWhole1{iSet, :}; sideTEwhole2{iSet, :}; sideTEwhole1{iSet, :}]));
+  for iPlot = 1:nPlot
+    subplot(nPlot/2, 2, iPlot);
+    if (iPlot == 1) 
+      bar([miValueWhole{iSet, :}]);
+      ylabel( {'target mutual information'}, 'fontsize', FontSize, 'FontName', 'Arial');
+      axis([0.4, nFile(iSet) + 0.6, 0, 1.0]); 
+    elseif (iPlot == 2) 
+      bar([sideMIvalueWhole{iSet, :}]);
+      ylabel( {'side mutual information'}, 'fontsize', FontSize, 'FontName', 'Arial');
+      axis([0.4, nFile(iSet) + 0.6, 0, 1.0]); 
+    elseif (iPlot == 3)     
+      bar([teWhole2{iSet, :}; teWhole1{iSet, :}]');
+      ylabel( {'target transfer entropy'}, 'fontsize', FontSize, 'FontName', 'Arial');
+      axis([0.4, nFile(iSet) + 0.6, 0, maxTE + 0.01]); 
+    elseif (iPlot == 4) 
+      bar([sideTEwhole2{iSet, :}; sideTEwhole1{iSet, :}]');
+      ylabel( {'side transfer entropy'}, 'fontsize', FontSize, 'FontName', 'Arial');
+      axis([0.4, nFile(iSet) + 0.6, 0, maxTE + 0.01]); 
+    elseif (iPlot == 5) 
+      bar([averReward{iSet, :}]);
+      ylabel( {'average reward'}, 'fontsize', FontSize, 'FontName', 'Arial');
+      axis([0.4, nFile(iSet) + 0.6, 2, 3.6]); 
+    elseif (iPlot == 6) 
+      bar([dltReward{iSet, :}]);
+      ylabel( {'non-random reward'}, 'fontsize', FontSize, 'FontName', 'Arial');
+      axis([0.4, nFile(iSet) + 0.6, -0.05, 1.0]);    
+    end  
+    %if (iPlot >= nPlot - 1) 
+    %  xlabel('Session number', 'fontsize', FontSize, 'FontName', 'Arial');
+    %end  
+    %set( gca, 'fontsize', FontSize-2, 'XTickLabel', fileCaption{iSet}, 'XTickLabelRotation',45, 'FontName', 'Arial');%'FontName', 'Times'); 
+    set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times'); 
+    %title(setName{1}, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+  end
+  set( gcf, 'PaperUnits','centimeters' );
+  xSize = 18; ySize = 18;
+  xLeft = 0; yTop = 0;
+  set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+  print ( '-depsc', '-r600', ['perSession', '_', setName{iSet}]);
+  print('-dpdf', ['perSession', '_', setName{iSet}], '-r600');
+  
+  % plot MI and TE dynamics over each session
   nFileCol = floor(sqrt(2*nFile(iSet)));
   nFileRow = ceil(nFile(iSet)/nFileCol); 
   figureTitle = {' Transfer Entropy', ' Mutual Information'};
@@ -569,18 +642,14 @@ for iSet = 1:nSet
         h1 = plot(locMutualInf{iSet, iFile}, 'Color', [0.7, 0.3, 0.7], 'linewidth', lineWidth);
         h2 = plot(mutualInf{iSet, iFile}, 'Color', [0.4, 0.1, 0.4], 'linewidth', lineWidth+1);      
         plot([1, length(locMutualInf{iSet, iFile})], [0 0], 'k--', 'linewidth', 1.2)
-      end     
-      
+      end           
       hold off
       set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');      
-
       if (iPlot == 1)
         axis([0.8, length(targetTE1{iSet, iFile}) + 0.2, 1.01*minValue, 1.01*maxValue]);
       else
         axis([0.8, length(locMutualInf{iSet, iFile}) + 0.2, 1.01*minMIvalue, 1.01*maxMIvalue]);
       end        
-
-
       if (iFile == 1)
         if (iPlot == 1)
           legendHandle = legend([h1, h2, h3, h4], '$\mathrm{te_{P1\rightarrow P2}}$', '$\mathrm{te_{P2\rightarrow P1}}$', '$\mathrm{TE_{P1\rightarrow P2}}$', '$\mathrm{TE_{P2\rightarrow P1}}$', 'location', 'NorthEast');  
@@ -601,6 +670,9 @@ for iSet = 1:nSet
     print('-dpdf', [plotName{iPlot}, '_', setName{iSet}], '-r600');
   end
   
+  % If there are 3 blocks (sessions with trial blocking): plot boxplots for
+  % each trial block (before, during and after the blocking) representing
+  % distribution of MI, TE and non-random reward component for given block
   if (blockBorder{iSet}(1,1) > 0)
      figure('Name', [setName{iSet} ' block-wise plot']);
      set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times'); 
@@ -635,8 +707,9 @@ for iSet = 1:nSet
 end
 
 
-%% blocked trials figure
 
+
+%% blocked trials figure
 monkeyBlockSetIndex = [find(strcmp(setName, 'SMCuriusBlock')), find(strcmp(setName, 'SMFlaffusBlock'))];
 humanBlockSetIndex = find(strcmp(setName, 'SMhumanBlocked'));
 iSet = monkeyBlockSetIndex(2);
@@ -718,7 +791,7 @@ print('-r600', 'Fig4_blocks','-dtiff');
 %fileOfInterest = {[2,3,5,6,8,11], 6:8, 1:4};
 if (SCAN_ALL_DATASET)
   %fileOfInterest = {1:12, 1:18, 1:4, [], 1:9, 1:16, 1:3, 1:15, 1:5, 1:5};
-  fileOfInterest = {[], [], [], [], [], [], [], [], [], [], 1:5, []};
+  fileOfInterest = {[], [], [], [], [], [], [], [], [], [], 1, []};
 else
   fileOfInterest = {1:9, 1:5};    
 end  
@@ -815,9 +888,9 @@ for iSet = 1:nSet
     print('-r600', ['set', num2str(iSet), '_session', num2str(trueFileIndex)],'-dpng');
     %print('-dpdf', ['set', num2str(iSet), '_session', num2str(trueFileIndex)], '-r600');
     
-    mean(sideChoice, 2)
-    order = 2;
-    %plot_precursor_freq(isOwnChoice, isBottomChoice, order, {'other','own'});
-    %plot_precursor_freq(isBottomChoice, isOwnChoice, order, {'left','right'});
+    %mean(sideChoice, 2)
+    %memoryLength = 2;
+    %plot_precursor_freq(isOwnChoice, isBottomChoice, memoryLength, {'other','own'});
+    %plot_precursor_freq(isBottomChoice, isOwnChoice, memoryLength, {'left','right'});
   end  
 end  
