@@ -603,8 +603,8 @@ for iSet = 1:nSet
     %if (iPlot >= nPlot - 1) 
     %  xlabel('Session number', 'fontsize', FontSize, 'FontName', 'Arial');
     %end  
-    %set( gca, 'fontsize', FontSize-2, 'XTickLabel', fileCaption{iSet}, 'XTickLabelRotation',45, 'FontName', 'Arial');%'FontName', 'Times'); 
-    set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times'); 
+    set( gca, 'fontsize', FontSize-2, 'XTick', 1:nFile(iSet), 'XTickLabel', unique(fileCaption{iSet}), 'XTickLabelRotation',45, 'FontName', 'Arial');%'FontName', 'Times'); 
+    %set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times'); 
     %title(setName{1}, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
   end
   set( gcf, 'PaperUnits','centimeters' );
