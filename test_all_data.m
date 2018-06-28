@@ -328,6 +328,7 @@ plotName = {'TEtarget', 'MutualInf', 'surprise_pos'};
 %% plotting parameters
 % COPY FROM HERE
 FontSize = 8;
+markerSize = 4;
 lineWidth = 1.0;
 
 %% set parameters of the methods
@@ -357,17 +358,21 @@ localTargetTE2 = cell(nSet, max(nFile));
 % coordination metrics computed for each session (over supposedly equilibrium trials) 
 shareOwnChoices = cell(nSet, max(nFile));   % share of own choices
 shareLeftChoices = cell(nSet, max(nFile));  % share of objective left choices
+playerMeanReward = cell(nSet, max(nFile));  % mean reward of each player 
 miValueWhole = cell(nSet, max(nFile));      % target MI
 miSignifWhole = cell(nSet, max(nFile));     % target MI significance
+miThreshWhole = cell(nSet, max(nFile));     % target MI minimal significant value
 sideMIvalueWhole = cell(nSet, max(nFile));  % side MI
 sideMIsignifWhole = cell(nSet, max(nFile)); % side MI significance
+sideMIthreshWhole = cell(nSet, max(nFile)); % side MI minimal significant value
 teWhole1 = cell(nSet, max(nFile));          % target TE
 teWhole2 = cell(nSet, max(nFile));          
 sideTEwhole1 = cell(nSet, max(nFile));      % side TE
 sideTEwhole2 = cell(nSet, max(nFile));
-averReward = cell(nSet, max(nFile));    % average reward of two players
-dltReward = cell(nSet, max(nFile));     % non-random reward component of each player
-dltSignif = cell(nSet, max(nFile));     % significance of non-random reward components
+averReward = cell(nSet, max(nFile));        % average reward of two players
+dltReward = cell(nSet, max(nFile));         % non-random reward component of each player
+dltSignif = cell(nSet, max(nFile));         % significance of non-random reward components
+dltConfInterval  = cell(nSet, max(nFile));  % confidence interval for non-random reward components
 % strategy - probability to select own target given the state, incorporating 
 % previous outcome, current stimuli location and current partner's choice (if visible)
 playerStrategy = cell(nSet, max(nFile));    % estimated strategy
@@ -460,7 +465,7 @@ for iSet = 1:nSet
     % here we consider only equilibrium (stabilized) values
     testIndices = max(minStationarySegmentStart, length(isOwnChoice) - stationarySegmentLength):length(isOwnChoice);
     nTestIndices = length(testIndices);
-
+    
     % estimate strategy over equilibrium trials
     [playerStrategy{iSet, iFile}, ...
      playerNStateVisit{iSet, iFile}] = ...
@@ -468,14 +473,16 @@ for iSet = 1:nSet
 
     [averReward{iSet, iFile}, ...
      dltReward{iSet, iFile}, ...
-     dltSignif{iSet, iFile}] = ...
+     dltSignif{iSet, iFile}, ...
+     dltConfInterval{iSet, iFile}] = ...
        calc_total_average_reward(isOwnChoice(:,testIndices), sideChoice(:,testIndices));    
    
     %target choices quantities
     shareOwnChoices{iSet, iFile} = mean(isOwnChoice(:, testIndices), 2);
+    playerMeanReward{iSet, iFile} = 1 + shareOwnChoices{iSet, iFile} + 2*mean(xor(isOwnChoice(1, testIndices), isOwnChoice(2, testIndices)));     
     x = isOwnChoice(1, testIndices);
     y = isOwnChoice(2, testIndices);
-    [miValueWhole{iSet, iFile}, miSignifWhole{iSet, iFile}] = ...
+    [miValueWhole{iSet, iFile}, miSignifWhole{iSet, iFile}, miThreshWhole{iSet, iFile}] = ...
         calc_whole_mutual_information(x, y, pValueForMI);            
     teValue = calc_transfer_entropy(y, x, memoryLength, nTestIndices);        
     teWhole1{iSet, iFile} = teValue(1);
@@ -486,7 +493,7 @@ for iSet = 1:nSet
     shareLeftChoices{iSet, iFile} = mean(sideChoice(:, testIndices), 2);
     x = sideChoice(1, testIndices);
     y = sideChoice(2, testIndices);
-    [sideMIvalueWhole{iSet, iFile}, sideMIsignifWhole{iSet, iFile}] = ...
+    [sideMIvalueWhole{iSet, iFile}, sideMIsignifWhole{iSet, iFile}, sideMIthreshWhole{iSet, iFile}] = ...
          calc_whole_mutual_information(x, y, pValueForMI);            
     teValue = calc_transfer_entropy(y, x, memoryLength, nTestIndices);        
     sideTEwhole1{iSet, iFile} = teValue(1);
@@ -581,49 +588,84 @@ for iSet = 1:nSet
   maxTE = max(maxTE, 0.2);
   for iPlot = 1:nPlot
     subplot(nPlot/2, 2, iPlot);
-    if (iPlot == 1) 
+    if ((iPlot == 1) || (iPlot == 2) || (iPlot == 5)|| (iPlot == 6) || (iPlot == 7))
+      if (iPlot == 1)
+        y = [shareOwnChoices{iSet, :}];
+        minY = 0; 
+        maxY = 1;
+        yCaption = {'share own choices'};
+      elseif (iPlot == 2) 
+        y = [shareOwnChoices{iSet, :}];  
+        minY = 0; 
+        maxY = 1;
+        yCaption = {'share objective left choices'};   
+      elseif (iPlot == 5) 
+        y = [teWhole1{iSet, :}; teWhole2{iSet, :}];  
+        minY = 0; 
+        maxY = maxTE + 0.01;
+        yCaption = {'target transfer entropy'};   
+      elseif (iPlot == 6) 
+        y = [sideTEwhole1{iSet, :}; sideTEwhole2{iSet, :}];  
+        minY = 0; 
+        maxY = maxTE + 0.01;
+        yCaption = {'side transfer entropy'};   
+      elseif (iPlot == 7) 
+        y = [playerMeanReward{iSet, :}];
+        minY = 1; 
+        maxY = 3.51;
+        yCaption = {'average reward'};         
+      end  
       hold on
-      bar([shareOwnChoices{iSet, :}]');
-      plot([1,nFile(iSet)], [0.5, 0.5], 'k--')
+      plot(y(1,:), 'r-o', 'MarkerSize', markerSize);
+      plot(y(2,:), 'b-s', 'MarkerSize', markerSize);
+      if (iPlot == 1) || (iPlot == 2)
+        plot([1,nFile(iSet)], [0.5, 0.5], 'k--')
+      elseif (iPlot == 7)  
+        plot([averReward{iSet, :}], 'MarkerSize', markerSize, 'Color', [0.5,0,0.5]);
+      end  
       hold off
-      ylabel( {'share own choices'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, 0, 1.01]); 
-    elseif (iPlot == 2) 
-      hold on
-      bar([shareLeftChoices{iSet, :}]');      
-      plot([1,nFile(iSet)], [0.5, 0.5], 'k--')
+      
+    else
+      if (iPlot == 3)
+        y = [miValueWhole{iSet, :}]; 
+        yInt = [miThreshWhole{iSet, :}];        
+        minY = 0; 
+        maxY = 1;
+        yCaption = {'target mutual information'};
+        bottomAreaColor = [0.5, 0.5, 0.5];
+      elseif (iPlot == 4) 
+        y = [sideMIvalueWhole{iSet, :}];  
+        yInt = [sideMIthreshWhole{iSet, :}]; 
+        minY = 0; 
+        maxY = 1;
+        yCaption = {'side mutual information'};
+        bottomAreaColor = [0.5, 0.5, 0.5];
+      elseif (iPlot == 8) 
+        y = [dltReward{iSet, :}];  
+        yInt = [dltConfInterval{iSet, :}];
+        yInt(2,:) = yInt(2,:) - yInt(1,:); % to provide white area below conf interval
+        minY = -0.1; 
+        maxY = 1.1;
+        yCaption = {'non-random reward'}; 
+        bottomAreaColor = [1.0, 1.0, 1.0];
+      end 
+
+      hold on      
+      h = area(yInt', minY);
+      
+      h(1).FaceColor = bottomAreaColor;
+      if (length(h) > 1)
+        h(2).FaceColor = [1.0, 0.5, 1.0];
+      end  
+      plot(y(1,:), '-d', 'MarkerSize', markerSize, 'Color', [0.5,0,0.5]); 
       hold off
-      ylabel( {'share objective left choices'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, 0, 1.01]); 
-    elseif (iPlot == 3)           
-      bar([miValueWhole{iSet, :}]);
-      ylabel( {'target mutual information'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, 0, 1.0]); 
-    elseif (iPlot == 4) 
-      bar([sideMIvalueWhole{iSet, :}]);
-      ylabel( {'side mutual information'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, 0, 1.0]);       
-    elseif (iPlot == 5) 
-      bar([teWhole2{iSet, :}; teWhole1{iSet, :}]');
-      ylabel( {'target transfer entropy'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, 0, maxTE + 0.01]);       
-    elseif (iPlot == 6)       
-      bar([sideTEwhole2{iSet, :}; sideTEwhole1{iSet, :}]');
-      ylabel( {'side transfer entropy'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, 0, maxTE + 0.01]);        
-    elseif (iPlot == 7) 
-      bar([averReward{iSet, :}]);
-      ylabel( {'average reward'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, 2, 3.6]); 
-    elseif (iPlot == 8) 
-      bar([dltReward{iSet, :}]);
-      ylabel( {'non-random reward'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, -0.05, 1.0]); 
-    end  
+    end     
     %if (iPlot >= nPlot - 1) 
     %  xlabel('Session number', 'fontsize', FontSize, 'FontName', 'Arial');
     %end  
     % sessions with non-unique labels are merged, so we need to select only unique labels
+    ylabel(yCaption, 'fontsize', FontSize, 'FontName', 'Arial');
+    axis([0.99, nFile(iSet) + 0.01, minY, maxY]); 
     [~, labelIndices] = unique(fileCaption{iSet}); 
     correctLabel = fileCaption{iSet}(sort(labelIndices));
     set( gca, 'fontsize', FontSize, 'XTick', 1:nFile(iSet), 'XTickLabel', correctLabel, 'XTickLabelRotation',45, 'FontName', 'Arial');%'FontName', 'Times'); 

@@ -1,4 +1,4 @@
-function [miValue, isSignificant] = calc_whole_mutual_information(x, y, pCritValue)
+function [miValue, isSignificant, significanceThreshold] = calc_whole_mutual_information(x, y, pCritValue)
 % calc_local_mutual_information computes  mutual information (MI).
 % Given integer-valued signals x and y, MI(x, y) characterizes mutual dependence 
 % between x and y (the "amount of information" obtained about one signal, 
@@ -10,23 +10,19 @@ function [miValue, isSignificant] = calc_whole_mutual_information(x, y, pCritVal
 % INPUT
 %   - x, y - 1xN arrays of positive integers   
 % OPTIONAL INPUT
-%   - nSurrogate - number of surrogates for testing significance of MI
-%     value. If unspecified or 0, significance is not tested.
+%   - pCritValue - significance level of MI. 
+%     If unspecified or 0, significance is not tested.
 %
 % OUTPUT:
-%   mutualInf - values of local transfer entropy. 
-%   - values mutualInf(1:windowSize) are computed for probabilities of
-%     x and y values calculated in x(1:windowSize) and y(1:windowSize); 
-%   - values transferEntropy(i) for i > order+windowSize are computed for 
-%     probabilities calculated in x(i-windowSize:i), y(i-order+windowSize:i); 
-%   - pValue - significance level of 
-%
+%   - mutualInf - value of mutual information in the time series. 
+%   - isSignificant = 1 if MI is significant, = 0 if MI is not significan, 
+%   - significanceThreshold - the minimal value MI should take to be significant
 % EXAMPLE of use 
 %{
   N = 200;
   x = randi(2, 1, N) - 1;
   y = xor(x, [randi(2, 1, N/2) - 1, ones(1, N/2)]);
-  mutualInf = calc_local_mutual_information(x, y, 50);
+  mutualInf = calc_local_mutual_information(x, y, 0.05);
   plot(mutualInf)
   % before 100 mutualInf near zero, after 100 mutualInf increases to 1
 %}  
@@ -61,7 +57,8 @@ function [miValue, isSignificant] = calc_whole_mutual_information(x, y, pCritVal
       ySurr = whittle_surrogate(fy, wy, uy, vy);
       miSurrogate(i) = calcMIvalue(xSurr, ySurr);
     end  
-    if (all(miValue > miSurrogate))
+    significanceThreshold = max(miSurrogate);
+    if (miValue > significanceThreshold)
       isSignificant = 1;
     end  
   end 
