@@ -326,7 +326,8 @@ end
 plotName = {'TEtarget', 'MutualInf', 'surprise_pos'};             
 
 %% plotting parameters
-FontSize = 11;
+% COPY FROM HERE
+FontSize = 8;
 lineWidth = 1.0;
 
 %% set parameters of the methods
@@ -354,6 +355,8 @@ localTargetTE1 = cell(nSet, max(nFile));  % target local TE
 localTargetTE2 = cell(nSet, max(nFile));
 
 % coordination metrics computed for each session (over supposedly equilibrium trials) 
+shareOwnChoices = cell(nSet, max(nFile));   % share of own choices
+shareLeftChoices = cell(nSet, max(nFile));  % share of objective left choices
 miValueWhole = cell(nSet, max(nFile));      % target MI
 miSignifWhole = cell(nSet, max(nFile));     % target MI significance
 sideMIvalueWhole = cell(nSet, max(nFile));  % side MI
@@ -469,6 +472,7 @@ for iSet = 1:nSet
        calc_total_average_reward(isOwnChoice(:,testIndices), sideChoice(:,testIndices));    
    
     %target choices quantities
+    shareOwnChoices{iSet, iFile} = mean(isOwnChoice(:, testIndices), 2);
     x = isOwnChoice(1, testIndices);
     y = isOwnChoice(2, testIndices);
     [miValueWhole{iSet, iFile}, miSignifWhole{iSet, iFile}] = ...
@@ -479,6 +483,7 @@ for iSet = 1:nSet
     teWhole2{iSet, iFile} = teValue(1);
         
     %side choices quantities
+    shareLeftChoices{iSet, iFile} = mean(sideChoice(:, testIndices), 2);
     x = sideChoice(1, testIndices);
     y = sideChoice(2, testIndices);
     [sideMIvalueWhole{iSet, iFile}, sideMIsignifWhole{iSet, iFile}] = ...
@@ -571,44 +576,62 @@ for iSet = 1:nSet
   figure('Name',[setName{iSet}, ' per-session summary']);
   set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times'); 
 
-  nPlot = 6;
+  nPlot = 8;
   maxTE = max(max([teWhole2{iSet, :}; teWhole1{iSet, :}; sideTEwhole2{iSet, :}; sideTEwhole1{iSet, :}]));
+  maxTE = max(maxTE, 0.2);
   for iPlot = 1:nPlot
     subplot(nPlot/2, 2, iPlot);
     if (iPlot == 1) 
+      hold on
+      bar([shareOwnChoices{iSet, :}]');
+      plot([1,nFile(iSet)], [0.5, 0.5], 'k--')
+      hold off
+      ylabel( {'share own choices'}, 'fontsize', FontSize, 'FontName', 'Arial');
+      axis([0.4, nFile(iSet) + 0.6, 0, 1.01]); 
+    elseif (iPlot == 2) 
+      hold on
+      bar([shareLeftChoices{iSet, :}]');      
+      plot([1,nFile(iSet)], [0.5, 0.5], 'k--')
+      hold off
+      ylabel( {'share objective left choices'}, 'fontsize', FontSize, 'FontName', 'Arial');
+      axis([0.4, nFile(iSet) + 0.6, 0, 1.01]); 
+    elseif (iPlot == 3)           
       bar([miValueWhole{iSet, :}]);
       ylabel( {'target mutual information'}, 'fontsize', FontSize, 'FontName', 'Arial');
       axis([0.4, nFile(iSet) + 0.6, 0, 1.0]); 
-    elseif (iPlot == 2) 
+    elseif (iPlot == 4) 
       bar([sideMIvalueWhole{iSet, :}]);
       ylabel( {'side mutual information'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, 0, 1.0]); 
-    elseif (iPlot == 3)     
+      axis([0.4, nFile(iSet) + 0.6, 0, 1.0]);       
+    elseif (iPlot == 5) 
       bar([teWhole2{iSet, :}; teWhole1{iSet, :}]');
       ylabel( {'target transfer entropy'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, 0, maxTE + 0.01]); 
-    elseif (iPlot == 4) 
+      axis([0.4, nFile(iSet) + 0.6, 0, maxTE + 0.01]);       
+    elseif (iPlot == 6)       
       bar([sideTEwhole2{iSet, :}; sideTEwhole1{iSet, :}]');
       ylabel( {'side transfer entropy'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, 0, maxTE + 0.01]); 
-    elseif (iPlot == 5) 
+      axis([0.4, nFile(iSet) + 0.6, 0, maxTE + 0.01]);        
+    elseif (iPlot == 7) 
       bar([averReward{iSet, :}]);
       ylabel( {'average reward'}, 'fontsize', FontSize, 'FontName', 'Arial');
       axis([0.4, nFile(iSet) + 0.6, 2, 3.6]); 
-    elseif (iPlot == 6) 
+    elseif (iPlot == 8) 
       bar([dltReward{iSet, :}]);
       ylabel( {'non-random reward'}, 'fontsize', FontSize, 'FontName', 'Arial');
-      axis([0.4, nFile(iSet) + 0.6, -0.05, 1.0]);    
+      axis([0.4, nFile(iSet) + 0.6, -0.05, 1.0]); 
     end  
     %if (iPlot >= nPlot - 1) 
     %  xlabel('Session number', 'fontsize', FontSize, 'FontName', 'Arial');
     %end  
-    set( gca, 'fontsize', FontSize-2, 'XTick', 1:nFile(iSet), 'XTickLabel', unique(fileCaption{iSet}), 'XTickLabelRotation',45, 'FontName', 'Arial');%'FontName', 'Times'); 
+    % sessions with non-unique labels are merged, so we need to select only unique labels
+    [~, labelIndices] = unique(fileCaption{iSet}); 
+    correctLabel = fileCaption{iSet}(sort(labelIndices));
+    set( gca, 'fontsize', FontSize, 'XTick', 1:nFile(iSet), 'XTickLabel', correctLabel, 'XTickLabelRotation',45, 'FontName', 'Arial');%'FontName', 'Times'); 
     %set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times'); 
     %title(setName{1}, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
   end
   set( gcf, 'PaperUnits','centimeters' );
-  xSize = 18; ySize = 18;
+  xSize = 19; ySize = 25;
   xLeft = 0; yTop = 0;
   set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
   print ( '-depsc', '-r600', ['perSession', '_', setName{iSet}]);
@@ -701,8 +724,8 @@ for iSet = 1:nSet
     xSize = 30; ySize = 7;
     xLeft = 0; yTop = 0;
     set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
-    print ( '-depsc', '-r600', ['set', num2str(iSet), '_boxplot']);
-    print('-r600', ['set', num2str(iSet), '_boxplot'],'-dtiff');
+    print ( '-depsc', '-r600', ['BlockBoxplot_' setName{iSet}]);
+    print('-r600', ['BlockBoxplot_' setName{iSet}],'-dtiff');
   end
 end
 
