@@ -26,9 +26,6 @@ function [miValue, isSignificant, significanceThreshold] = calc_whole_mutual_inf
   plot(mutualInf)
   % before 100 mutualInf near zero, after 100 mutualInf increases to 1
 %}  
-  
-
-significanceThreshold = []; %sm: make sure we return something...
 
   % x, y - sequences of integer numbers starting from 1 
   x = x - min(x) + 1; %make numbers in x start from 1 if it was not so
@@ -36,7 +33,9 @@ significanceThreshold = []; %sm: make sure we return something...
 
   miValue = calcMIvalue(x, y);
   
+  % initialize output values
   isSignificant = 0;
+  significanceThreshold = 0;
   if (exist('pCritValue', 'var') && (pCritValue > 0) && (pCritValue <= 1) && ...
      (length(unique(x)) > 1) && (length(unique(y)) > 1))
     % for constant values, mi is insignificant anyway)
@@ -61,15 +60,10 @@ significanceThreshold = []; %sm: make sure we return something...
       miSurrogate(i) = calcMIvalue(xSurr, ySurr);
     end  
     significanceThreshold = max(miSurrogate);
-    if (miValue > significanceThreshold)
+    if (miValue >= significanceThreshold)
       isSignificant = 1;
     end  
   end 
-  
-  %sm: but holler
-  if isempty(significanceThreshold)
-      %disp('calc_whole_mutual_information: significanceThreshold empty');
-  end
 end
 
 function mi = calcMIvalue(x, y) 
