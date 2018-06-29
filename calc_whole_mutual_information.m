@@ -27,6 +27,9 @@ function [miValue, isSignificant, significanceThreshold] = calc_whole_mutual_inf
   % before 100 mutualInf near zero, after 100 mutualInf increases to 1
 %}  
   
+
+significanceThreshold = []; %sm: make sure we return something...
+
   % x, y - sequences of integer numbers starting from 1 
   x = x - min(x) + 1; %make numbers in x start from 1 if it was not so
   y = y - min(y) + 1; %make numbers in x start from 1 if it was not so
@@ -62,6 +65,11 @@ function [miValue, isSignificant, significanceThreshold] = calc_whole_mutual_inf
       isSignificant = 1;
     end  
   end 
+  
+  %sm: but holler
+  if isempty(significanceThreshold)
+      %disp('calc_whole_mutual_information: significanceThreshold empty');
+  end
 end
 
 function mi = calcMIvalue(x, y) 
