@@ -34,6 +34,7 @@ function [miValue, isSignificant, significanceThreshold] = calc_whole_mutual_inf
   miValue = calcMIvalue(x, y);
   
   isSignificant = 0;
+  significanceThreshold = 0;
   if (exist('pCritValue', 'var') && (pCritValue > 0) && (pCritValue <= 1) && ...
      (length(unique(x)) > 1) && (length(unique(y)) > 1))
     % for constant values, mi is insignificant anyway)
