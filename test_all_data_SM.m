@@ -1,9 +1,12 @@
 function [] = test_all_data_SM()
 
+timestamps.(mfilename).start = tic;
+disp(['Starting: ', mfilename]);
 dbstop if error
-
+fq_mfilename = mfilename('fullpath');
+mfilepath = fileparts(fq_mfilename);
 close_figures_on_return = 1;
-process_sets_individually = 1
+process_sets_individually = 1;
 
 
 % Common abbreviations: MI - mutual information, TE - transfer entropy
@@ -23,6 +26,9 @@ else
     %folder = fullfile('/', 'Volumes', 'social_neuroscience_data', 'taskcontroller', 'SCP_DATA', 'ANALYSES', 'PC1000', '2018', 'CoordinationCheck');
     folder = fullfile(SCPDirs.SCP_DATA_BaseDir, 'SCP_DATA', 'ANALYSES', 'hms-beagle2', '2018', 'CoordinationCheck');
 end
+
+% make sure the pictures end up
+cd(fullfile(SCPDirs.SCP_DATA_BaseDir, 'SCP_DATA', 'ANALYSES', 'hms-beagle2', '2018', 'CoordinationCheck', 'Plots'));
 
 
 
@@ -591,6 +597,10 @@ end
 %     setName = {'SMhumanBlocked'};
 % end
 
+
+timestamps.(mfilename).end = toc(timestamps.(mfilename).start);
+disp([mfilename, ' took: ', num2str(timestamps.(mfilename).end), ' seconds.']);
+disp([mfilename, ' took: ', num2str(timestamps.(mfilename).end / 60), ' minutes. Done...']);
 
 
 return
