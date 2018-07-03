@@ -603,8 +603,9 @@ localTargetTE1 = cell(nSet, max(nFile));  % target local TE
 localTargetTE2 = cell(nSet, max(nFile));
 
 % coordination metrics computed for each session (over supposedly equilibrium trials)
-shareOwnChoices = cell(nSet, max(nFile));   % share of own choices
-shareLeftChoices = cell(nSet, max(nFile));  % share of objective left choices
+shareOwnChoices = cell(nSet, max(nFile));   % percentage of trials with own target chosen
+shareLeftChoices = cell(nSet, max(nFile));  % percentage of trials with objective left chosen
+shareJointChoices = cell(nSet, max(nFile)); % percentage of trials where both players chosen the same target
 playerMeanReward = cell(nSet, max(nFile));  % mean reward of each player
 miValueWhole = cell(nSet, max(nFile));      % target MI
 miSignifWhole = cell(nSet, max(nFile));     % target MI significance
@@ -689,6 +690,8 @@ for iSet = 1:nSet
         i = filenameIndex;
         isOwnChoice = [];
         sideChoice = [];
+        isTrialVisible = [];
+        targetAcquisitionTime = [];
         while(length(filename{iSet}) >= i)
             if (~strcmp(fileCaption{iSet}{i}, fileCaption{iSet}{filenameIndex}))
                 break;
@@ -709,6 +712,8 @@ for iSet = 1:nSet
                 load([filename{iSet}{i}, '.mat'], 'isBottomChoice');
                 sideChoice = [sideChoice, isBottomChoice];
             end
+            isTrialVisible = [isTrialVisible, PerTrialStruct.isTrialInvisible_AB'];
+            targetAcquisitionTime = [targetAcquisitionTime, [PerTrialStruct.A_TargetAcquisitionRT'; PerTrialStruct.B_TargetAcquisitionRT']];
             i = i + 1;
         end
         filenameIndex = i;
@@ -722,7 +727,7 @@ for iSet = 1:nSet
         % estimate strategy over equilibrium trials
         [playerStrategy{iSet, iFile}, ...
             playerNStateVisit{iSet, iFile}] = ...
-            estimate_strategy(isOwnChoice(:, testIndices), sideChoice(:,testIndices));
+            estimate_strategy(isOwnChoice(:, testIndices), sideChoice(:,testIndices), targetAcquisitionTime(:,testIndices));
         
         [averReward{iSet, iFile}, ...
             dltReward{iSet, iFile}, ...
@@ -732,7 +737,8 @@ for iSet = 1:nSet
         
         %target choices quantities
         shareOwnChoices{iSet, iFile} = mean(isOwnChoice(:, testIndices), 2);
-        playerMeanReward{iSet, iFile} = 1 + shareOwnChoices{iSet, iFile} + 2*mean(xor(isOwnChoice(1, testIndices), isOwnChoice(2, testIndices)));
+        shareJointChoices{iSet, iFile} = mean(xor(isOwnChoice(1, testIndices), isOwnChoice(2, testIndices)));
+        playerMeanReward{iSet, iFile} = 1 + shareOwnChoices{iSet, iFile} + 2*shareJointChoices{iSet, iFile};
         x = isOwnChoice(1, testIndices);
         y = isOwnChoice(2, testIndices);
         [miValueWhole{iSet, iFile}, miSignifWhole{iSet, iFile}, miThreshWhole{iSet, iFile}] = ...
@@ -777,8 +783,8 @@ for iSet = 1:nSet
         dataLength = length(x);
         minBlockLength = 40;
         blockIndices = cell(1,3);
-        invisibleStart = find(PerTrialStruct.isTrialInvisible_AB == 1, 1, 'first');
-        invisibleEnd = find(PerTrialStruct.isTrialInvisible_AB == 1, 1, 'last');
+        invisibleStart = find(isTrialVisible == 1, 1, 'first');
+        invisibleEnd = find(isTrialVisible == 1, 1, 'last');
         if (~isempty(invisibleStart))
             blockBorder{iSet}(iFile,:) = invisibleStart;
         end
@@ -871,9 +877,10 @@ for iSet = 1:nSet
             end
             hold on
             plot(y(1,:), 'r-o', 'MarkerSize', markerSize);
-            plot(y(2,:), 'b-s', 'MarkerSize', markerSize);
-            if (iPlot == 1) || (iPlot == 2)
-                plot([1,nFile(iSet)], [0.5, 0.5], 'k--')
+            plot(y(2,:), 'b-s', 'MarkerSize', markerSize);            
+            if (iPlot == 1) || (iPlot == 2) 
+                plot([shareJointChoices{iSet, :}], 'MarkerSize', markerSize, 'Color', [0.5,0,0.5]);
+                plot([1,nFile(iSet)], [0.5, 0.5], 'k--')                
             elseif (iPlot == 7)
                 plot([averReward{iSet, :}], 'MarkerSize', markerSize, 'Color', [0.5,0,0.5]);
             end
@@ -1033,11 +1040,14 @@ end
 
 
 %% plot overall MI scatter plot
-naiveSet = [1,7,9,18,21];
-trainedSet = [2,3,8,10];
-humanConfederateSet = [4,5,6,11,12,14,15,17];
-blockedSet = [13,16,19,20];
-allSets = {naiveSet, trainedSet, humanConfederateSet,blockedSet};
+monkeyNaiveSet = [1,7,9,21];
+monkeyTrainedSet = [2,3,8,10];
+monkeyConfederateSet = [4,5,6,11,12,14,15,17];
+humanSet = [18,19,20]
+%blockedSet = [13,16,19,20];
+%blockedSet = [19];
+allSets = {monkeyNaiveSet, monkeyTrainedSet, monkeyConfederateSet,humanSet};
+%allSets = {naiveSet, trainedSet, humanConfederateSet};
 setMarker = {'o', 's', 'd', '+', 'x'};
 selectedColorList = [colorList(1,:); colorList(4,:); colorList(5,:); colorList(6,:); colorList(8,:); colorList(9,:); colorList(10,:); colorList(12,:); colorList(14,:); colorList(15,:)];
 legendIndex = [allSets{:}];
