@@ -593,6 +593,7 @@ nFile = cell2mat(cellfun(@(x) length(unique(x)), fileCaption, 'UniformOutput',fa
 % by-trial quantities
 allOwnChoice = cell(nSet, max(nFile));  % target choice (0 - other, 1 - own)
 allSideChoice = cell(nSet, max(nFile)); % side choice (0 - objective right, 1 - objective left)
+allRT = cell(nSet, max(nFile)); % target acquisition times
 
 % by-trial coordination metrics computed over window of minSampleNum trials
 mutualInf = cell(nSet, max(nFile));       % target local MI
@@ -687,11 +688,12 @@ for iSet = 1:nSet
     filenameIndex = 1;
     for iFile = 1:nFile(iSet)
         % merge data for all files having the same caption
-        i = filenameIndex;
         isOwnChoice = [];
         sideChoice = [];
         isTrialVisible = [];
         targetAcquisitionTime = [];
+        
+        i = filenameIndex;
         while(length(filename{iSet}) >= i)
             if (~strcmp(fileCaption{iSet}{i}, fileCaption{iSet}{filenameIndex}))
                 break;
@@ -719,9 +721,12 @@ for iSet = 1:nSet
         filenameIndex = i;
         allOwnChoice{iSet, iFile} = isOwnChoice;
         allSideChoice{iSet, iFile} = sideChoice;
+        allRT{iSet, iFile} = targetAcquisitionTime;
         
         % here we consider only equilibrium (stabilized) values
-        testIndices = max(minStationarySegmentStart, length(isOwnChoice) - stationarySegmentLength):length(isOwnChoice);
+        nTrial = length(isOwnChoice);
+        fistTestIndex = max(minStationarySegmentStart, nTrial-stationarySegmentLength);
+        testIndices = fistTestIndex:nTrial;
         nTestIndices = length(testIndices);
         
         % estimate strategy over equilibrium trials
@@ -833,6 +838,250 @@ for iSet = 1:nSet
         end
         %isBottomChoice = sideChoiceObjectiveArray;
     end
+end
+
+proficiencyThreshold = 2.75;
+isPairProficient = check_pairs_proficiency(playerMeanReward, proficiencyThreshold);
+
+ 
+%% test strategies
+
+% prepare strategies for testing
+strategyNames = {'Own target following', 'Other target following', ...
+                 'Left side following', 'Right side following', ...
+                 'Side turn-taking', 'Turn-taking', 'Challenger', ... 
+                 'Long turn-taking', 'Leader-Follower', 'Follower', ...
+                 };
+nStrategy = length(strategyNames);
+strategyArray = cell(1, nStrategy);
+basicStrategyIndex = [1,2,3,4];
+
+nRow = 4;     
+nCol = 12;
+for iStrategy = 1:nStrategy
+    strategyArray{iStrategy} = zeros(nRow, nCol);
+end
+
+goodProbabilityThreshold = 0.95;
+minProbabilityThreshold = 0.33;
+
+PARAM_MARK = 2;
+maxParamValue = ones(1, nStrategy);
+% ----------Side Strategies----------
+%{
+% Left side following
+strategyArray{1}(1, [11,12]) = 1;
+strategyArray{1}(1, [1,2, 5,6, 9,10]) = 0.5;
+strategyArray{1}(2, [3,4, 7,8, 11,12]) = 1;
+strategyArray{1}(2, [1,2, 5,6, 9,10]) = 0.5;
+strategyArray{1}(3, [9,10]) = 1;
+strategyArray{1}(3, [3,4, 7,8, 11,12]) = 0.5;
+strategyArray{1}(4, [1,2, 5,6, 9,10]) = 1;
+strategyArray{1}(4, [3,4, 7,8, 11,12]) = 0.5;
+
+% Right side following
+strategyArray{2}(4, [11,12]) = 1;
+strategyArray{2}(4, [1,2, 5,6, 9,10]) = 0.5;
+strategyArray{2}(3, [3,4, 7,8, 11,12]) = 1;
+strategyArray{2}(3, [1,2, 5,6, 9,10]) = 0.5;
+strategyArray{2}(2, [9,10]) = 1;
+strategyArray{2}(2, [3,4, 7,8, 11,12]) = 0.5;
+strategyArray{2}(1, [1,2, 5,6, 9,10]) = 1;
+strategyArray{2}(1, [3,4, 7,8, 11,12]) = 0.5;
+%}
+% ------- basic strategies --------
+% Insister
+strategyArray{1}(1, 1:12) = 1;
+% Conformist (the same as Follower, but without clear temporal following)
+strategyArray{2}(1, 5:12) = 0.5;
+
+% Cautious left side following
+strategyArray{3}(1, 1:6) = PARAM_MARK;  %indicates parameter value that should be computed
+strategyArray{3}(1, 9:12) = 1;
+strategyArray{3}(2, :) = 1;
+strategyArray{3}(3, [1,2, 5,6]) = PARAM_MARK;  %indicates parameter value that should be computed;
+strategyArray{3}(3, [9,10]) = 1;
+strategyArray{3}(3, [3,4, 7,8, 11,12]) = 0.5;
+strategyArray{3}(4, [1,2, 5,6, 9,10]) = 1;
+strategyArray{3}(4, [3,4, 7,8, 11,12]) = 0.5;
+maxParamValue(3) = 0.6;
+
+% Cautious right side following
+strategyArray{4}(4, 1:6) = PARAM_MARK;  %indicates parameter value that should be computed
+strategyArray{4}(4, 9:12) = 1;
+strategyArray{4}(3, :) = 1;
+strategyArray{4}(2, [1,2, 5,6]) = PARAM_MARK;  %indicates parameter value that should be computed
+strategyArray{4}(2, [9,10]) = 1;
+strategyArray{4}(2, [3,4, 7,8, 11,12]) = 0.5;
+strategyArray{4}(1, [1,2, 5,6, 9,10]) = 1;
+strategyArray{4}(1, [3,4, 7,8, 11,12]) = 0.5;
+maxParamValue(4) = 0.6;
+
+% ------- more complex strategies strategies --------
+% Side turn-taking
+strategyArray{5}(1, [1,4, 5,7,8, 9,10,12]) = 0.5;
+strategyArray{5}(1, [3, 11]) = 1;
+strategyArray{5}(2, [1,4, 5,7,8, 9,11,12]) = 0.5;
+strategyArray{5}(2, [2, 10]) = 1;
+strategyArray{5}(3:4, :) = strategyArray{5}(2:-1:1, :);
+
+% Turn-taking
+strategyArray{6}(1, [3,7,9:12]) = 1;
+strategyArray{6}(1, [1,4]) = PARAM_MARK;  %indicates parameter value that should be computed
+
+% Challenger
+% not entirely stubborn, but still unyilding
+strategyArray{7}(1, [2, 6, 9:12]) = 1;
+strategyArray{7}(1, [1,4]) = 0.9; 
+strategyArray{7}(1, [5,8]) = PARAM_MARK;
+
+% Long-term turn-taking
+% Similar to Challenger but behaviour after uncoordinated choice 
+% in not important (should be rare)
+% Human confederate can be classified either as challenger or as LT turn-taker
+strategyArray{8}(1, [2, 6, 9:12]) = 1;
+strategyArray{8}(1, [1,4]) = 0.5;
+strategyArray{8}(1, [5,8]) = PARAM_MARK;
+
+% Leader-Follower
+strategyArray{9}(1, [1:3, 9:11]) = 1;
+strategyArray{9}(1, [4,8,12]) = 0.5;
+
+% Follower
+strategyArray{10}(1, 9:11) = 1;
+strategyArray{10}(1, [4,8,12]) = 0.5;
+
+% in target strategies all rows are the same, so just copy them
+targetStrategyIndex = [1,2, 6:nStrategy];
+for iStrategy = targetStrategyIndex
+    strategyArray{iStrategy}(2:4,:) = repmat(strategyArray{iStrategy}(1,:), 3, 1);
+end
+
+% allow for "trembling hand effect"
+minErrorProb = 0.01;
+for iStrategy = 1:nStrategy
+    strategyArray{iStrategy}(strategyArray{iStrategy} == 1) = 1 - minErrorProb;
+    strategyArray{iStrategy}(strategyArray{iStrategy} == 0) = minErrorProb;
+end
+% ---------end of strategy description---------
+
+strategyParam = cell(nSet, max(nFile));
+strategyProbabilityPerTrial = cell(nSet, max(nFile));
+strategyMeanProbability = cell(nSet, max(nFile));
+strategyLogMeanProbability = cell(nSet, max(nFile));
+
+identifiedStrategyIndex = cell(nSet, 1);
+identifiedStrategyProb = cell(nSet, 1);
+identifiedStrategyParam = cell(nSet, 1);
+for iSet = 1:nSet
+    disp(['Test strategies for dataset' num2str(iSet)]);
+    
+    identifiedStrategyIndex{iSet} = zeros(2, nFile(iSet));
+    identifiedStrategyProb{iSet} = zeros(2, nFile(iSet));
+    identifiedStrategyParam{iSet} = zeros(2, nFile(iSet));
+    for iFile = 1:nFile(iSet)
+        % here we consider only equilibrium (stabilized) values
+        nTrial = length(allOwnChoice{iSet, iFile});
+        fistTestIndex = max(minStationarySegmentStart, nTrial-stationarySegmentLength);
+        testIndices = fistTestIndex:nTrial;
+        nTestIndices = length(testIndices);
+        
+        isOwnChoice = allOwnChoice{iSet, iFile}(:,testIndices);
+        sideChoice = allSideChoice{iSet, iFile}(:,testIndices);
+        RT = allRT{iSet, iFile}(:,testIndices);
+        
+        strategyForTest = cell(2, nStrategy);
+        strategyForTest(1,:) = strategyArray;
+        strategyForTest(2,:) = strategyArray;
+        % estimate strategy parameters
+        strategyParam{iSet, iFile} = -ones(2, nStrategy); %initialize with invalid values
+        [strategy, nStateVisit] = estimate_strategy(isOwnChoice, sideChoice, RT);                
+        strategy{1}(isnan(strategy{1})) = 0;
+        strategy{2}(isnan(strategy{2})) = 0;
+
+        for iStrategy = 1:nStrategy
+            m = zeros(1,2);
+            n = zeros(1,2);
+            paramIndex = (strategyArray{iStrategy} == PARAM_MARK);
+            if (nnz(paramIndex) > 0)
+                for iPlayer = 1:2   
+                    m(iPlayer) = sum(sum(strategy{iPlayer}(paramIndex).*nStateVisit{iPlayer}(paramIndex)));
+                    n(iPlayer) = sum(sum(nStateVisit{iPlayer}(paramIndex)));
+                end                        
+                paramValue = m./n;            
+                paramValue(n == 0) = 0.5; % replace incorrect values by uncertainty
+               
+                paramErrorProb = minErrorProb;
+                paramValue(paramValue > 1 - paramErrorProb) = 1 - paramErrorProb;
+                paramValue(paramValue < paramErrorProb) = paramErrorProb;
+                paramValue(paramValue > maxParamValue(iStrategy)) = maxParamValue(iStrategy);
+            
+                strategyParam{iSet, iFile}(:, iStrategy) = paramValue;
+            
+                for iPlayer = 1:2  
+                    strategyForTest{iPlayer,iStrategy}(paramIndex) = paramValue(iPlayer);
+                end              
+            end    
+        end
+%{        
+        for iStrategy = 1:nStrategy
+            m1 = zeros(1,2);
+            n1 = zeros(1,2);
+            m2 = zeros(1,2);
+            n2 = zeros(1,2);
+            paramPosIndex = strategyArray{iStrategy} == PARAM_MARK;
+            if (nnz(paramPosIndex) > 0)
+                for iPlayer = 1:2   
+                    m1(iPlayer) = sum(sum(strategy{iPlayer}(paramPosIndex).*nStateVisit{iPlayer}(paramPosIndex)));
+                    n1(iPlayer) = sum(sum(nStateVisit{iPlayer}(paramPosIndex)));
+                end    
+            end
+            paramInvIndex = strategyArray{iStrategy} == INVERSE_PARAM_MARK;
+            if (nnz(paramInvIndex) > 0)
+                for iPlayer = 1:2   
+                    m2(iPlayer) = sum(sum(strategy{iPlayer}(paramInvIndex).*nStateVisit{iPlayer}(paramInvIndex)));
+                    n2(iPlayer) = sum(sum(nStateVisit{iPlayer}(paramInvIndex)));
+                end   
+            end
+            paramValue = (m1+(n2-m2))./(n1+n2);            
+            paramValue(n1 + n2 == 0) = 0.5; % replace incorrect values by uncertainty
+               
+            paramErrorProb = 0.05;
+            paramValue(paramValue > 1 - paramErrorProb) = 1 - paramErrorProb;
+            paramValue(paramValue < paramErrorProb) = paramErrorProb;
+            paramValue(paramValue > maxParamValue(iStrategy)) = maxParamValue(iStrategy);
+            
+            strategyParam{iSet, iFile}(:, iStrategy) = paramValue;
+            for iPlayer = 1:2  
+                if (nnz(paramPosIndex) > 0)
+                    strategyForTest{iPlayer,iStrategy}(paramPosIndex) = paramValue(iPlayer);
+                end
+                if (nnz(paramInvIndex) > 0)
+                    strategyForTest{iPlayer,iStrategy}(paramInvIndex) = 1 - paramValue(iPlayer);
+                end                
+            end    
+        end
+%}            
+               
+        [strategyMeanProbability{iSet, iFile}, strategyLogMeanProbability{iSet, iFile}, ...
+         strategyProbabilityPerTrial{iSet, iFile}] = check_strategy_probability(isOwnChoice, sideChoice, RT, strategyForTest);        
+     
+       
+        % first test basic strategies
+        for iPlayer = 1:2 
+            [bestBasicStrategyProb, bestBasicStrategyIndex] = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, basicStrategyIndex));
+            if (bestBasicStrategyProb >= goodProbabilityThreshold)
+                identifiedStrategyProb{iSet}(iPlayer, iFile) = bestBasicStrategyProb;
+                identifiedStrategyIndex{iSet}(iPlayer, iFile) = basicStrategyIndex(bestBasicStrategyIndex);         
+            else
+                [identifiedStrategyProb{iSet}(iPlayer, iFile), maxStrategyIndex] = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, :));
+                identifiedStrategyIndex{iSet}(iPlayer, iFile) = maxStrategyIndex;
+                identifiedStrategyParam{iSet}(iPlayer, iFile) = strategyParam{iSet, iFile}(iPlayer, maxStrategyIndex);  
+            end
+        end    
+    end
+    badIdentificationIndex = identifiedStrategyProb{iSet} < minProbabilityThreshold;
+    identifiedStrategyIndex{iSet}(badIdentificationIndex) = 0;
 end
 
 %% results plotting
@@ -1096,6 +1345,288 @@ xLeft = 0; yTop = 0;
 set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
 print ( '-depsc', '-r600','MutualInformationScatterPlot');
 print('-dpdf', 'MutualInformationScatterPlot', '-r600');
+
+%% plot reward distribution in human and monkey pairs
+monkeySetForReward = [1,7,9,21, 2,3,8,10];
+humanSetForReward = [18,19];
+allSetsForReward = {monkeySetForReward, humanSetForReward};
+labelGroupForReward = {'monkeys', 'humans'};
+
+%%{
+monkeyNaive = [1,7,9,21];
+monkeyTrained = [2,3,8,10];
+humanSetForReward = [18,19];
+allSetsForReward = {monkeyNaive, monkeyTrained, humanSetForReward};
+labelGroupForReward = {'naive monkeys', 'trained monkeys', 'humans'};
+%%}
+
+% compute reward distribution
+nSetGroupForReward = length(allSetsForReward);
+groupedReward = {[], []};
+groupIndex = {[], []};
+groupedFairness = {[], []};
+fairnessGroupIndex = {[], []};
+for iSetGroup = 1:nSetGroupForReward
+    rewardDistr = {[], []};
+    for iSet = 1:length(allSetsForReward{iSetGroup}) 
+        i = allSetsForReward{iSetGroup}(iSet);
+        rewardDistr{1} = [rewardDistr{1}, [playerMeanReward{i, :}]];
+        rewardDistr{2} = [rewardDistr{2}, [playerMeanReward{i, isPairProficient{i}}]];
+    end  
+    for i = 1:2 % for all and for proficient pairs
+        rewardBonusForCooperation = 2;
+        fairness = (rewardDistr{i}(1,:) - rewardBonusForCooperation)./(sum(rewardDistr{i}, 1) - 2*rewardBonusForCooperation);
+        indexWinners = fairness > 0.5;
+        fairness(indexWinners) = 1 - fairness(indexWinners);
+      
+        groupSize = numel(rewardDistr{i});
+        groupedReward{i} = [groupedReward{i}, reshape(rewardDistr{i}, [1, groupSize])];  
+        groupedFairness{i} = [groupedFairness{i}, fairness];
+        groupIndex{i} = [groupIndex{i}, (iSetGroup - 1)*ones(1,groupSize)];
+        fairnessGroupIndex{i} = [fairnessGroupIndex{i}, (iSetGroup - 1)*ones(1,groupSize/2)];
+    end   
+end
+
+rewardPlotTitle = {'all participants', 'only effective pairs'};
+figure('Name', 'reward distribution plot');
+set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+for iPlot = 1:2
+  subplot(1,4,iPlot);
+  boxplot(groupedReward{iPlot},groupIndex{iPlot}, 'Widths', 0.8);
+  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  axis([0.5, nSetGroupForReward + 0.5, 1.0, 4.01]);
+  xlabel('species', 'fontsize', FontSize, 'FontName', 'Arial');
+  if iPlot == 1
+    ylabel('mean per-session reward', 'fontsize', FontSize, 'FontName', 'Arial');
+  end
+  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+end
+for iPlot = 1:2
+  subplot(1,4,2 + iPlot);
+  boxplot(groupedFairness{iPlot},fairnessGroupIndex{iPlot}, 'Widths', 0.8);
+  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  axis([0.5, nSetGroupForReward + 0.5, 0.32, 0.501]);
+  xlabel('species', 'fontsize', FontSize, 'FontName', 'Arial');
+  if iPlot == 1
+    ylabel('reward share', 'fontsize', FontSize, 'FontName', 'Arial');
+  end
+  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+end
+
+set( gcf, 'PaperUnits','centimeters' );
+xSize = 18; ySize = 14;
+xLeft = 0; yTop = 0;
+set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+print ( '-depsc', '-r600','RewardDistributionPerSpecies');
+print('-dpdf', 'RewardDistributionPerSpecies', '-r600');
+print('-dpng', 'RewardDistributionPerSpecies', '-r600');
+
+
+
+figure('Name', 'reward distribution plot');
+set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+for iPlot = 1:2
+  subplot(1,2,iPlot);
+  boxplot(groupedReward{iPlot},groupIndex{iPlot}, 'Widths', 0.8);
+  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  axis([0.5, nSetGroupForReward + 0.5, 1.0, 4.01]);
+  %xlabel('species', 'fontsize', FontSize, 'FontName', 'Arial');
+  if iPlot == 1
+    ylabel('mean per-session reward', 'fontsize', FontSize, 'FontName', 'Arial');
+  end
+  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+end
+
+set( gcf, 'PaperUnits','centimeters' );
+xSize = 21; ySize = 14;
+xLeft = 0; yTop = 0;
+set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+print ( '-depsc', '-r600','RewardSplittingPerSpecies');
+print('-dpdf', 'RewardLevelPerSpecies', '-r600');
+print('-dpng', 'RewardLevelPerSpecies', '-r600');
+
+
+
+
+figure('Name', 'sharing the spoils');
+set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+
+for iPlot = 1:2
+  subplot(1,2,iPlot);
+  boxplot(groupedFairness{iPlot},fairnessGroupIndex{iPlot}, 'Widths', 0.8);
+  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  axis([0.5, nSetGroupForReward + 0.5, 0.32, 0.501]);
+  %xlabel('species', 'fontsize', FontSize, 'FontName', 'Arial');
+  if iPlot == 1
+    ylabel('reward share', 'fontsize', FontSize, 'FontName', 'Arial');
+  end
+  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+end
+
+set( gcf, 'PaperUnits','centimeters' );
+xSize = 14; ySize = 14;
+xLeft = 0; yTop = 0;
+set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+print ( '-depsc', '-r600','RewardSplittingPerSpecies');
+print('-dpdf', 'RewardSplittingPerSpecies', '-r600');
+print('-dpng', 'RewardSplittingPerSpecies', '-r600');
+
+
+%% plot RT difference distribution in human and monkey pairs
+
+% compute RT difference distribution
+groupedLargeRTshare = {[], []};
+groupIndexRTshare = {[], []};
+groupRTdiff = {[], []};
+groupRewardClass = {[], []};
+
+minDRT = 150;
+for iSetGroup = 1:nSetGroupForReward
+    largeRTshareDistr = {[], []};
+    for iSet = 1:length(allSetsForReward{iSetGroup}) 
+        i = allSetsForReward{iSetGroup}(iSet);
+        shareLargeRT = zeros(1, nFile(i));        
+        for iFile = 1:nFile(i)
+            
+            if (i == 18) && (iFile < 6)
+                continue
+            end    
+            
+            nTrial = length(allRT{i, iFile});
+            fistTestIndex = max(minStationarySegmentStart, nTrial-stationarySegmentLength);
+            testIndices = fistTestIndex:nTrial;
+            nTestIndices = length(testIndices);
+            RT = allRT{i, iFile}(:,testIndices);
+            isOwnChoice = allOwnChoice{i, iFile}(:,testIndices);
+            
+            rtDiff = abs(RT(1,:) - RT(2,:));
+            shareLargeRT(iFile) = nnz(rtDiff > minDRT)/length(rtDiff);            
+            isJointChoice = xor(isOwnChoice(1,:),isOwnChoice(2,:));
+            perTrialRewardClass = 1 + isJointChoice + 3*(iSetGroup-1);
+            
+            groupRTdiff{1} = [groupRTdiff{1}, rtDiff];
+            groupRewardClass{1} = [groupRewardClass{1}, perTrialRewardClass];
+            if (ismember(iFile, isPairProficient{i}))
+                groupRTdiff{2} = [groupRTdiff{2}, rtDiff];
+                groupRewardClass{2} = [groupRewardClass{2}, perTrialRewardClass];        
+            end           
+        end    
+        largeRTshareDistr{1} = [largeRTshareDistr{1}, shareLargeRT];
+        largeRTshareDistr{2} = [largeRTshareDistr{2}, shareLargeRT(isPairProficient{i})]; 
+    end  
+    for i = 1:2 % for all and for proficient pairs                 
+        groupSize = length(largeRTshareDistr{i});
+        groupedLargeRTshare{i} = [groupedLargeRTshare{i}, largeRTshareDistr{i}];
+        groupIndexRTshare{i} = [groupIndexRTshare{i}, (iSetGroup - 1)*ones(1,groupSize)];        
+    end    
+end
+
+rewardPlotTitle = {'all participants', 'only effective pairs'};
+rewardRTgroupLabel = {'monkeys separate', 'monkeys joint', 'humans separate', 'humans joint'};
+
+figure('Name', 'reward distribution plot');
+set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+for iPlot = 1:2
+  subplot(1,2,iPlot);
+  boxplot(groupRTdiff{iPlot},groupRewardClass{iPlot}, 'Widths', 0.7);
+  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', rewardRTgroupLabel, 'XTickLabelRotation', 45);%'FontName', 'Times');
+  %axis([0.5, nSetGroupForReward + 0.5, 1.0, 4.01]);
+  %xlabel('grou', 'fontsize', FontSize, 'FontName', 'Arial');
+  if iPlot == 1
+    ylabel('reaction time differences', 'fontsize', FontSize, 'FontName', 'Arial');
+  end
+  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+end
+%{
+for iPlot = 1:2
+  subplot(1,4,2 + iPlot);
+  boxplot(groupedLargeRTshare{iPlot},groupIndexRTshare{iPlot}, 'Widths', 0.8);
+  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  %axis([0.5, 2.5, 1.0, 4.01]);
+  xlabel('species', 'fontsize', FontSize, 'FontName', 'Arial');
+  if iPlot == 1
+    ylabel('share of trials with dRT > 150', 'fontsize', FontSize, 'FontName', 'Arial');
+  end
+  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+end
+%}
+set( gcf, 'PaperUnits','centimeters' );
+xSize = 16; ySize = 14;
+xLeft = 0; yTop = 0;
+set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+print ( '-depsc', '-r600','RTandCoordinationPerSpecies');
+print('-dpdf', 'RTandCoordinationPerSpecies', '-r600');
+print('-dpng', 'RTandCoordinationPerSpecies', '-r600');
+
+%% plot employed strategies
+nStrategy = length(strategyNames);
+strategyLabels = strategyNames;
+strategyLabels{nStrategy+1} = 'Not identified';
+
+%strategyArray = cell(1, nStrategy);
+%basicStrategyIndex = [1,2,3,4];
+
+% compute reward distribution
+nSetGroupForReward = length(allSetsForReward);
+strategyDistribution = cell(2,1);
+for i = 1:2
+    strategyDistribution{i} = zeros(nSetGroupForReward, nStrategy + 1);
+end
+histEdge = [0, 1:nStrategy + 1] + 0.5;
+
+for iSetGroup = 1:nSetGroupForReward
+    observedStrategies = {[], []};
+    for iSet = 1:length(allSetsForReward{iSetGroup}) 
+        i = allSetsForReward{iSetGroup}(iSet);
+        observedStrategies{1} = [observedStrategies{1}, identifiedStrategyIndex{i}];
+        observedStrategies{2} = [observedStrategies{2}, identifiedStrategyIndex{i}(:,isPairProficient{i})];
+    end  
+    for i = 1:2 % for all and for proficient pairs      
+        observedStrategies{i}(observedStrategies{i} == 0) = nStrategy + 1;
+        strategyHist = histcounts(observedStrategies{i}, histEdge);
+        strategyDistribution{i}(iSetGroup, :) = strategyHist/sum(strategyHist);
+    end 
+end
+
+basicStrategyBorder = max(basicStrategyIndex) + 0.5;
+rewardPlotTitle = {'all participants', 'only effective pairs'};
+figure('Name', 'reward distribution plot');
+set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+for iPlot = 1:2
+  maxStrategyProb = max(max(strategyDistribution{iPlot}));
+  subplot(2,1,iPlot);
+  hold on
+  bar(strategyDistribution{iPlot}');
+  plot([basicStrategyBorder,basicStrategyBorder], [0, maxStrategyProb + 0.05], 'k--')
+  hold off
+  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', strategyLabels, 'XTickLabelRotation',45);%'FontName', 'Times');
+  axis([0.5, nStrategy + 1.5, 0, maxStrategyProb + 0.02]);
+  if iPlot == 1
+    legendHandle = legend(labelGroupForReward, 'location', 'NorthEast');
+    set(legendHandle, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+  end      
+ % if iPlot == 2
+ %     xlabel('strategy', 'fontsize', FontSize, 'FontName', 'Arial');
+ % end
+  ylabel('relative frequency', 'fontsize', FontSize, 'FontName', 'Arial');
+  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+end
+
+set( gcf, 'PaperUnits','centimeters' );
+xSize = 18; ySize = 14;
+xLeft = 0; yTop = 0;
+set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+print ( '-depsc', '-r600','EmployedStrategies');
+print('-dpdf', 'EmployedStrategies', '-r600');
+print('-dpng', 'EmployedStrategies', '-r600');
+
 
 %{
 %% blocked trials figure
