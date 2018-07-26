@@ -1010,7 +1010,7 @@ for iSetGroup = 1:nSetGroupForReward
     for iSet = 1:length(allSetsForReward{iSetGroup}) 
         i = allSetsForReward{iSetGroup}(iSet);
         rewardDistr{1} = [rewardDistr{1}, [playerMeanReward{i, :}]];
-        rewardDistr{2} = [rewardDistr{2}, [playerMeanReward{i, isPairProficient{i}}]];
+        rewardDistr{2} = [rewardDistr{2}, [playerMeanReward{i, sessionMetrics(i).isPairProficient}]];
     end  
     for i = 1:2 % for all and for proficient pairs
         rewardBonusForCooperation = 2;
@@ -1159,7 +1159,7 @@ for iSetGroup = 1:nSetGroupForReward
             groupRTdiff{1} = [groupRTdiff{1}, rtDiff];
             perTrialRewardClass = 1 + isJointChoice + 3*(iSetGroup-1);
             groupRewardClass{1} = [groupRewardClass{1}, perTrialRewardClass];
-            if (isPairProficient{i}(iFile))
+            if (sessionMetrics(iSet).isPairProficient(iFile))
                 groupRTdiff{2} = [groupRTdiff{2}, rtDiff];
                 groupRewardClass{2} = [groupRewardClass{2}, perTrialRewardClass];        
                 rewardDistrPerCategory{1, 2} = [rewardDistrPerCategory{1, 2}, rewardValue(indexLargeDRT)];
@@ -1167,7 +1167,7 @@ for iSetGroup = 1:nSetGroupForReward
             end           
         end    
         largeRTshareDistr{1} = [largeRTshareDistr{1}, shareLargeRT];
-        largeRTshareDistr{2} = [largeRTshareDistr{2}, shareLargeRT(isPairProficient{i})]; 
+        largeRTshareDistr{2} = [largeRTshareDistr{2}, shareLargeRT(sessionMetrics(iSet).isPairProficient)]; 
     end  
     for iPlot = 1:2 % for all and for proficient pairs                 
         groupSize = length(largeRTshareDistr{iPlot});
@@ -1287,7 +1287,7 @@ for iSetGroup = 1:nSetGroupForReward
     for iSet = 1:length(allSetsForReward{iSetGroup}) 
         i = allSetsForReward{iSetGroup}(iSet);
         observedStrategies{1} = [observedStrategies{1}, identifiedStrategyIndex{i}];
-        observedStrategies{2} = [observedStrategies{2}, identifiedStrategyIndex{i}(:,isPairProficient{i})];
+        observedStrategies{2} = [observedStrategies{2}, identifiedStrategyIndex{i}(:,sessionMetrics(i).isPairProficient)];
     end  
     for i = 1:2 % for all and for proficient pairs      
         observedStrategies{i}(observedStrategies{i} == 0) = nStrategy + 1;
