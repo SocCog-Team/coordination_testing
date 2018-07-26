@@ -1,4 +1,4 @@
-function [rowIndex, colIndex] = compute_strategy_entries(target, side, RT)
+function [rowIndex, colIndex] = compute_strategy_entries(target, side, RT, minDRT)
 % stategy is described by a table of 4x12, with the following structure:
 %
 % orintation          | partner invisible | partner selects I | partner selects A
@@ -8,10 +8,9 @@ function [rowIndex, colIndex] = compute_strategy_entries(target, side, RT)
 % P1 right | P1 left  |3, 1| ...
 % P1 right | P1 right |4, 1| ...
 
-if (~exist('RT', 'var'))
+if ((~exist('RT', 'var')) || (~exist('minDRT', 'var')) || (minDRT <= 0))
     actionOfPartnerVisible = zeros(2, length(target) - 1);
 else
-    minDRT = 150;
     dRT = RT - RT(2:-1:1, :);
     actionOfPartnerVisible = (dRT(:, 2:end) > minDRT);
 end

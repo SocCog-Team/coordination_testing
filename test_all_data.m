@@ -1,14 +1,20 @@
 % Common abbreviations: MI - mutual information, TE - transfer entropy
-clear all
-
 %% prepare dataset for processing
+clear all
 addpath(genpath('WhittleSurrogates'));
+currFolder = cd('../');
+parentFolder = cd(currFolder);
+addpath(fullfile(parentFolder, 'AuxiliaryFunctions'));
+
 if ispc
-    folder = 'Z:\taskcontroller\SCP_DATA\ANALYSES\PC1000\2018\CoordinationCheck';
+    cfg.folder = 'Z:\taskcontroller\SCP_DATA\ANALYSES\PC1000\2018\CoordinationCheck';
 else
-    folder = fullfile('/', 'Volumes', 'social_neuroscience_data', 'taskcontroller', 'SCP_DATA', 'ANALYSES', 'PC1000', '2018', 'CoordinationCheck');
+    cfg.folder = fullfile('/', 'Volumes', 'social_neuroscience_data', 'taskcontroller', 'SCP_DATA', 'ANALYSES', 'PC1000', '2018', 'CoordinationCheck');
 end
 
+% filenames - list of all files related to specific Set
+% captions - captions of files, adjacent files may have the same caption
+% but the they are merged
 magnusCuriusNaive.setName = 'MagnusCuriusNaive';
 magnusCuriusNaive.filenames = {...
     'DATA_20171108T140407.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -25,7 +31,7 @@ magnusCuriusNaive.filenames = {...
     'DATA_20171122T102507.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20171123T101549.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice',...
     };
-magnusCuriusNaive.Captions = {...
+magnusCuriusNaive.captions = {...
     '08.11.17', ...
     '09.11.17', ...
     '10.11.17', ...
@@ -48,7 +54,7 @@ magnusNaiveCuriusConfederate.filenames = {...
     'DATA_20180213T152733.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180214T171119.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-magnusNaiveCuriusConfederate.Captions = {...
+magnusNaiveCuriusConfederate.captions = {...
     '12.02.18',...
     '13.02.18',...
     '14.02.18', ...
@@ -86,35 +92,35 @@ magnusFlaffusNaive.filenames = {...
     'DATA_20180124T161657.A_Magnus.B_Flaffus.SCP_01.triallog.A.Magnus.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180125T155742.A_Magnus.B_Flaffus.SCP_01.triallog.A.Magnus.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-magnusFlaffusNaive.Captions = {...
-    '20171129T100056', ...
-    '20171130T093044', ...
-    '20171201T101044', ...
-    '20171205T103518', ...
-    '20171206T111532', ...
-    '20171208T092614', ...
-    '20171212T132217', ...
-    '20171213T142240', ...
-    '20171214T072407', ...
-    '20171219T135223', ...
-    '20180105T142814', ...
-    '20180105T150525', ...
-    '20180108T155548', ...
-    '20180109T171512', ...
-    '20180109T172928', ...
-    '20180110T151942', ...
-    '20180110T165831', ...
-    '20180111T150745', ...
-    '20180115T141937', ...
-    '20180116T144201', ...
-    '20180117T151458', ...
-    '20180118T140639', ...
-    '20180118T154054', ...
-    '20180119T143953', ...
-    '20180122T164338', ...
-    '20180123T151927', ...
-    '20180124T161657', ...
-    '20180125T155742', ...
+magnusFlaffusNaive.captions = {...
+    '20171129', ...
+    '20171130', ...
+    '20171201', ...
+    '20171205', ...
+    '20171206', ...
+    '20171208', ...
+    '20171212', ...
+    '20171213', ...
+    '20171214', ...
+    '20171219', ...
+    '20180105', ...
+    '20180105', ...
+    '20180108', ...
+    '20180109', ...
+    '20180109', ...
+    '20180110T15', ...
+    '20180110T17', ...
+    '20180111', ...
+    '20180115', ...
+    '20180116', ...
+    '20180117', ...
+    '20180118T14', ...
+    '20180118T16', ...
+    '20180119', ...
+    '20180122', ...
+    '20180123', ...
+    '20180124', ...
+    '20180125', ...
     };
 
 
@@ -130,7 +136,7 @@ flaffusCuriusNaive.filenames = {...
     'DATA_20171103T143324.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20171107T131228.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-flaffusCuriusNaive.Captions = {...
+flaffusCuriusNaive.captions = {...
     '2017.10.19', ...
     '2017.10.20', ...
     '2017.10.26', ...
@@ -155,7 +161,7 @@ flaffusCuriusConfederate.filenames = {...
     'DATA_20180427T153406.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180501T124452.A_Curius.B_Flaffus.SCP_01.triallog.A.Curius.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-flaffusCuriusConfederate.Captions = {...
+flaffusCuriusConfederate.captions = {...
     '2018.04.18',...
     '2018.04.19', ...
     '2018.04.20', ...
@@ -176,7 +182,7 @@ flaffusEC.filenames = {...
     'DATA_20171122T133949.A_EC.B_Flaffus.SCP_01.triallog.A.EC.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20171124T131200.A_EC.B_Flaffus.SCP_01.triallog.A.EC.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-flaffusEC.Captions = {...
+flaffusEC.captions = {...
     '2017.11.16, 11:52:10', ...
     '2017.11.17, 09:32:15', ...
     '2017.11.21, 13:35:41', ...
@@ -194,13 +200,13 @@ teslaElmoNaive.filenames = {...
     'DATA_20180523T092531.A_Tesla.B_Elmo.SCP_01.triallog.A.Tesla.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180524T103704.A_Tesla.B_Elmo.SCP_01.triallog.A.Tesla.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-teslaElmoNaive.Captions = {...
-    '20180516T090940', ...
-    '20180517T085104', ...
-    '20180518T104104', ...
-    '20180522T101558', ...
-    '20180523T092531', ...
-    '20180524T103704', ...
+teslaElmoNaive.captions = {...
+    '20180516', ...
+    '20180517', ...
+    '20180518', ...
+    '20180522', ...
+    '20180523', ...
+    '20180524', ...
     };
 
 
@@ -211,11 +217,11 @@ teslaNaiveFlaffusConfederate.filenames = {...
     'DATA_20180508T132214.A_Tesla.B_Flaffus.SCP_01.triallog.A.Tesla.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180509T122330.A_Tesla.B_Flaffus.SCP_01.triallog.A.Tesla.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-teslaNaiveFlaffusConfederate.Captions = {...
-    '20180504T114516', ...
-    '20180507T151756', ...
-    '20180508T132214', ...
-    '20180509T122330', ...
+teslaNaiveFlaffusConfederate.captions = {...
+    '20180504', ...
+    '20180507', ...
+    '20180508', ...
+    '20180509', ...
     };
 
 
@@ -227,12 +233,12 @@ teslaNaiveCuriusConfederate.filenames = {...
     'DATA_20180530T153325.A_Tesla.B_Curius.SCP_01.triallog.A.Tesla.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180531T104356.A_Tesla.B_Curius.SCP_01.triallog.A.Tesla.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-teslaNaiveCuriusConfederate.Captions = {...
-    '20180525T091512', ...
-    '20180528T132259', ...
-    '20180529T130237', ...
-    '20180530T153325', ...
-    '20180531T104356', ...
+teslaNaiveCuriusConfederate.captions = {...
+    '20180525', ...
+    '20180528', ...
+    '20180529', ...
+    '20180530', ...
+    '20180531', ...
     };
 
 
@@ -242,10 +248,10 @@ JKElmo.filenames = {...
     'DATA_20180621T080841.A_JK.B_Elmo.SCP_01.triallog.A.JK.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180622T071433.A_JK.B_Elmo.SCP_01.triallog.A.JK.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-JKElmo.Captions = {...
-    '20180620T095959', ...
-    '20180621T080841', ...
-    '20180622T071433', ...
+JKElmo.captions = {...
+    '20180620', ...
+    '20180621', ...
+    '20180622', ...
     };
 
 
@@ -266,21 +272,21 @@ SMTesla.filenames = {...
     'DATA_20180615T154238.A_Tesla.B_SM.SCP_01.triallog.A.Tesla.B.SM_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180618T140913.A_Tesla.B_SM.SCP_01.triallog.A.Tesla.B.SM_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-SMTesla.Captions = {...
-    '20180601T122747', ...
-    '20180604T150239', ...
-    '20180605T150607', ...
-    '20180606T142829', ...
-    '20180607T142823', ...
-    '20180607T145715', ...
-    '20180608T100903', ...
-    '20180611T150057', ...
-    '20180612T162540', ...
-    '20180613T141225', ...
-    '20180614T165947', ...
-    '20180615T150245', ...
-    '20180615T154238', ...
-    '20180618T140913', ...
+SMTesla.captions = {...
+    '20180601', ...
+    '20180604', ...
+    '20180605', ...
+    '20180606', ...
+    '20180607', ...
+    '20180607', ...
+    '20180608', ...
+    '20180611', ...
+    '20180612', ...
+    '20180613', ...
+    '20180614', ...
+    '20180615', ...
+    '20180615', ...
+    '20180618', ...
     };
 
 
@@ -288,8 +294,8 @@ SMElmo.setName = 'SMElmo';
 SMElmo.filenames = {...
     'DATA_20180619T150344.A_SM.B_Elmo.SCP_01.triallog.A.SM.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-SMElmo.Captions = {...
-    '20180619T150344', ...
+SMElmo.captions = {...
+    '20180619', ...
     };
 
 
@@ -304,7 +310,7 @@ SMCurius.filenames = {...
     'DATA_20180118T120304.A_SM.B_Curius.SCP_01.triallog.A.SM.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180423T162330.A_SM.B_Curius.SCP_01.triallog.A.SM.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-SMCurius.Captions = {...
+SMCurius.captions = {...
     '06.12.17', ...
     '08.12.17', ...
     '11.12.17', ...
@@ -328,7 +334,7 @@ SMCuriusBlock.filenames = {...
     'DATA_20180125T140345.A_SM.B_Curius.SCP_01.triallog.A.SM.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180126T132629.A_SM.B_Curius.SCP_01.triallog.A.SM.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...'
     };
-SMCuriusBlock.Captions = {...
+SMCuriusBlock.captions = {...
     '13.12.2017', ...
     '15.12.2017', ...
     '21.12.2017', ...
@@ -361,7 +367,7 @@ SMFlaffus.filenames = {...
     'DATA_20180227T151756.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180228T132647.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-SMFlaffus.Captions = {...
+SMFlaffus.captions = {...
     '31.01.18', ...
     '01.02.18', ...
     '02.02.18', ...
@@ -392,7 +398,7 @@ FlaffusSM.filenames = {...
     'DATA_20180417T161836.A_Flaffus.B_SM.SCP_01.triallog.A.Flaffus.B.SM_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180423T141825.A_Flaffus.B_SM.SCP_01.triallog.A.Flaffus.B.SM_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-FlaffusSM.Captions = {...
+FlaffusSM.captions = {...
     '06.04.18', ...
     '09.04.18', ...
     '10.04.18', ...
@@ -414,7 +420,7 @@ SMFlaffusBlock.filenames = {...
     'DATA_20180308T121753.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180309T110024.A_SM.B_Flaffus.SCP_01.triallog.A.SM.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-SMFlaffusBlock.Captions = {...
+SMFlaffusBlock.captions = {...
     '01.03.18', ...
     '02.03.18', ...
     '06.03.18', ...
@@ -432,7 +438,7 @@ TNCurius.filenames = {...
     'DATA_20180413T143841.A_TN.B_Curius.SCP_01.triallog.A.TN.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180417T130643.A_TN.B_Curius.SCP_01.triallog.A.TN.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-TNCurius.Captions = {...
+TNCurius.captions = {...
     '06.04.18', ...
     '10.04.18', ...
     '11.04.18', ...
@@ -460,7 +466,7 @@ humanPair.filenames = {...
     'DATA_20171130T164300.A_20027.B_10028.SCP_01.triallog.A.20027.B.10028_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20171205T163542.A_20029.B_10030.SCP_01.triallog.A.20029.B.10030_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-humanPair.Captions = {...
+humanPair.captions = {...
     '01vs02', ...
     '03vs04', ...
     '05vs06', ...
@@ -488,7 +494,7 @@ humanPairBlocked.filenames = {...
     'DATA_20180322T110101.A_31007.B_32008.SCP_01.triallog.A.31007.B.32008_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180322T164348.A_32009.B_32010.SCP_01.triallog.A.32009.B.32010_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-humanPairBlocked.Captions = {...
+humanPairBlocked.captions = {...
     '01vs02', ...
     '03vs04', ...
     '05vs06', ...
@@ -505,7 +511,7 @@ SMhumanBlocked.filenames = {...
     'DATA_20180420T171629.A_SM.B_52004.SCP_01.triallog.A.SM.B.52004_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180420T192826.A_SM.B_52005.SCP_01.triallog.A.SM.B.52005_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-SMhumanBlocked.Captions = {...
+SMhumanBlocked.captions = {...
     'Human Confederate 1', ...
     'Human Confederate 2', ...
     'Human Confederate 3', ...
@@ -518,35 +524,21 @@ SMhumanBlocked.Captions = {...
 SCAN_ALL_DATASET = 1;
 %SCAN_ALL_DATASET = 0;
 if (SCAN_ALL_DATASET)
-    struct_set_cell = {teslaElmoNaive, teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate, SMTesla, SMElmo, JKElmo, magnusCuriusNaive, magnusNaiveCuriusConfederate, flaffusCuriusNaive, flaffusCuriusConfederate, flaffusEC, SMCurius, SMCuriusBlock, TNCurius, SMFlaffus, SMFlaffusBlock, FlaffusSM, humanPair, humanPairBlocked, SMhumanBlocked, magnusFlaffusNaive};
-    %struct_set_cell = {teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate};
-    %struct_set_cell = {magnusFlaffusNaive};
+    dataset = {teslaElmoNaive, teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate, SMTesla, SMElmo, JKElmo, magnusCuriusNaive, magnusNaiveCuriusConfederate, flaffusCuriusNaive, flaffusCuriusConfederate, flaffusEC, SMCurius, SMCuriusBlock, TNCurius, SMFlaffus, SMFlaffusBlock, FlaffusSM, humanPair, humanPairBlocked, SMhumanBlocked, magnusFlaffusNaive};
+    %dataset = {teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate};
+    %dataset = {magnusFlaffusNaive};
 else
-    struct_set_cell = {SMhumanBlocked};
+    dataset = {SMhumanBlocked};
 end
 
-
-% filename - list of all files related to specific Set
-% fileCaption - captions of files, adjacent files may have the same caption
-% but the they are merged
-
-num_sets = length(struct_set_cell);
-filename = cell([1 num_sets]);
-fileCaption = cell([1 num_sets]);
-setName = cell([1 num_sets]);
-for i_set = 1 : num_sets
-	filename{i_set} = struct_set_cell{i_set}.filenames;
-    fileCaption{i_set} = struct_set_cell{i_set}.Captions;
-    setName{i_set} = struct_set_cell{i_set}.setName;
-end
-
-plotName = {'TEtarget', 'MutualInf', 'surprise_pos'};
 
 %% plotting parameters
 % COPY FROM HERE
-FontSize = 8;
+fontSize = 8;
 markerSize = 4;
 lineWidth = 1.0;
+
+plotName = {'TEtarget', 'MutualInf', 'surprise_pos'};
 
 colorList = [...
     % blue group: navy, purple, blue, light blue, lavender
@@ -579,271 +571,20 @@ colorList = [...
     ];
 
 %% set parameters of the methods
-pValueForMI = 0.01;
-memoryLength = 1; % number of previous trials that affect the choices on the current trils
-%minSampleNum = 1.5*(2.^(memoryLength+1))*(2.^memoryLength);
-minSampleNum = 6*(2.^(memoryLength+1))*(2.^memoryLength);
-stationarySegmentLength = 200;  % number of last trials supposedly corresponding to equilibrium state
-minStationarySegmentStart = 20; % earliest possible start of equilibrium state
+cfg.pValueForMI = 0.01;
+cfg.memoryLength = 1; % number of previous trials that affect the choices on the current trils
+cfg.minSampleNum = 6*(2.^(cfg.memoryLength+1))*(2.^cfg.memoryLength);
+cfg.stationarySegmentLength = 200;  % number of last trials supposedly corresponding to equilibrium state
+cfg.minStationarySegmentStart = 20; % earliest possible start of equilibrium state
+cfg.minDRT = 200; %minimal difference of reaction times allowing the slower partner to se the choice of the faster 
 
-%% initialization
-nSet = length(setName);
-nFile = cell2mat(cellfun(@(x) length(unique(x)), fileCaption, 'UniformOutput',false));
-
-% by-trial quantities
-allOwnChoice = cell(nSet, max(nFile));  % target choice (0 - other, 1 - own)
-allSideChoice = cell(nSet, max(nFile)); % side choice (0 - objective right, 1 - objective left)
-allRT = cell(nSet, max(nFile)); % target acquisition times
-
-% by-trial coordination metrics computed over window of minSampleNum trials
-mutualInf = cell(nSet, max(nFile));       % target local MI
-locMutualInf = cell(nSet, max(nFile));    % target MI
-targetTE1 = cell(nSet, max(nFile));       % target (averaged) TE
-targetTE2 = cell(nSet, max(nFile));
-localTargetTE1 = cell(nSet, max(nFile));  % target local TE
-localTargetTE2 = cell(nSet, max(nFile));
-
-% coordination metrics computed for each session (over supposedly equilibrium trials)
-shareOwnChoices = cell(nSet, max(nFile));   % percentage of trials with own target chosen
-shareLeftChoices = cell(nSet, max(nFile));  % percentage of trials with objective left chosen
-shareJointChoices = cell(nSet, max(nFile)); % percentage of trials where both players chosen the same target
-playerMeanReward = cell(nSet, max(nFile));  % mean reward of each player
-miValueWhole = cell(nSet, max(nFile));      % target MI
-miSignifWhole = cell(nSet, max(nFile));     % target MI significance
-miThreshWhole = cell(nSet, max(nFile));     % target MI minimal significant value
-sideMIvalueWhole = cell(nSet, max(nFile));  % side MI
-sideMIsignifWhole = cell(nSet, max(nFile)); % side MI significance
-sideMIthreshWhole = cell(nSet, max(nFile)); % side MI minimal significant value
-teWhole1 = cell(nSet, max(nFile));          % target TE
-teWhole2 = cell(nSet, max(nFile));
-sideTEwhole1 = cell(nSet, max(nFile));      % side TE
-sideTEwhole2 = cell(nSet, max(nFile));
-averReward = cell(nSet, max(nFile));        % average reward of two players
-dltReward = cell(nSet, max(nFile));         % non-random reward component of each player
-dltSignif = cell(nSet, max(nFile));         % significance of non-random reward components
-dltConfInterval  = cell(nSet, max(nFile));  % confidence interval for non-random reward components
-% strategy - probability to select own target given the state, incorporating
-% previous outcome, current stimuli location and current partner's choice (if visible)
-playerStrategy = cell(nSet, max(nFile));    % estimated strategy
-playerNStateVisit = cell(nSet, max(nFile)); % number of state visits
-
-% coordination metrics computed for a block within session.
-% In a block equilibrium trials start from minStationarySegmentStart.
-% this means that if there are now blocks (whole session is asingle block),
-% the value of coordination metrics may still differe from the one
-% computed for the whole session: the former is computed for all trials
-% starting from minStationarySegmentStart, while the latter - for the last 200 trials (if available)
-miValueBlock = cell(nSet, 1);       % target MI
-miSignifBlock = cell(nSet, 1);      % target MI significance
-sideMIvalueBlock = cell(nSet, 1);   % side MI
-sideMIsignifBlock = cell(nSet, 1);  % side MI significance
-teBlock1 = cell(nSet, 1);           % target TE
-teBlock2 = cell(nSet, 1);
-sideTEblock1 = cell(nSet, 1);       % side TE
-sideTEblock2 = cell(nSet, 1);
-averageRewardBlock = cell(nSet, 1); % average reward of two players
-deltaRewardBlock = cell(nSet, 1);   % non-random reward component of each player
-deltaSignifBlock = cell(nSet, 1);   % significance of non-random reward components
-coordStructBlock = cell(nSet, 3);   % outcomes of coordination tests
-
-blockBorder = cell(nSet, 1);
-
-%% dataset processing
-totalFileIndex = 1;
-for iSet = 1:nSet
-    disp(['Processing dataset' num2str(iSet)]);
-    % debug aid
-    if (strmatch(setName{iSet}, 'MagnusFlaffusNaive'))
-        disp('Doh...');
-    end
-    maxValue = 0;
-    minValue = 0;
-    minMIvalue = 0;
-    maxMIvalue = 0;
-    
-    % preallocate blockwise quanities
-    miValueBlock{iSet} = NaN(nFile(iSet), 3);
-    miSignifBlock{iSet} = NaN(nFile(iSet), 3);
-    sideMIvalueBlock{iSet} = NaN(nFile(iSet), 3);
-    sideMIsignifBlock{iSet} = NaN(nFile(iSet), 3);
-    teBlock1{iSet} = NaN(nFile(iSet), 3);
-    teBlock2{iSet} = NaN(nFile(iSet), 3);
-    sideTEblock1{iSet} = NaN(nFile(iSet), 3);
-    sideTEblock2{iSet} = NaN(nFile(iSet), 3);
-    averageRewardBlock{iSet} = NaN(nFile(iSet), 3);
-    deltaRewardBlock{iSet} = NaN(nFile(iSet), 3);
-    deltaSignifBlock{iSet} = NaN(nFile(iSet), 3);
-    
-    blockBorder{iSet} = zeros(nFile(iSet), 2);
-    %if (strcmp(setName{iSet}, 'SMCuriusBlock'))
-    %    blockBorder{iSet} = SMCuriusBlockBorder;   % predefined by constants
-    %else
-    %    blockBorder{iSet} = zeros(nFile(iSet), 2); % will be taken from file
-    %end
-    
-    playerStrategy{iSet} = zeros(nFile(iSet), 8);
-    playerNStateVisit{iSet} = zeros(nFile(iSet), 8);
-    
-    % analyse all sessions for the given players pair
-    filenameIndex = 1;
-    for iFile = 1:nFile(iSet)
-        % merge data for all files having the same caption
-        isOwnChoice = [];
-        sideChoice = [];
-        isTrialVisible = [];
-        targetAcquisitionTime = [];
-        
-        i = filenameIndex;
-        while(length(filename{iSet}) >= i)
-            if (~strcmp(fileCaption{iSet}{i}, fileCaption{iSet}{filenameIndex}))
-                break;
-            end
-            clear isOwnChoiceArray sideChoiceObjectiveArray
-            load(fullfile(folder, [filename{iSet}{i}, '.mat']), 'isOwnChoiceArray', 'sideChoiceObjectiveArray', 'PerTrialStruct');
-            disp(['Loading ', fullfile(folder, [filename{iSet}{i}, '.mat']) ]);
-            if (exist('isOwnChoiceArray', 'var'))
-                isOwnChoice = [isOwnChoice, isOwnChoiceArray];
-            else
-                temp = isOwnChoice;
-                load([filename{iSet}{i}, '.mat'], 'isOwnChoice');
-                isOwnChoice = [temp, isOwnChoice];
-            end
-            if (exist('sideChoiceObjectiveArray', 'var'))
-                sideChoice = [sideChoice, sideChoiceObjectiveArray];
-            else
-                load([filename{iSet}{i}, '.mat'], 'isBottomChoice');
-                sideChoice = [sideChoice, isBottomChoice];
-            end
-            isTrialVisible = [isTrialVisible, PerTrialStruct.isTrialInvisible_AB'];
-            targetAcquisitionTime = [targetAcquisitionTime, [PerTrialStruct.A_TargetAcquisitionRT'; PerTrialStruct.B_TargetAcquisitionRT']];
-            i = i + 1;
-        end
-        filenameIndex = i;
-        allOwnChoice{iSet, iFile} = isOwnChoice;
-        allSideChoice{iSet, iFile} = sideChoice;
-        allRT{iSet, iFile} = targetAcquisitionTime;
-        
-        % here we consider only equilibrium (stabilized) values
-        nTrial = length(isOwnChoice);
-        fistTestIndex = max(minStationarySegmentStart, nTrial-stationarySegmentLength);
-        testIndices = fistTestIndex:nTrial;
-        nTestIndices = length(testIndices);
-        
-        % estimate strategy over equilibrium trials
-        [playerStrategy{iSet, iFile}, ...
-            playerNStateVisit{iSet, iFile}] = ...
-            estimate_strategy(isOwnChoice(:, testIndices), sideChoice(:,testIndices), targetAcquisitionTime(:,testIndices));
-        
-        [averReward{iSet, iFile}, ...
-            dltReward{iSet, iFile}, ...
-            dltSignif{iSet, iFile}, ...
-            dltConfInterval{iSet, iFile}] = ...
-            calc_total_average_reward(isOwnChoice(:,testIndices), sideChoice(:,testIndices));
-        
-        %target choices quantities
-        shareOwnChoices{iSet, iFile} = mean(isOwnChoice(:, testIndices), 2);
-        shareJointChoices{iSet, iFile} = mean(xor(isOwnChoice(1, testIndices), isOwnChoice(2, testIndices)));
-        playerMeanReward{iSet, iFile} = 1 + shareOwnChoices{iSet, iFile} + 2*shareJointChoices{iSet, iFile};
-        x = isOwnChoice(1, testIndices);
-        y = isOwnChoice(2, testIndices);
-        [miValueWhole{iSet, iFile}, miSignifWhole{iSet, iFile}, miThreshWhole{iSet, iFile}] = ...
-            calc_whole_mutual_information(x, y, pValueForMI);
-        teValue = calc_transfer_entropy(y, x, memoryLength, nTestIndices);
-        teWhole1{iSet, iFile} = teValue(1);
-        teValue = calc_transfer_entropy(x, y, memoryLength, nTestIndices);
-        teWhole2{iSet, iFile} = teValue(1);
-        
-        %side choices quantities
-        shareLeftChoices{iSet, iFile} = mean(sideChoice(:, testIndices), 2);
-        x = sideChoice(1, testIndices);
-        y = sideChoice(2, testIndices);
-        [sideMIvalueWhole{iSet, iFile}, sideMIsignifWhole{iSet, iFile}, sideMIthreshWhole{iSet, iFile}] = ...
-            calc_whole_mutual_information(x, y, pValueForMI);
-        teValue = calc_transfer_entropy(y, x, memoryLength, nTestIndices);
-        sideTEwhole1{iSet, iFile} = teValue(1);
-        teValue = calc_transfer_entropy(x, y, memoryLength, nTestIndices);
-        sideTEwhole2{iSet, iFile} = teValue(1);
-        
-        % perform coordination tests.
-        % To simplify visual inspection, results of all tests are qathered in single table
-        coordStruct(totalFileIndex) = ...
-            check_coordination(isOwnChoice(:,testIndices), sideChoice(:,testIndices));
-        totalFileIndex = totalFileIndex + 1;
-        
-        % compute MI and TE, as well as local MI and TE in windows
-        x = isOwnChoice(1, :);
-        y = isOwnChoice(2, :);
-        targetTE1{iSet, iFile} = calc_transfer_entropy(y, x, memoryLength, minSampleNum);
-        targetTE2{iSet, iFile} = calc_transfer_entropy(x, y, memoryLength, minSampleNum);
-        localTargetTE1{iSet, iFile} = calc_local_transfer_entropy(y, x, memoryLength, minSampleNum);
-        localTargetTE2{iSet, iFile} = calc_local_transfer_entropy(x, y, memoryLength, minSampleNum);
-        locMutualInf{iSet, iFile} = calc_local_mutual_information(x, y, minSampleNum);
-        mutualInf{iSet, iFile} = calc_mutual_information(x, y, minSampleNum);
-        minValue = min([minValue, min(localTargetTE1{iSet, iFile}), min(localTargetTE2{iSet, iFile})]);
-        maxValue = max([maxValue, max(localTargetTE1{iSet, iFile}), max(localTargetTE2{iSet, iFile})]);
-        minMIvalue = min([minMIvalue, min(locMutualInf{iSet, iFile})]);
-        maxMIvalue = max([maxMIvalue, max(locMutualInf{iSet, iFile})]);
-        
-        % if there are blocked segments, compute statistics for each blcok
-        dataLength = length(x);
-        minBlockLength = 40;
-        blockIndices = cell(1,3);
-        invisibleStart = find(isTrialVisible == 1, 1, 'first');
-        invisibleEnd = find(isTrialVisible == 1, 1, 'last');
-        if (~isempty(invisibleStart))
-            blockBorder{iSet}(iFile,:) = invisibleStart;
-        end
-        if (~isempty(invisibleEnd))
-            blockBorder{iSet}(iFile,2) = invisibleEnd;
-        end
-        if (blockBorder{iSet}(iFile,1) > 0)
-            blockIndices{1} = minStationarySegmentStart:invisibleStart-1;
-            blockIndices{2} = (invisibleStart+minStationarySegmentStart):invisibleEnd;
-            if (invisibleEnd+1+minStationarySegmentStart+minBlockLength <= dataLength)
-                blockIndices{3} = (invisibleEnd+1+minStationarySegmentStart):dataLength;
-                nBlock = 3;
-            else
-                nBlock = 2;
-            end
-        else
-            blockIndices{1} = 20:dataLength;
-            nBlock = 1;
-        end
-        for iBlock = 1:nBlock
-            index = blockIndices{iBlock};
-            blockLength = length(index);
-            if (blockLength > 0)
-                [averageRewardBlock{iSet}(iFile, iBlock), ...
-                    deltaRewardBlock{iSet}(iFile, iBlock), ...
-                    deltaSignifBlock{iSet}(iFile, iBlock)] = calc_total_average_reward(isOwnChoice(:,index), sideChoice(:,index));
-                %target choices quantities
-                [miValueBlock{iSet}(iFile, iBlock), miSignifBlock{iSet}(iFile, iBlock)] = ...
-                    calc_whole_mutual_information(x(index), y(index), pValueForMI);
-                teValue = calc_transfer_entropy(y(index), x(index), memoryLength, blockLength);
-                teBlock1{iSet}(iFile, iBlock) = teValue(1);
-                teValue = calc_transfer_entropy(x(index), y(index), memoryLength, blockLength);
-                teBlock2{iSet}(iFile, iBlock) = teValue(1);
-                
-                %side choices quantities
-                [sideMIvalueBlock{iSet}(iFile, iBlock), sideMIsignifBlock{iSet}(iFile, iBlock)] = ...
-                    calc_whole_mutual_information(sideChoice(1,index), sideChoice(2,index), pValueForMI);
-                teValue = calc_transfer_entropy(sideChoice(2,index), sideChoice(1,index), memoryLength, blockLength);
-                sideTEblock1{iSet}(iFile, iBlock) = teValue(1);
-                teValue = calc_transfer_entropy(sideChoice(1,index), sideChoice(2,index), memoryLength, blockLength);
-                sideTEblock2{iSet}(iFile, iBlock) = teValue(1);
-                
-                coordStructBlock{iSet, iBlock}(iFile) = ...
-                    check_coordination(isOwnChoice(:,index), sideChoice(:,index), 5*10^-5);
-            end
-        end
-        %isBottomChoice = sideChoiceObjectiveArray;
-    end
-end
-
-proficiencyThreshold = 2.75;
-isPairProficient = check_pairs_proficiency(playerMeanReward, proficiencyThreshold);
-
- 
+%% run analysis 
+resultFilename = 'coordinationData.mat';
+compute_coordination_metrics(dataset, cfg, resultFilename);
+%if (~res)
+%    error('Processing failed, please debug');
+%end    
+load(resultFilename); 
 %% test strategies
 
 % prepare strategies for testing
@@ -864,6 +605,7 @@ end
 
 goodProbabilityThreshold = 0.95;
 minProbabilityThreshold = 0.33;
+minDRT = 200;
 
 PARAM_MARK = 2;
 maxParamValue = ones(1, nStrategy);
@@ -974,7 +716,7 @@ identifiedStrategyIndex = cell(nSet, 1);
 identifiedStrategyProb = cell(nSet, 1);
 identifiedStrategyParam = cell(nSet, 1);
 for iSet = 1:nSet
-    disp(['Test strategies for dataset' num2str(iSet)]);
+    disp(['Test strategies for cfg.minDRT' num2str(iSet)]);
     
     identifiedStrategyIndex{iSet} = zeros(2, nFile(iSet));
     identifiedStrategyProb{iSet} = zeros(2, nFile(iSet));
@@ -995,7 +737,7 @@ for iSet = 1:nSet
         strategyForTest(2,:) = strategyArray;
         % estimate strategy parameters
         strategyParam{iSet, iFile} = -ones(2, nStrategy); %initialize with invalid values
-        [strategy, nStateVisit] = estimate_strategy(isOwnChoice, sideChoice, RT);                
+        [strategy, nStateVisit] = estimate_strategy(isOwnChoice, sideChoice, RT, minDRT);                
         strategy{1}(isnan(strategy{1})) = 0;
         strategy{2}(isnan(strategy{2})) = 0;
 
@@ -1064,7 +806,7 @@ for iSet = 1:nSet
 %}            
                
         [strategyMeanProbability{iSet, iFile}, strategyLogMeanProbability{iSet, iFile}, ...
-         strategyProbabilityPerTrial{iSet, iFile}] = check_strategy_probability(isOwnChoice, sideChoice, RT, strategyForTest);        
+         strategyProbabilityPerTrial{iSet, iFile}] = check_strategy_probability(isOwnChoice, sideChoice, strategyForTest, RT, minDRT);        
      
        
         % first test basic strategies
@@ -1087,121 +829,18 @@ end
 %% results plotting
 plot_MI_TE_timecources = false;
 plot_blockwise_result = true;
+
+plot_coordination_metrics_per_set(dataset, sessionMetrics, fontSize, markerSize);
+
 for iSet = 1:nSet   
-    % plot per-session MI, TE, average and non-random reward
-    figure('Name',[setName{iSet}, ' per-session summary']);
-    set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
-    
-    nPlot = 8;
-    maxTE = max(max([teWhole2{iSet, :}; teWhole1{iSet, :}; sideTEwhole2{iSet, :}; sideTEwhole1{iSet, :}]));
-    maxTE = max(maxTE, 0.2);
-    for iPlot = 1:nPlot
-        subplot(nPlot/2, 2, iPlot);
-        if ((iPlot == 1) || (iPlot == 2) || (iPlot == 5)|| (iPlot == 6) || (iPlot == 7))
-            if (iPlot == 1)
-                y = [shareOwnChoices{iSet, :}];
-                minY = 0;
-                maxY = 1;
-                yCaption = {'share own choices'};
-            elseif (iPlot == 2)
-                y = [shareLeftChoices{iSet, :}];
-                minY = 0;
-                maxY = 1;
-                yCaption = {'share objective left choices'};
-            elseif (iPlot == 5)
-                y = [teWhole1{iSet, :}; teWhole2{iSet, :}];
-                minY = 0;
-                maxY = maxTE + 0.01;
-                yCaption = {'target transfer entropy'};
-            elseif (iPlot == 6)
-                y = [sideTEwhole1{iSet, :}; sideTEwhole2{iSet, :}];
-                minY = 0;
-                maxY = maxTE + 0.01;
-                yCaption = {'side transfer entropy'};
-            elseif (iPlot == 7)
-                y = [playerMeanReward{iSet, :}];
-                minY = 1;
-                maxY = 4.01;
-                yCaption = {'average reward'};
-            end
-            hold on
-            plot(y(1,:), 'r-o', 'MarkerSize', markerSize);
-            plot(y(2,:), 'b-s', 'MarkerSize', markerSize);            
-            if (iPlot == 1) || (iPlot == 2) 
-                plot([shareJointChoices{iSet, :}], 'MarkerSize', markerSize, 'Color', [0.5,0,0.5]);
-                plot([1,nFile(iSet)], [0.5, 0.5], 'k--')                
-            elseif (iPlot == 7)
-                plot([averReward{iSet, :}], 'MarkerSize', markerSize, 'Color', [0.5,0,0.5]);
-            end
-            hold off
-            
-        elseif (iPlot == 8)
-            y = [dltReward{iSet, :}];
-            yInt = [dltConfInterval{iSet, :}];
-            yInt(2,:) = yInt(2,:) - yInt(1,:); % to provide white area below conf interval
-            minY = -0.5;
-            maxY = 1.1;
-            yCaption = {'non-random reward'};
-            bottomAreaColor = [1.0, 1.0, 1.0];
-            
-            hold on
-            h = area(yInt', minY);
-            
-            h(1).FaceColor = bottomAreaColor;
-            if (length(h) > 1)
-                h(2).FaceColor = [1.0, 0.5, 1.0];
-            end
-            plot(y(1,:), '-d', 'MarkerSize', markerSize, 'Color', [0.5,0,0.5]);
-            plot([1,nFile(iSet)], [0.0, 0.0], 'k--')
-            hold off
-        else         
-            if (iPlot == 3)
-                y = [miValueWhole{iSet, :}];
-                signifIndex = logical([miSignifWhole{iSet, :}]);
-                minY = 0;
-                maxY = 1;
-                yCaption = {'target mutual information'};
-                
-            elseif (iPlot == 4)
-                y = [sideMIvalueWhole{iSet, :}];
-                signifIndex = logical([sideMIsignifWhole{iSet, :}]);
-                minY = 0;
-                maxY = 1;
-                yCaption = {'side mutual information'};
-            end
-            x = 1:nFile(iSet);
-            hold on
-            plot(x, y, '-d', 'MarkerSize', markerSize, 'Color', [0.5,0,0.5]);
-            plot(x(signifIndex), y(signifIndex), 'd', 'MarkerSize', markerSize, 'Color', [0.5,0,0.5], 'MarkerFaceColor', [0.5,0,0.5]);
-            hold off
-        end
-        %if (iPlot >= nPlot - 1)
-        %  xlabel('Session number', 'fontsize', FontSize, 'FontName', 'Arial');
-        %end
-        % sessions with non-unique labels are merged, so we need to select only unique labels
-        ylabel(yCaption, 'fontsize', FontSize, 'FontName', 'Arial');
-        axis([0.99, nFile(iSet) + 0.01, minY, maxY]);
-        [~, labelIndices] = unique(fileCaption{iSet});
-        correctLabel = fileCaption{iSet}(sort(labelIndices));
-        set( gca, 'fontsize', FontSize, 'XTick', 1:nFile(iSet), 'XTickLabel', correctLabel, 'XTickLabelRotation',45, 'FontName', 'Arial');%'FontName', 'Times');
-        %set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
-        %title(setName{1}, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
-    end
-    set( gcf, 'PaperUnits','centimeters' );
-    xSize = 19; ySize = 25;
-    xLeft = 0; yTop = 0;
-    set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
-    print ( '-depsc', '-r600', ['perSession', '_', setName{iSet}]);
-    print('-dpdf', ['perSession', '_', setName{iSet}], '-r600');
-    
     if (plot_MI_TE_timecources)
         % plot MI and TE dynamics over each session
         nFileCol = floor(sqrt(2*nFile(iSet)));
         nFileRow = ceil(nFile(iSet)/nFileCol);
         figureTitle = {' Transfer Entropy', ' Mutual Information'};
         for iPlot = 1:2
-            figure('Name',[setName{iSet}, figureTitle{iPlot}]);
-            set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+            figure('Name',[dataset{iSet}.setName, figureTitle{iPlot}]);
+            set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
 
             for iFile = 1:nFile(iSet)
                 subplot(nFileRow, nFileCol, iFile)
@@ -1225,7 +864,7 @@ for iSet = 1:nSet
                     plot([1, length(locMutualInf{iSet, iFile})], [0 0], 'k--', 'linewidth', 1.2)
                 end
                 hold off
-                set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+                set( gca, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
                 if (iPlot == 1)
                     axis([0.8, length(targetTE1{iSet, iFile}) + 0.2, 1.01*minValue, 1.01*maxValue]);
                 else
@@ -1237,53 +876,53 @@ for iSet = 1:nSet
                     elseif (iPlot == 2)
                         legendHandle = legend([h1, h2], '$\mathrm{i(P1,P2)}$', '$\mathrm{MI(P1,P2)}$', 'location', 'NorthEast');
                     end
-                    set(legendHandle, 'fontsize', FontSize-1, 'FontName', 'Times', 'Interpreter', 'latex');
+                    set(legendHandle, 'fontsize', fontSize-1, 'FontName', 'Times', 'Interpreter', 'latex');
                 end
 
-                title(fileCaption{iSet}{iFile}, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+                title(dataset{iSet}.captions{iFile}, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
             end
             set( gcf, 'PaperUnits','centimeters' );
             xSize = 29; ySize = 21;
             xLeft = 0; yTop = 0;
             set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
             set(gcf,'PaperSize',fliplr(get(gcf,'PaperSize')))
-            print ( '-depsc', '-r600', [plotName{iPlot}, '_', setName{iSet}]);
-            print('-dpdf', [plotName{iPlot}, '_', setName{iSet}], '-r600');
+            print ( '-depsc', '-r600', [plotName{iPlot}, '_', dataset{iSet}.setName]);
+            print('-dpdf', [plotName{iPlot}, '_', dataset{iSet}.setName], '-r600');
         end
     end
     % If there are 3 blocks (sessions with trial blocking): plot boxplots for
     % each trial block (before, during and after the blocking) representing
     % distribution of MI, TE and non-random reward component for given block
     if (plot_blockwise_result) && (blockBorder{iSet}(1,1) > 0)
-        figure('Name', [setName{iSet} ' block-wise plot']);
-        set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        figure('Name', [dataset{iSet}.setName ' block-wise plot']);
+        set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
         subplot(1,4,1)
         boxplot(miValueBlock{iSet});
-        title('Mutual information (target)', 'fontsize', FontSize,  'FontName', 'Arial');
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+        title('Mutual information (target)', 'fontsize', fontSize,  'FontName', 'Arial');
+        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
         
         subplot(1,4,2)
         boxplot(sideMIvalueBlock{iSet});
-        title('Mutual information (side)', 'fontsize', FontSize,  'FontName', 'Arial');
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+        title('Mutual information (side)', 'fontsize', fontSize,  'FontName', 'Arial');
+        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
         
         subplot(1,4,3)
         boxplot(teBlock1{iSet});
-        title('Transfer entropy', 'fontsize', FontSize,  'FontName', 'Arial');
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+        title('Transfer entropy', 'fontsize', fontSize,  'FontName', 'Arial');
+        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
         
         subplot(1,4,4)
         boxplot(deltaRewardBlock{iSet});
-        title('Non-random reward', 'fontsize', FontSize,  'FontName', 'Arial');
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+        title('Non-random reward', 'fontsize', fontSize,  'FontName', 'Arial');
+        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
         
         set( gcf, 'PaperUnits','centimeters' );
         set(gcf,'PaperSize',fliplr(get(gcf,'PaperSize')))
         xSize = 30; ySize = 7;
         xLeft = 0; yTop = 0;
         set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
-        print ( '-depsc', '-r600', ['BlockBoxplot_' setName{iSet}]);
-        print('-r600', ['BlockBoxplot_' setName{iSet}],'-dtiff');
+        print ( '-depsc', '-r600', ['BlockBoxplot_' dataset{iSet}.setName]);
+        print('-r600', ['BlockBoxplot_' dataset{iSet}.setName],'-dtiff');
     end
 end
 
@@ -1292,7 +931,7 @@ end
 monkeyNaiveSet = [1,7,9,21];
 monkeyTrainedSet = [2,3,8,10];
 monkeyConfederateSet = [4,5,6,11,12,14,15,17];
-humanSet = [18,19,20]
+humanSet = [18,19,20];
 %blockedSet = [13,16,19,20];
 %blockedSet = [19];
 allSets = {monkeyNaiveSet, monkeyTrainedSet, monkeyConfederateSet,humanSet};
@@ -1318,7 +957,7 @@ end
 sz = 16;
 nSetGroup = length(allSets);
 figure('Name', 'MI scatter plot');
-set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
 hold on
 for iSetGroup = 1:nSetGroup
   for iSet = 1:length(allSets{iSetGroup}) 
@@ -1332,12 +971,12 @@ for iSetGroup = 1:nSetGroup
 end
 hold off
 axis([-0.1, 1.6, -0.1, 1.0]);
-xlabel('side Mutual Information', 'fontsize', FontSize, 'FontName', 'Arial');
-ylabel('target Mutual Information', 'fontsize', FontSize, 'FontName', 'Arial');
-set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+xlabel('side Mutual Information', 'fontsize', fontSize, 'FontName', 'Arial');
+ylabel('target Mutual Information', 'fontsize', fontSize, 'FontName', 'Arial');
+set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
 
-legendHandle = legend(setName(legendIndex), 'location', 'NorthEast');
-set(legendHandle, 'fontsize', FontSize, 'FontName', 'Arial', 'Interpreter', 'latex');
+legendHandle = legend(dataset{legendIndex}.setName, 'location', 'NorthEast');
+set(legendHandle, 'fontsize', fontSize, 'FontName', 'Arial', 'Interpreter', 'latex');
 
 set( gcf, 'PaperUnits','centimeters' );
 xSize = 20; ySize = 14;
@@ -1352,13 +991,13 @@ humanSetForReward = [18,19];
 allSetsForReward = {monkeySetForReward, humanSetForReward};
 labelGroupForReward = {'monkeys', 'humans'};
 
-%%{
+%{
 monkeyNaive = [1,7,9,21];
 monkeyTrained = [2,3,8,10];
 humanSetForReward = [18,19];
 allSetsForReward = {monkeyNaive, monkeyTrained, humanSetForReward};
 labelGroupForReward = {'naive monkeys', 'trained monkeys', 'humans'};
-%%}
+%}
 
 % compute reward distribution
 nSetGroupForReward = length(allSetsForReward);
@@ -1389,30 +1028,30 @@ end
 
 rewardPlotTitle = {'all participants', 'only effective pairs'};
 figure('Name', 'reward distribution plot');
-set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
 for iPlot = 1:2
   subplot(1,4,iPlot);
   boxplot(groupedReward{iPlot},groupIndex{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   axis([0.5, nSetGroupForReward + 0.5, 1.0, 4.01]);
-  xlabel('species', 'fontsize', FontSize, 'FontName', 'Arial');
+  xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
   if iPlot == 1
-    ylabel('mean per-session reward', 'fontsize', FontSize, 'FontName', 'Arial');
+    ylabel('mean per-session reward', 'fontsize', fontSize, 'FontName', 'Arial');
   end
-  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
 end
 for iPlot = 1:2
   subplot(1,4,2 + iPlot);
   boxplot(groupedFairness{iPlot},fairnessGroupIndex{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   axis([0.5, nSetGroupForReward + 0.5, 0.32, 0.501]);
-  xlabel('species', 'fontsize', FontSize, 'FontName', 'Arial');
+  xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
   if iPlot == 1
-    ylabel('reward share', 'fontsize', FontSize, 'FontName', 'Arial');
+    ylabel('reward share', 'fontsize', fontSize, 'FontName', 'Arial');
   end
-  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
 end
 
 set( gcf, 'PaperUnits','centimeters' );
@@ -1426,18 +1065,18 @@ print('-dpng', 'RewardDistributionPerSpecies', '-r600');
 
 
 figure('Name', 'reward distribution plot');
-set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
 for iPlot = 1:2
   subplot(1,2,iPlot);
   boxplot(groupedReward{iPlot},groupIndex{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   axis([0.5, nSetGroupForReward + 0.5, 1.0, 4.01]);
-  %xlabel('species', 'fontsize', FontSize, 'FontName', 'Arial');
+  %xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
   if iPlot == 1
-    ylabel('mean per-session reward', 'fontsize', FontSize, 'FontName', 'Arial');
+    ylabel('mean per-session reward', 'fontsize', fontSize, 'FontName', 'Arial');
   end
-  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
 end
 
 set( gcf, 'PaperUnits','centimeters' );
@@ -1452,19 +1091,19 @@ print('-dpng', 'RewardLevelPerSpecies', '-r600');
 
 
 figure('Name', 'sharing the spoils');
-set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
 
 for iPlot = 1:2
   subplot(1,2,iPlot);
   boxplot(groupedFairness{iPlot},fairnessGroupIndex{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   axis([0.5, nSetGroupForReward + 0.5, 0.32, 0.501]);
-  %xlabel('species', 'fontsize', FontSize, 'FontName', 'Arial');
+  %xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
   if iPlot == 1
-    ylabel('reward share', 'fontsize', FontSize, 'FontName', 'Arial');
+    ylabel('reward share', 'fontsize', fontSize, 'FontName', 'Arial');
   end
-  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
 end
 
 set( gcf, 'PaperUnits','centimeters' );
@@ -1484,8 +1123,13 @@ groupIndexRTshare = {[], []};
 groupRTdiff = {[], []};
 groupRewardClass = {[], []};
 
-minDRT = 150;
+minDRT = [200, 200];
+rewardPerCategory = zeros(2*nSetGroupForReward, 2);
+rewardConfPerCategory = zeros(2*nSetGroupForReward, 2);
+
 for iSetGroup = 1:nSetGroupForReward
+    rewardDistrPerCategory = {[], []; [], []};
+
     largeRTshareDistr = {[], []};
     for iSet = 1:length(allSetsForReward{iSetGroup}) 
         i = allSetsForReward{iSetGroup}(iSet);
@@ -1502,26 +1146,42 @@ for iSetGroup = 1:nSetGroupForReward
             nTestIndices = length(testIndices);
             RT = allRT{i, iFile}(:,testIndices);
             isOwnChoice = allOwnChoice{i, iFile}(:,testIndices);
+            isJointChoice = xor(isOwnChoice(1,:),isOwnChoice(2,:));
             
             rtDiff = abs(RT(1,:) - RT(2,:));
-            shareLargeRT(iFile) = nnz(rtDiff > minDRT)/length(rtDiff);            
-            isJointChoice = xor(isOwnChoice(1,:),isOwnChoice(2,:));
-            perTrialRewardClass = 1 + isJointChoice + 3*(iSetGroup-1);
-            
+            indexLargeDRT = rtDiff > minDRT(iSetGroup);
+       
+            shareLargeRT(iFile) = nnz(indexLargeDRT)/length(rtDiff);           
+            rewardValue = 1 + 2*isJointChoice + mean(isOwnChoice, 1);    
+            rewardDistrPerCategory{1, 1} = [rewardDistrPerCategory{1, 1}, rewardValue(indexLargeDRT)];
+            rewardDistrPerCategory{2, 1} = [rewardDistrPerCategory{2, 1}, rewardValue(~indexLargeDRT)];
+                        
             groupRTdiff{1} = [groupRTdiff{1}, rtDiff];
+            perTrialRewardClass = 1 + isJointChoice + 3*(iSetGroup-1);
             groupRewardClass{1} = [groupRewardClass{1}, perTrialRewardClass];
-            if (ismember(iFile, isPairProficient{i}))
+            if (isPairProficient{i}(iFile))
                 groupRTdiff{2} = [groupRTdiff{2}, rtDiff];
                 groupRewardClass{2} = [groupRewardClass{2}, perTrialRewardClass];        
+                rewardDistrPerCategory{1, 2} = [rewardDistrPerCategory{1, 2}, rewardValue(indexLargeDRT)];
+                rewardDistrPerCategory{2, 2} = [rewardDistrPerCategory{2, 2}, rewardValue(~indexLargeDRT)];
             end           
         end    
         largeRTshareDistr{1} = [largeRTshareDistr{1}, shareLargeRT];
         largeRTshareDistr{2} = [largeRTshareDistr{2}, shareLargeRT(isPairProficient{i})]; 
     end  
-    for i = 1:2 % for all and for proficient pairs                 
-        groupSize = length(largeRTshareDistr{i});
-        groupedLargeRTshare{i} = [groupedLargeRTshare{i}, largeRTshareDistr{i}];
-        groupIndexRTshare{i} = [groupIndexRTshare{i}, (iSetGroup - 1)*ones(1,groupSize)];        
+    for iPlot = 1:2 % for all and for proficient pairs                 
+        groupSize = length(largeRTshareDistr{iPlot});
+        groupedLargeRTshare{iPlot} = [groupedLargeRTshare{iPlot}, largeRTshareDistr{iPlot}];
+        groupIndexRTshare{iPlot} = [groupIndexRTshare{iPlot}, (iSetGroup - 1)*ones(1,groupSize)];        
+        
+        for iCategory = 1:2
+            rewardPerCategory(2*(iSetGroup-1) + iCategory, iPlot) = mean(rewardDistrPerCategory{iCategory, iPlot});
+            
+            n = length(rewardDistrPerCategory{iCategory, iPlot});
+            alpha = 0.05;
+            stdValue = std(rewardDistrPerCategory{iCategory, iPlot});
+            rewardConfPerCategory(2*(iSetGroup-1) + iCategory, iPlot) = calc_cihw(stdValue, n, alpha);
+        end    
     end    
 end
 
@@ -1529,31 +1189,31 @@ rewardPlotTitle = {'all participants', 'only effective pairs'};
 rewardRTgroupLabel = {'monkeys separate', 'monkeys joint', 'humans separate', 'humans joint'};
 
 figure('Name', 'reward distribution plot');
-set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
 for iPlot = 1:2
   subplot(1,2,iPlot);
   boxplot(groupRTdiff{iPlot},groupRewardClass{iPlot}, 'Widths', 0.7);
-  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', rewardRTgroupLabel, 'XTickLabelRotation', 45);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', rewardRTgroupLabel, 'XTickLabelRotation', 45);%'FontName', 'Times');
   %axis([0.5, nSetGroupForReward + 0.5, 1.0, 4.01]);
-  %xlabel('grou', 'fontsize', FontSize, 'FontName', 'Arial');
+  %xlabel('grou', 'fontsize', fontSize, 'FontName', 'Arial');
   if iPlot == 1
-    ylabel('reaction time differences', 'fontsize', FontSize, 'FontName', 'Arial');
+    ylabel('reaction time differences', 'fontsize', fontSize, 'FontName', 'Arial');
   end
-  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
 end
 %{
 for iPlot = 1:2
   subplot(1,4,2 + iPlot);
   boxplot(groupedLargeRTshare{iPlot},groupIndexRTshare{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   %axis([0.5, 2.5, 1.0, 4.01]);
-  xlabel('species', 'fontsize', FontSize, 'FontName', 'Arial');
+  xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
   if iPlot == 1
-    ylabel('share of trials with dRT > 150', 'fontsize', FontSize, 'FontName', 'Arial');
+    ylabel('share of trials with dRT > 150', 'fontsize', fontSize, 'FontName', 'Arial');
   end
-  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
 end
 %}
 set( gcf, 'PaperUnits','centimeters' );
@@ -1563,6 +1223,48 @@ set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
 print ( '-depsc', '-r600','RTandCoordinationPerSpecies');
 print('-dpdf', 'RTandCoordinationPerSpecies', '-r600');
 print('-dpng', 'RTandCoordinationPerSpecies', '-r600');
+
+rewardRTgroupLabel = {'monkeys, choice delay', 'monkeys, no delay', 'humans, choice delay', 'humans, no delay'};
+
+figure('Name', 'reward distribution plot');
+set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+
+for iPlot = 1:2
+  nPoint = length(rewardConfPerCategory(:,iPlot));
+  subplot(1,2,iPlot);
+  errorbar(rewardPerCategory(:,iPlot),rewardConfPerCategory(:,iPlot), 's','MarkerSize',5,...
+    'MarkerEdgeColor','red','MarkerFaceColor','red');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTick', 1:nPoint, 'XTickLabel', rewardRTgroupLabel, 'XTickLabelRotation', 45);%'FontName', 'Times');
+  axis([0.5, nPoint + 0.5, 2.95, 3.45]);
+  %xlabel('grou', 'fontsize', fontSize, 'FontName', 'Arial');
+  if iPlot == 1
+    ylabel('average reward', 'fontsize', fontSize, 'FontName', 'Arial');
+  end
+  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+end
+%{
+for iPlot = 1:2
+  subplot(1,4,2 + iPlot);
+  boxplot(groupedLargeRTshare{iPlot},groupIndexRTshare{iPlot}, 'Widths', 0.8);
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  %axis([0.5, 2.5, 1.0, 4.01]);
+  xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
+  if iPlot == 1
+    ylabel('share of trials with dRT > 150', 'fontsize', fontSize, 'FontName', 'Arial');
+  end
+  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+end
+%}
+set( gcf, 'PaperUnits','centimeters' );
+xSize = 16; ySize = 14;
+xLeft = 0; yTop = 0;
+set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+print ( '-depsc', '-r600','RTandRewardPerSpecies');
+print('-dpdf', 'RTandRewardPerSpecies', '-r600');
+print('-dpng', 'RTandRewardPerSpecies', '-r600');
+
 
 %% plot employed strategies
 nStrategy = length(strategyNames);
@@ -1597,7 +1299,7 @@ end
 basicStrategyBorder = max(basicStrategyIndex) + 0.5;
 rewardPlotTitle = {'all participants', 'only effective pairs'};
 figure('Name', 'reward distribution plot');
-set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
 for iPlot = 1:2
   maxStrategyProb = max(max(strategyDistribution{iPlot}));
   subplot(2,1,iPlot);
@@ -1605,18 +1307,18 @@ for iPlot = 1:2
   bar(strategyDistribution{iPlot}');
   plot([basicStrategyBorder,basicStrategyBorder], [0, maxStrategyProb + 0.05], 'k--')
   hold off
-  title(rewardPlotTitle{iPlot}, 'fontsize', FontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', strategyLabels, 'XTickLabelRotation',45);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
+  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', strategyLabels, 'XTickLabelRotation',45);%'FontName', 'Times');
   axis([0.5, nStrategy + 1.5, 0, maxStrategyProb + 0.02]);
   if iPlot == 1
     legendHandle = legend(labelGroupForReward, 'location', 'NorthEast');
-    set(legendHandle, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+    set(legendHandle, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
   end      
  % if iPlot == 2
- %     xlabel('strategy', 'fontsize', FontSize, 'FontName', 'Arial');
+ %     xlabel('strategy', 'fontsize', fontSize, 'FontName', 'Arial');
  % end
-  ylabel('relative frequency', 'fontsize', FontSize, 'FontName', 'Arial');
-  set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  ylabel('relative frequency', 'fontsize', fontSize, 'FontName', 'Arial');
+  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
 end
 
 set( gcf, 'PaperUnits','centimeters' );
@@ -1639,9 +1341,9 @@ isOwnChoice = allOwnChoice{iSet,iFile};
 sideChoice = allSideChoice{iSet,iFile};
 maxXvalue = length(isOwnChoice(1,:));
 
-FontSize = 8;
+fontSize = 8;
 figure('Name', [setName{iSet} ' block-wise plot']);
-set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
 
 subplot(2,4,1:2);
 hold on
@@ -1650,12 +1352,12 @@ fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
 h1 = plot(movmean(isOwnChoice(1,:), 8), 'r-', 'linewidth', lineWidth+1);
 h2 = plot(movmean(isOwnChoice(2,:), 8), 'b-', 'linewidth', lineWidth);
 hold off
-set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1], 'XTick', []);%'FontName', 'Times');
+set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1], 'XTick', []);%'FontName', 'Times');
 axis([0.8, maxXvalue + 0.01, -0.01, 1.9]);
-ylabel( {'Share of own', ' choice in 8 rounds'}, 'fontsize', FontSize, 'FontName', 'Arial');
-title('(a)', 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+ylabel( {'Share of own', ' choice in 8 rounds'}, 'fontsize', fontSize, 'FontName', 'Arial');
+title('(a)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
 legendHandle = legend([h1, h2], 'Human confederate', 'Monkey', 'location', 'NorthWest');
-set(legendHandle, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+set(legendHandle, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
 
 
 totalReward = 1 + 2.5*(isOwnChoice(1,:)+isOwnChoice(2,:));
@@ -1666,37 +1368,37 @@ fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
     [0.9, 0.9, 3.6, 3.6], [0.8,0.8,0.8]);
 h1 = plot(totalReward, 'm-', 'linewidth', lineWidth);
 hold off
-set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( gca, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
 axis([0.8, maxXvalue + 0.2, 0.9, 3.6]);
-ylabel( ' Average reward ', 'fontsize', FontSize, 'FontName', 'Arial');
-title('(b)', 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+ylabel( ' Average reward ', 'fontsize', fontSize, 'FontName', 'Arial');
+title('(b)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
 
 
 subplot(2,4,3)
 boxplot(vertcat(miValueBlock{monkeyBlockSetIndex}));
-ylabel('Mutual information', 'fontsize', FontSize,  'FontName', 'Arial');
-set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTick', []);%'FontName', 'Times');
+ylabel('Mutual information', 'fontsize', fontSize,  'FontName', 'Arial');
+set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTick', []);%'FontName', 'Times');
 axis([0.5,3.5, -0.03, 0.77]);
-title('(c)', 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+title('(c)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
 
 subplot(2,4,4)
 boxplot(vertcat(miValueBlock{humanBlockSetIndex}));
-set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTick', []);%'FontName', 'Times');
+set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTick', []);%'FontName', 'Times');
 axis([0.5,3.5, -0.03, 0.77]);
-title('(d)', 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+title('(d)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
 
 subplot(2,4,7)
 boxplot(vertcat(teBlock1{monkeyBlockSetIndex}));
-ylabel('Transfer entropy', 'fontsize', FontSize,  'FontName', 'Arial');
-set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+ylabel('Transfer entropy', 'fontsize', fontSize,  'FontName', 'Arial');
+set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
 axis([0.5,3.5, -0.01, 0.34]);
-title('(e)', 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+title('(e)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
 
 subplot(2,4,8)
 boxplot(vertcat(teBlock1{humanBlockSetIndex}));
-set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
 axis([0.5,3.5, -0.01, 0.34]);
-title('(f)', 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+title('(f)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
 
 set( gcf, 'PaperUnits','centimeters' );
 %    set(gcf,'PaperSize',fliplr(get(gcf,'PaperSize')))
@@ -1717,23 +1419,23 @@ else
 end
 for iSet = 1:nSet
     nFileOfInterest = length(fileOfInterest{iSet});
-    titleList = unique(fileCaption{iSet}, 'stable');
+    titleList = unique(dataset{iSet}.captions, 'stable');
     for iFile = 1:nFileOfInterest
         trueFileIndex = fileOfInterest{iSet}(iFile);
         isOwnChoice = allOwnChoice{iSet,trueFileIndex};
         sideChoice = allSideChoice{iSet,trueFileIndex};
         maxXvalue = length(isOwnChoice(1,:));
         figure
-        set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
         totalReward = 1 + 2.5*(isOwnChoice(1,:)+isOwnChoice(2,:));
         totalReward(totalReward == 6) = 2;
         subplot(5, 1, 1);
         plot(totalReward, 'k-', 'linewidth', lineWidth);
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        set( gca, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
         axis([0.8, maxXvalue + 0.2, 0.5, 4.9]);
         legendHandle = legend('Joint reward', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', FontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
-        title(titleList{trueFileIndex}, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+        set(legendHandle, 'fontsize', fontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+        title(titleList{trueFileIndex}, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
         
         subplot(5, 1, 2);
         hold on
@@ -1746,10 +1448,10 @@ for iSet = 1:nSet
         h1 = plot(isOwnChoice(1,:), 'r-', 'linewidth', lineWidth+1);
         h2 = plot(isOwnChoice(2,:), 'b-', 'linewidth', lineWidth);
         hold off
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1]);%'FontName', 'Times');
+        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1]);%'FontName', 'Times');
         axis([0.8, maxXvalue + 0.01, -0.01, 1.8]);
         legendHandle = legend([h1, h2], 'Share own choices P1', 'Share own choices P2', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', FontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+        set(legendHandle, 'fontsize', fontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
         
         subplot(5, 1, 3);
         hold on
@@ -1762,10 +1464,10 @@ for iSet = 1:nSet
         h3 = plot(targetTE1{iSet, trueFileIndex}, 'r-', 'linewidth', lineWidth+1);
         h4 = plot(targetTE2{iSet, trueFileIndex}, 'b-', 'linewidth', lineWidth+1);
         hold off
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        set( gca, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
         axis([0.8, maxXvalue + 0.2, 1.01*minValue, 1.1*maxValue]);
         legendHandle = legend([h1, h2, h3, h4], '$\mathrm{te_{P1\rightarrow P2}}$', '$\mathrm{te_{P2\rightarrow P1}}$', '$\mathrm{TE_{P1\rightarrow P2}}$', '$\mathrm{TE_{P2\rightarrow P1}}$', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', FontSize-6, 'FontName', 'Times', 'Interpreter', 'latex');
+        set(legendHandle, 'fontsize', fontSize-6, 'FontName', 'Times', 'Interpreter', 'latex');
         
         subplot(5, 1, 4);
         hold on
@@ -1778,10 +1480,10 @@ for iSet = 1:nSet
         h1 = plot(sideChoice(1,:), 'r-', 'linewidth', lineWidth+1);
         h2 = plot(sideChoice(2,:), 'b--', 'linewidth', lineWidth);
         hold off
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1]);%'FontName', 'Times');
+        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1]);%'FontName', 'Times');
         axis([0.8, maxXvalue + 0.2, -0.01, 1.8]);
         legendHandle = legend([h1, h2], 'Share left choices P1', 'Share left choices P2', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', FontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+        set(legendHandle, 'fontsize', fontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
         
         subplot(5, 1, 5);
         hold on
@@ -1792,11 +1494,11 @@ for iSet = 1:nSet
         h1 = plot(locMutualInf{iSet, trueFileIndex}, 'Color', [0.7, 0.3, 0.7], 'linewidth', lineWidth);
         h2 = plot(mutualInf{iSet, trueFileIndex}, 'Color', [0.4, 0.1, 0.4], 'linewidth', lineWidth+1);
         hold off
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        set( gca, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
         %axis([0.8, maxXvalue + 0.2, 1.01*minMIvalue, 1.01*maxMIvalue]);
         axis([0.8, maxXvalue + 0.2, 0, 1.01*maxMIvalue]);
         legendHandle = legend([h1, h2], '$\mathrm{i(P1,P2)}$', '$\mathrm{MI(P1,P2)}$', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', FontSize-6, 'FontName', 'Times', 'Interpreter', 'latex');
+        set(legendHandle, 'fontsize', fontSize-6, 'FontName', 'Times', 'Interpreter', 'latex');
         
         
         set( gcf, 'PaperUnits','centimeters' );
