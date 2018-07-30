@@ -1,9 +1,16 @@
 function [meanStrategyProbability, logMeanStrategyProbability, strategyProbability] = ...
-    check_strategy_probability(target, side, RT, strategy)
+    check_strategy_probability(target, side, strategy, RT, minDRT)
+
+if (~exist('RT', 'var'))
+    RT = zeros(size(target));
+end
+if (~exist('minDRT', 'var'))
+    minDRT = 0;
+end
 
 % for each trial starting from 2nd compute row and column indices
 % describing the corresponding entry in strategy matrix
-[rowIndex, colIndex] = compute_strategy_entries(target, side, RT);
+[rowIndex, colIndex] = compute_strategy_entries(target, side, RT, minDRT);
 
 % compute expectation of own choices for each time point basedon the strategy
 ownChoiceExpectation = target; % preallocate and initialize dirst trials
