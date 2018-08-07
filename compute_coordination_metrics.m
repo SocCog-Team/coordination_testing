@@ -1,4 +1,4 @@
-function compute_coordination_metrics(dataset, cfg, resultFilename)
+function [ sessionMetrics ] = compute_coordination_metrics(dataset, cfg, resultFilename)
 
 if ~exist('resultFilename', 'var') || isempty(resultFilename)
     resultFilename = [];
