@@ -963,9 +963,9 @@ for iSetGroup = 1:nSetGroup
   for iSet = 1:length(allSets{iSetGroup}) 
     i = allSets{iSetGroup}(iSet);
     if ((setMarker{iSetGroup} == 's') || (setMarker{iSetGroup} == 'o') || (setMarker{iSetGroup} == 'd'))
-        scatter([sideMIvalueWhole{i, :}], [miValueWhole{i, :}], sz, selectedColorList(iSet, :), setMarker{iSetGroup}, 'filled');
+        scatter(sessionMetrics(i).miSide, sessionMetrics(i).miTarget, sz, selectedColorList(iSet, :), setMarker{iSetGroup}, 'filled');
     else    
-        scatter([sideMIvalueWhole{i, :}], [miValueWhole{i, :}], sz, selectedColorList(iSet, :), setMarker{iSetGroup});
+        scatter(sessionMetrics(i).miSide, sessionMetrics(i).miTarget, sz, selectedColorList(iSet, :), setMarker{iSetGroup});
     end    
   end  
 end
@@ -975,7 +975,7 @@ xlabel('side Mutual Information', 'fontsize', fontSize, 'FontName', 'Arial');
 ylabel('target Mutual Information', 'fontsize', fontSize, 'FontName', 'Arial');
 set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
 
-legendHandle = legend(dataset{legendIndex}.setName, 'location', 'NorthEast');
+legendHandle = legend(cellfun(@(x) x.setName, dataset(legendIndex), 'UniformOutput', false), 'location', 'NorthEast');
 set(legendHandle, 'fontsize', fontSize, 'FontName', 'Arial', 'Interpreter', 'latex');
 
 set( gcf, 'PaperUnits','centimeters' );
@@ -984,6 +984,70 @@ xLeft = 0; yTop = 0;
 set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
 print ( '-depsc', '-r600','MutualInformationScatterPlot');
 print('-dpdf', 'MutualInformationScatterPlot', '-r600');
+
+
+%% plot overall reward scatter plot
+monkeyNaiveSet = [1,7,9,21];
+monkeyTrainedSet = [2,3,8,10];
+monkeyConfederateSet = [4,5,6,11,12,14,15,17];
+humanSet = [18,19,20];
+%blockedSet = [13,16,19,20];
+%blockedSet = [19];
+allSets = {monkeyNaiveSet, monkeyTrainedSet, monkeyConfederateSet,humanSet};
+%allSets = {naiveSet, trainedSet, humanConfederateSet};
+setMarker = {'o', 's', 'd', '+', 'x'};
+selectedColorList = [colorList(1,:); colorList(4,:); colorList(5,:); colorList(6,:); colorList(8,:); colorList(9,:); colorList(10,:); colorList(12,:); colorList(14,:); colorList(15,:)];
+legendIndex = [allSets{:}];
+
+totalFileIndex = 1;
+%{
+nPoint = sum(nFile);
+xScatterPlot = zeros(nPoint, 1);
+yScatterPlot = zeros(nPoint, 1);
+colorScatterPlot = zeros(nPoint, 3);
+for iSet = 1:nSet
+    for iFile = 1:nFile(iSet)
+        xScatterPlot(totalFileIndex) = sideMIvalueWhole{iSet, iFile};
+        yScatterPlot(totalFileIndex) = miValueWhole{iSet, iFile};
+        colorScatterPlot(totalFileIndex,:) = colorList(iSet, :);
+    end
+end    
+%}
+sz = 16;
+nSetGroup = length(allSets);
+figure('Name', 'Reward scatter plot');
+set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+hold on
+for iSetGroup = 1:nSetGroup
+  for iSet = 1:length(allSets{iSetGroup}) 
+    i = allSets{iSetGroup}(iSet);
+    xData = sessionMetrics(i).dltReward;
+    yData = max([max(sessionMetrics(i).teTarget, [], 1); max(sessionMetrics(i).teSide, [], 1)], [], 1);
+
+    if ((setMarker{iSetGroup} == 's') || (setMarker{iSetGroup} == 'o') || (setMarker{iSetGroup} == 'd'))
+        scatter(xData, yData, sz, selectedColorList(iSet, :), setMarker{iSetGroup}, 'filled');
+    else    
+        scatter(xData, yData, sz, selectedColorList(iSet, :), setMarker{iSetGroup});
+    end    
+  end  
+end
+hold off
+axis([-0.1, 1.2, 0, 0.7]);
+xlabel('Non-random reward', 'fontsize', fontSize, 'FontName', 'Arial');
+ylabel('Average reward', 'fontsize', fontSize, 'FontName', 'Arial');
+set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+
+legendHandle = legend(cellfun(@(x) x.setName, dataset(legendIndex), 'UniformOutput', false), 'location', 'North');
+set(legendHandle, 'fontsize', fontSize, 'FontName', 'Arial', 'Interpreter', 'latex');
+
+set( gcf, 'PaperUnits','centimeters' );
+xSize = 20; ySize = 14;
+xLeft = 0; yTop = 0;
+set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+print ( '-depsc', '-r600','RewardScatterPlot');
+print('-dpdf', 'RewardScatterPlot', '-r600');
+
+%% RT prediction
 
 %% plot reward distribution in human and monkey pairs
 monkeySetForReward = [1,7,9,21, 2,3,8,10];
