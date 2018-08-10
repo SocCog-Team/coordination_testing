@@ -1,4 +1,4 @@
-function [rowIndex, colIndex] = compute_strategy_entries(target, side, RT, minDRT)
+function [rowIndex, colIndex, header_struct] = compute_strategy_entries(target, side, RT, minDRT)
 % stategy is described by a table of 4x12, with the following structure:
 %
 % orintation          | partner invisible | partner selects I | partner selects A
@@ -7,6 +7,21 @@ function [rowIndex, colIndex] = compute_strategy_entries(target, side, RT, minDR
 % P1 left  | P1 right |2, 1| ...
 % P1 right | P1 left  |3, 1| ...
 % P1 right | P1 right |4, 1| ...
+
+
+% if the user requested header_struct only return the headers for rows and
+% columns
+if (nargout < 3)
+     header_struct = struct();
+else
+    disp('compute_strategy_entries called with 3 outputs: this will only return the header_truct and no data.');
+    rowIndex = [];
+    colIndex = [];
+    header_struct.rows = {'P1_left_last_P1_left_current', 'P1_left_last_P1_right_current', 'P1_right_last_P1_left_current', 'P1_right_last_P1_right_current'};
+    header_struct.cols = {'II_OtherInvisible', 'IA_OtherInvisible', 'AI_OtherInvisible', 'AA_OtherInvisible', 'II_OtherSeletcsI', 'IA_OtherSeletcsI', 'AI_OtherSeletcsI', 'AA_OtherSeletcsI', 'II_OtherSeletcsA', 'IA_OtherSeletcsA', 'AI_OtherSeletcsA', 'AA_OtherSeletcsA'};
+    return
+end
+
 
 if ((~exist('RT', 'var')) || (~exist('minDRT', 'var')) || (minDRT <= 0))
     actionOfPartnerVisible = zeros(2, length(target) - 1);
