@@ -156,6 +156,19 @@ outCell = {['Coordination summary: ', num2str(coordinationStruct.shortOutcome), 
 coordinationStruct.SummaryString = outString;
 coordinationStruct.SummaryCell = outCell;
 
+key_value_struct.alpha = alpha;
+key_value_struct.P_TargetChoiceCoord = targetChoiceIndependence;
+key_value_struct.P_SideChoiceCoord = sideChoiceIndependence;
+key_value_struct.P_SameChoiceCoord = noSamePreference;
+key_value_struct.Z_crit_Selfishness = zCritical;
+key_value_struct.Z_Selfishness_A = zScore(1);
+key_value_struct.Z_Selfishness_B = zScore(B);
+key_value_struct.P_MatchAvoidance_A = noMatchingAvoidance(1); 
+key_value_struct.P_MatchAvoidance_B = noMatchingAvoidance(2); 
+
+coordinationStruct.key_value_struct = key_value_struct;
+
+
 end
 %% old version
 %{
