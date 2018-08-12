@@ -1,10 +1,23 @@
-function [ coordination_test_results ] = fn_compute_coordination_metrics_session( isOwnChoiceArray, sideChoiceArray, PerTrialStruct, cfg )
+function [ coordination_metrics_struct, coordination_metrics_row, coordination_metrics_row_header ] = fn_compute_coordination_metrics_session( isOwnChoiceArray, sideChoiceArray, PerTrialStruct, cfg )
 %FN_COMPUTE_COORDINATION_METRICS_SESSION Summary of this function goes here
 %   This is supposed to do the same as compute_coortdination_mtrics, but
 %   only for a single session and expects to get the data passed in instead
 %   of being passed a (list of) file name(s) for the data set(s)
 
-coordination_test_results = struct();
+
+coordination_metrics_row = [];
+coordination_metrics_row_header = {};
+linearize_coordination_metrics_struct = 0;
+
+if nargout > 1
+    linearize_coordination_metrics_struct = 1;
+    structs_to_linearize_list = {'sessionMetrics', 'coordination_struct', 'sessionMetrics_by_visibilty_blocks'};
+end
+if nargout > 2
+    create_coordination_metrics_row_header = 1;
+end
+
+coordination_metrics_struct = struct();
 
 isTrialVisible = PerTrialStruct.isTrialInvisible_AB';
 targetAcquisitionTime = [PerTrialStruct.A_TargetAcquisitionRT'; PerTrialStruct.B_TargetAcquisitionRT'];
@@ -13,23 +26,23 @@ targetAcquisitionTime = [PerTrialStruct.A_TargetAcquisitionRT'; PerTrialStruct.B
 
 %-------------------- initialization --------------------
 
-sessionMetrics = struct('teTarget', {}, ...
-    'teSide', {},  ...
-    'miTarget', {},...
-    'miTargetSignif', {}, ...
-    'miTargetThresh', {}, ...
-    'miSide', {}, ...
-    'miSideSignif', {}, ...
-    'miSideThresh', {}, ...
-    'playerReward', {}, ...
-    'averReward', {}, ...
-    'isPairProficient', {}, ...
-    'dltReward', {}, ...
-    'dltSignif', {}, ...
-    'dltConfInterval', {}, ...
-    'shareOwnChoices', {}, ...
-    'shareLeftChoices', {}, ...
-    'shareJointChoices', {});
+% sessionMetrics = struct('teTarget', {}, ...
+%     'teSide', {},  ...
+%     'miTarget', {},...
+%     'miTargetSignif', {}, ...
+%     'miTargetThresh', {}, ...
+%     'miSide', {}, ...
+%     'miSideSignif', {}, ...
+%     'miSideThresh', {}, ...
+%     'playerReward', {}, ...
+%     'averReward', {}, ...
+%     'isPairProficient', {}, ...
+%     'dltReward', {}, ...
+%     'dltSignif', {}, ...
+%     'dltConfInterval', {}, ...
+%     'shareOwnChoices', {}, ...
+%     'shareLeftChoices', {}, ...
+%     'shareJointChoices', {});
 
 % strategy - probability to select own target given the state, incorporating
 % previous outcome, current stimuli location and current partner's choice (if visible)
@@ -58,16 +71,8 @@ coordStructBlock = {};   % outcomes of coordination tests
 blockBorder = {};
 
 %---------------- dataset processing --------------------
-totalFileIndex = 1;
 
-% debug aid
-%if (strmatch(dataset{iSet}.setName, 'MagnusFlaffusNaive'))
-%    disp('Doh...');
-%end
-maxValue = 0;
-minValue = 0;
-minMIvalue = 0;
-maxMIvalue = 0;
+
 
 sessionMetrics.teTarget = zeros(2, 1);
 sessionMetrics.teSide = zeros(2, 1);
@@ -101,8 +106,7 @@ deltaRewardBlock = NaN(1, 3);
 deltaSignifBlock = NaN(1, 3);
 
 blockBorder = zeros(1, 2);
-playerStrategy = zeros(1, 8);
-playerNStateVisit = zeros(1, 8);
+
 
 % analyse all sessions for the given players pair
 
@@ -113,14 +117,22 @@ testIndices = fistTestIndex:nTrial;
 nTestIndices = length(testIndices);
 
 % estimate strategy over equilibrium trials
+% this analysis results in the strategy description vectors used in the
+% transparent games simulations.
 [playerStrategy, playerNStateVisit] = ...
     estimate_strategy(isOwnChoiceArray(:, testIndices), sideChoiceArray(:,testIndices), targetAcquisitionTime(:,testIndices), cfg.minDRT);
+
+strategy_struct.playerStrategy = playerStrategy;
+strategy_struct.playerNStateVisit = playerNStateVisit;
+
 
 [sessionMetrics.averReward, ...
     sessionMetrics.dltReward, ...
     sessionMetrics.dltSignif, ...
     sessionMetrics.dltConfInterval(:)] = ...
     calc_total_average_reward(isOwnChoiceArray(:,testIndices), sideChoiceArray(:,testIndices));
+
+
 
 %target choices quantities
 sessionMetrics.shareOwnChoices(:) = mean(isOwnChoiceArray(:, testIndices), 2);
@@ -129,8 +141,8 @@ sessionMetrics.playerReward(:) = 1 + sessionMetrics.shareOwnChoices(:) + 2*sessi
 x = isOwnChoiceArray(1, testIndices);
 y = isOwnChoiceArray(2, testIndices);
 [sessionMetrics.miTarget, ...
-    sessionMetrics.miTargetsignif, ...
-    sessionMetrics.miTargetthresh] = calc_whole_mutual_information(x, y, cfg.pValueForMI);
+    sessionMetrics.miTargetSignif, ...
+    sessionMetrics.miTargetThresh] = calc_whole_mutual_information(x, y, cfg.pValueForMI);
 teValue1 = calc_transfer_entropy(y, x, cfg.memoryLength, nTestIndices);
 teValue2 = calc_transfer_entropy(x, y, cfg.memoryLength, nTestIndices);
 sessionMetrics.teTarget(:) = [teValue1(1); teValue2(1)];
@@ -148,9 +160,12 @@ sessionMetrics.teSide(:) = [teValue1(1); teValue2(1)];
 
 % perform coordination tests.
 % To simplify visual inspection, results of all tests are qathered in single table
-coordStruct(totalFileIndex) = ...
+coordStruct = ...
     check_coordination(isOwnChoiceArray(:,testIndices), sideChoiceArray(:,testIndices));
 
+
+%%% THE FOLLOWING SHOULD MOVE OUT INTO the caller, as this is showing per
+%%% trial data instead of per session aggregates
 % compute MI and TE, as well as local MI and TE in windows
 x = isOwnChoiceArray(1, :);
 y = isOwnChoiceArray(2, :);
@@ -160,10 +175,20 @@ localTargetTE1 = calc_local_transfer_entropy(y, x, cfg.memoryLength, cfg.minSamp
 localTargetTE2 = calc_local_transfer_entropy(x, y, cfg.memoryLength, cfg.minSampleNum);
 locMutualInf = calc_local_mutual_information(x, y, cfg.minSampleNum);
 mutualInf = calc_mutual_information(x, y, cfg.minSampleNum);
-minValue = min([minValue, min(localTargetTE1), min(localTargetTE2)]);
-maxValue = max([maxValue, max(localTargetTE1), max(localTargetTE2)]);
-minMIvalue = min([minMIvalue, min(locMutualInf)]);
-maxMIvalue = max([maxMIvalue, max(locMutualInf)]);
+% minValue = min([minValue, min(localTargetTE1), min(localTargetTE2)]);
+% maxValue = max([maxValue, max(localTargetTE1), max(localTargetTE2)]);
+% minMIvalue = min([minMIvalue, min(locMutualInf)]);
+% maxMIvalue = max([maxMIvalue, max(locMutualInf)]);
+
+per_trial.targetTE1 = targetTE1;
+per_trial.targetTE2 = targetTE2;
+per_trial.localTargetTE1 = localTargetTE1;
+per_trial.localTargetTE2 = localTargetTE2;
+per_trial.mutualInf = mutualInf;
+per_trial.locMutualInf = locMutualInf;
+%%% THE PRECEEDING SHOULD MOVE OUT
+
+
 
 % if there are blocked segments, compute statistics for each blcok
 dataLength = length(x);
@@ -214,15 +239,106 @@ for iBlock = 1:nBlock
         sideTEblock2(1, iBlock) = teValue(1);
         
         coordStructBlock{1, iBlock} = ...
-            check_coordination(isOwnChoiceArray(:,index), sideChoiceArray(:,index), 5*10^-5);
+            check_coordination(isOwnChoiceArray(:,index), sideChoiceArray(:,index), cfg.check_coordination_alpha);
     end
 end
 
+% export these
+sessionMetrics_by_visibilty_blocks.miValueBlock = miValueBlock;
+sessionMetrics_by_visibilty_blocks.miSignifBlock = miSignifBlock;
+sessionMetrics_by_visibilty_blocks.miSideValueBlock = miSideValueBlock;
+sessionMetrics_by_visibilty_blocks.miSideSignifBlock = miSideSignifBlock;
+sessionMetrics_by_visibilty_blocks.teBlock1 = teBlock1;
+sessionMetrics_by_visibilty_blocks.teBlock2 = teBlock2;
+sessionMetrics_by_visibilty_blocks.sideTEblock1 = sideTEblock1;
+sessionMetrics_by_visibilty_blocks.sideTEblock2 = sideTEblock2;
+sessionMetrics_by_visibilty_blocks.averageRewardBlock = averageRewardBlock;
+sessionMetrics_by_visibilty_blocks.deltaRewardBlock = deltaRewardBlock;
+sessionMetrics_by_visibilty_blocks.deltaSignifBlock = deltaSignifBlock;
+%sessionMetrics_by_visibilty_blocks.coordination_struct_block = coordStructBlock;
 
-proficiencyThreshold = 2.75;
-sessionMetrics.isPairProficient = check_pairs_proficiency(sessionMetrics.playerReward, proficiencyThreshold);
 
+%proficiencyThreshold = 2.75;
+sessionMetrics.isPairProficient = check_pairs_proficiency(sessionMetrics.playerReward, cfg.proficiencyThreshold);
+
+coordination_metrics_struct.strategy_struct = strategy_struct;
+coordination_metrics_struct.sessionMetrics = sessionMetrics;
+coordination_metrics_struct.coordination_struct = coordStruct;
+coordination_metrics_struct.sessionMetrics_by_visibilty_blocks = sessionMetrics_by_visibilty_blocks;
+coordination_metrics_struct.coordination_struct_by_visibilty_blocks = coordStructBlock;
+coordination_metrics_struct.per_trial = per_trial;
+
+
+%TODO:
+%   linearize the data and create a matchig header
+
+
+if (linearize_coordination_metrics_struct)
+    coordination_metrics_row = fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'});
+    % linearize sessionMetrics, coordination_struct, sessionMetrics_by_visibilty_blocks,
+    %coordination_metrics_row = [sessionMetrics.teTarget(1), sessionMetrics.teTarget(2), sessionMetrics.teSide(1), sessionMetrics.teSide(2), ...
+    %    sessionMetrics.miTarget, sessionMetrics.miTargetSignif, sessionMetrics.miTargetThresh, sessionMetrics.miSide, sessionMetrics.miSideSignif, sessionMetrics.miSideThresh , ...
+    %    sessionMetrics, ...
+    %    ];
+end
+if (create_coordination_metrics_row_header)
+    [~, coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'});
+    %coordination_metrics_row_header = {'TransEntTarget_A2B', 'TransEntTarget_B2A', 'TransEntSide_A2B', 'TransEntSide_B2A', ...
+    %    'MutInfTarget', 'MutInfTargetIsSig', 'MutInfTargetThreshold', 'MutInfSide', 'MutInfSideIsSig', 'MutInfSideThreshold', ...
+    %    };
+end
 
 return
 end
 
+function [data_row, header_list] = fn_linearize_struct(input_struct, list_handling_command, list_suffix_list)
+data_row = [];
+header_list = {};
+
+convert_fieldnames_2_column_names = 0;
+if (nargout > 1)
+    convert_fieldnames_2_column_names = 1;
+end
+
+field_list = fieldnames(input_struct);
+
+for i_field = 1 : length(field_list)
+    current_data = input_struct.(field_list{i_field});
+    if isstruct(current_data)
+        % oh, this is a struct so recurse
+        error('Not implemented yet.');
+        [sub_data_row, sub_header_list] = fn_linearize_struct(current_data, list_handling_command, list_suffix_list);
+        data_row = [data_row, sub_data_row];
+        if (convert_fieldnames_2_column_names)
+            header_list = [header_list, sub_header_list];
+        end
+        continue
+    else
+        if length(current_data) == 1
+            % is scalar value, just grab value and name
+            data_row(end + 1) = current_data;
+            if (convert_fieldnames_2_column_names)
+                header_list{end + 1} = field_list{i_field};
+            end
+        else
+            switch list_handling_command
+                case 'add_suffix'
+                    if length(current_data) == length(list_suffix_list)
+                        for i_item = 1 : length(current_data)
+                            data_row(end + 1) = current_data(i_item);
+                            if (convert_fieldnames_2_column_names)
+                                header_list{end + 1} = [field_list{i_field}, '_', list_suffix_list{i_item}];
+                            end
+                        end
+                    else
+                        error(['Encountered data item with more elements than suffixes supplied in list_suffix_list, fix this.']);
+                    end
+                otherwise
+                    error(['Encountered unhandled list_handling_command: ', list_handling_command]);
+            end
+        end
+    end
+end
+
+return
+end
