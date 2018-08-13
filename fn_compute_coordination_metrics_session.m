@@ -66,7 +66,7 @@ sideTEblock2 = {};
 averageRewardBlock = {}; % average reward of two players
 deltaRewardBlock = {};   % non-random reward component of each player
 deltaSignifBlock = {};   % significance of non-random reward components
-coordStructBlock = {};   % outcomes of coordination tests
+coordStructBlock = cell(1, 3);   % outcomes of coordination tests
 
 blockBorder = {};
 
@@ -116,6 +116,11 @@ fistTestIndex = max(cfg.minStationarySegmentStart, nTrial-cfg.stationarySegmentL
 testIndices = fistTestIndex:nTrial;
 nTestIndices = length(testIndices);
 
+if isempty(testIndices)
+    disp(['fn_compute_coordination_metrics_session: found less than', num2str(cfg.minStationarySegmentStart), ' trials, coordination metrics will not be calculated.']);
+    return
+end
+    
 % estimate strategy over equilibrium trials
 % this analysis results in the strategy description vectors used in the
 % transparent games simulations.
@@ -215,6 +220,7 @@ else
     blockIndices{1} = 20:dataLength;
     nBlock = 1;
 end
+
 for iBlock = 1:nBlock
     index = blockIndices{iBlock};
     blockLength = length(index);
@@ -243,6 +249,7 @@ for iBlock = 1:nBlock
     end
 end
 
+
 % export these
 sessionMetrics_by_visibilty_blocks.miValueBlock = miValueBlock;
 sessionMetrics_by_visibilty_blocks.miSignifBlock = miSignifBlock;
@@ -269,23 +276,83 @@ coordination_metrics_struct.coordination_struct_by_visibilty_blocks = coordStruc
 coordination_metrics_struct.per_trial = per_trial;
 
 
+
+
 %TODO:
 %   linearize the data and create a matchig header
-
-
+coordStructBlock_suffix_list = {'visible_pre', 'invisible', 'visible_post'};
 if (linearize_coordination_metrics_struct)
-    coordination_metrics_row = fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'});
-    % linearize sessionMetrics, coordination_struct, sessionMetrics_by_visibilty_blocks,
-    %coordination_metrics_row = [sessionMetrics.teTarget(1), sessionMetrics.teTarget(2), sessionMetrics.teSide(1), sessionMetrics.teSide(2), ...
-    %    sessionMetrics.miTarget, sessionMetrics.miTargetSignif, sessionMetrics.miTargetThresh, sessionMetrics.miSide, sessionMetrics.miSideSignif, sessionMetrics.miSideThresh , ...
-    %    sessionMetrics, ...
-    %    ];
+    
+    coordination_metrics_row = fn_linearize_struct(cfg, 'add_suffix_to_all_columns', {'_cfg'});     
+
+    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'})];   
+    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'A', 'B'})];
+    
+    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(sessionMetrics_by_visibilty_blocks, 'add_suffix', coordStructBlock_suffix_list)];     
+     
+     
+     for i_block = 1 : length(coordStructBlock)
+         if ~isempty(coordStructBlock{i_block})
+             tmp_coordination_metrics_row = fn_linearize_struct(coordStructBlock{i_block}.key_value_struct, 'add_suffix_to_all_columns', coordStructBlock_suffix_list(i_block));
+             coordination_metrics_row = [coordination_metrics_row, tmp_coordination_metrics_row];
+             if (i_block == 1)
+                 %n_columns = length(tmp_coordination_metrics_row);
+                 coordStruct_key_value_struct_size = size(tmp_coordination_metrics_row);
+             end
+         else
+             % these are blocks that are missing:
+             tmp_coordination_metrics_row = NaN(coordStruct_key_value_struct_size);
+             coordination_metrics_row = [coordination_metrics_row, tmp_coordination_metrics_row];
+         end
+     end
+     
 end
 if (create_coordination_metrics_row_header)
-    [~, coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'});
-    %coordination_metrics_row_header = {'TransEntTarget_A2B', 'TransEntTarget_B2A', 'TransEntSide_A2B', 'TransEntSide_B2A', ...
-    %    'MutInfTarget', 'MutInfTargetIsSig', 'MutInfTargetThreshold', 'MutInfSide', 'MutInfSideIsSig', 'MutInfSideThreshold', ...
-    %    };
+    % the cfg variables
+    [~, coordination_metrics_row_header] = fn_linearize_struct(cfg, 'add_suffix_to_all_columns', {'cfg'});     
+    %coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+    
+    [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'});
+    % fix up some column names...
+    tmp_coordination_metrics_row_header{(strcmp('dltConfInterval_A', tmp_coordination_metrics_row_header))} = 'dltConfInterval_Upper';
+    tmp_coordination_metrics_row_header{(strcmp('dltConfInterval_B', tmp_coordination_metrics_row_header))} = 'dltConfInterval_Lower';
+    coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+    
+    % the coordStruct
+    [ ~, tmp_coordination_metrics_row_header] = fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'A', 'B'});
+    coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+    
+    [ ~, tmp_coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics_by_visibilty_blocks, 'add_suffix', coordStructBlock_suffix_list);
+    tmp_coordination_metrics_row_header{(strcmp('teBlock1_visible_pre', tmp_coordination_metrics_row_header))} = 'teBlock_visible_pre_A';
+    tmp_coordination_metrics_row_header{(strcmp('teBlock2_visible_pre', tmp_coordination_metrics_row_header))} = 'teBlock_visible_pre_B';
+    tmp_coordination_metrics_row_header{(strcmp('teBlock1_invisible', tmp_coordination_metrics_row_header))} = 'teBlock_invisible_A';
+    tmp_coordination_metrics_row_header{(strcmp('teBlock2_invisible', tmp_coordination_metrics_row_header))} = 'teBlock_invisible_B';
+    tmp_coordination_metrics_row_header{(strcmp('teBlock1_visible_post', tmp_coordination_metrics_row_header))} = 'teBlock_visible_post_A';
+    tmp_coordination_metrics_row_header{(strcmp('teBlock2_visible_post', tmp_coordination_metrics_row_header))} = 'teBlock_visible_post_B';
+
+    tmp_coordination_metrics_row_header{(strcmp('sideTEblock1_visible_pre', tmp_coordination_metrics_row_header))} = 'sideTEblock_visible_pre_A';
+    tmp_coordination_metrics_row_header{(strcmp('sideTEblock2_visible_pre', tmp_coordination_metrics_row_header))} = 'sideTEblock_visible_pre_B';
+    tmp_coordination_metrics_row_header{(strcmp('sideTEblock1_invisible', tmp_coordination_metrics_row_header))} = 'sideTEblock_invisible_A';
+    tmp_coordination_metrics_row_header{(strcmp('sideTEblock2_invisible', tmp_coordination_metrics_row_header))} = 'sideTEblock_invisible_B';
+    tmp_coordination_metrics_row_header{(strcmp('sideTEblock1_visible_post', tmp_coordination_metrics_row_header))} = 'sideTEblock_visible_post_A';
+    tmp_coordination_metrics_row_header{(strcmp('sideTEblock2_visible_post', tmp_coordination_metrics_row_header))} = 'sideTEblock_visible_post_B';
+    
+    coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+
+     for i_block = 1 : length(coordStructBlock)
+         if ~isempty(coordStructBlock{i_block})
+             [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(coordStructBlock{i_block}.key_value_struct, 'add_suffix_to_all_columns', coordStructBlock_suffix_list(i_block));
+             coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+             if (i_block == 1)
+                 %n_columns = length(tmp_coordination_metrics_row);
+                 coordStruct_key_value_struct_header = tmp_coordination_metrics_row_header;
+             end
+         else
+             % these are blocks that are missing:
+             tmp_coordination_metrics_row_header = strrep(coordStruct_key_value_struct_header, coordStructBlock_suffix_list{1}, coordStructBlock_suffix_list{i_block});             
+             coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+         end
+     end
 end
 
 return
@@ -318,11 +385,17 @@ for i_field = 1 : length(field_list)
             % is scalar value, just grab value and name
             data_row(end + 1) = current_data;
             if (convert_fieldnames_2_column_names)
-                header_list{end + 1} = field_list{i_field};
+               
+                if strcmp(list_handling_command, 'add_suffix_to_all_columns')
+                     header_list{end + 1} = [field_list{i_field}, '_', list_suffix_list{1}];
+                else
+                     header_list{end + 1} = field_list{i_field};
+                end
             end
         else
             switch list_handling_command
                 case 'add_suffix'
+                    % only add a suffix to non-scalar structure fields
                     if length(current_data) == length(list_suffix_list)
                         for i_item = 1 : length(current_data)
                             data_row(end + 1) = current_data(i_item);
@@ -333,6 +406,20 @@ for i_field = 1 : length(field_list)
                     else
                         error(['Encountered data item with more elements than suffixes supplied in list_suffix_list, fix this.']);
                     end
+                case 'add_suffix_to_all_columns'
+                    % append the suffix to all fields
+                    if length(current_data) == length(list_suffix_list)
+                        for i_item = 1 : length(current_data)
+                            data_row(end + 1) = current_data(i_item);
+                            if (convert_fieldnames_2_column_names)
+                                header_list{end + 1} = [field_list{i_field}, '_', list_suffix_list{i_item}];
+                            end
+                        end
+                    else
+                        error(['Encountered data item with more elements than suffixes supplied in list_suffix_list, fix this.']);
+                    end                    
+                    
+                    
                 otherwise
                     error(['Encountered unhandled list_handling_command: ', list_handling_command]);
             end
