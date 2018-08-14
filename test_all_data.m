@@ -561,6 +561,15 @@ fontType = 'Arial';
 markerSize = 4;
 lineWidth = 1.0;
 
+
+OutPutType = 'pdf';
+figure_visibility_string = 'on';
+output_rect_fraction = 3; % default 0.5
+DefaultAxesType = 'PrimateNeurobiology2018DPZ'; % DPZ2017Evaluation, PrimateNeurobiology2018DPZ
+DefaultPaperSizeType = 'PrimateNeurobiology2018DPZ0.5'; % DPZ2017Evaluation, PrimateNeurobiology2018DPZ
+fnFormatDefaultAxes(DefaultAxesType);
+
+
 plotName = {'TEtarget', 'MutualInf', 'surprise_pos'};
 
 commonColorList = [...
@@ -996,7 +1005,7 @@ for i = 1:length(monkeySMearlyProficientSetIndex)
     monkeySMearlyProficientSessionIndex(i) = find(sessionMetrics(iSet).isPairProficient, 1, 'first');
 end    
 
-monkeySMlateSetIndex = [5,7,13,16];
+monkeySMlateSetIndex = [13,16]; %[5,7,13,16];
 monkeySMlateSessionIndex = nFile(monkeySMlateSetIndex);
 monkeySMlateProficientSetIndex = [13,16];
 monkeySMlateProficientSessionIndex = zeros(1,length(monkeySMlateProficientSetIndex));
@@ -1011,19 +1020,17 @@ iConfederateTrained = 11;
 confederateTrainedSessionIndex = 1:nFile(iConfederateTrained) - 1;
 confederateTrainedSetIndex = iConfederateTrained*ones(1,length(confederateTrainedSessionIndex));
  
-
-
-groupSetIndex = {monkeyEarlySetIndex, monkeyLateSetIndex, humanSetIndex, monkeySMearlySetIndex, monkeySMlateSetIndex, confederateTrainedSetIndex};
-groupSessionIndex = {monkeyEarlySessionIndex, monkeyLateSessionIndex, humanSessionIndex, monkeySMearlySessionIndex, monkeySMlateSessionIndex, confederateTrainedSessionIndex};
-groupProficientSetIndex = {monkeyEarlySetIndex, monkeyLateSetIndex, humanProficientSetIndex, monkeySMearlyProficientSetIndex, monkeySMlateProficientSetIndex, confederateTrainedSetIndex};
-groupProficientSessionIndex = {monkeyEarlyProficientSessionIndex, monkeyLateProficientSessionIndex, humanProficientSessionIndex, monkeySMearlyProficientSessionIndex, monkeySMlateProficientSessionIndex, confederateTrainedSessionIndex};
+groupSetIndex = {humanSetIndex, monkeyEarlySetIndex, monkeyLateSetIndex, monkeySMearlySetIndex, monkeySMlateSetIndex, confederateTrainedSetIndex};
+groupSessionIndex = {humanSessionIndex, monkeyEarlySessionIndex, monkeyLateSessionIndex, monkeySMearlySessionIndex, monkeySMlateSessionIndex, confederateTrainedSessionIndex};
+groupProficientSetIndex = {humanProficientSetIndex, monkeyEarlySetIndex, monkeyLateSetIndex, monkeySMearlyProficientSetIndex, monkeySMlateProficientSetIndex, confederateTrainedSetIndex};
+groupProficientSessionIndex = {humanProficientSessionIndex, monkeyEarlyProficientSessionIndex, monkeyLateProficientSessionIndex, monkeySMearlyProficientSessionIndex, monkeySMlateProficientSessionIndex, confederateTrainedSessionIndex};
 
 nGroup = 3;
 basicLikelihood = cell(nGroup, 3);
 detailedLikelihood = cell(nGroup, 4);
 basicProfLikelihood = cell(nGroup, 3);
 detailedProfLikelihood = cell(nGroup, 4);
-for iGroup = 1:3
+for iGroup = 1:nGroup
     for i = 1:length(groupSetIndex{iGroup})
         iSet = groupSetIndex{iGroup}(i);
         iFile = groupSessionIndex{iGroup}(i);
@@ -1049,65 +1056,95 @@ for iGroup = 1:3
 end    
 
 pValue = 0.05;
-labelSubjectGroups = {'monkeys early', 'monkeys late', 'humans'};
-labelProfSubjectGroups = {'monkeys proficient early', 'monkeys proficient late', 'proficient humans'};
+labelSubjectGroups = { 'humans  ', 'macaques early  ', 'macaques late  '};
+labelProfSubjectGroups = {'proficient humans', 'macaques proficient early', 'macaques proficient late'};
 
-for iFigure = 1:4
-    figure('Name', 'strategies likelihood');
-    set( axes,'fontsize', fontSize,  'FontName', fontType);
+colorVector = [1, 0, 0.5];
+barColor = [1 - 0.75*colorVector; 0.4 + 0.1*colorVector; 0.25 + 0.5*colorVector];
+
+
+figureName = {'Basic_MonkeyOnly', 'Basic_MonkeyOnly_Connect', 'Basic_HumanOnly', 'Basic_All', 'Basic_All_Prof', 'Detailed_MonkeyOnly', 'Detailed_MonkeyOnly_Connect', 'Detailed_HumanOnly', 'Detailed_All', 'Detailed_All_Prof'};
+figureName = cellfun(@(x) ['StrategyLikelihood_' x], figureName, 'UniformOutput', false);
+nFigure = length(figureName);
+nBasicFigure = nFigure/2;
+for iFigure = 1:nFigure   
+    indexFigureType = mod(iFigure, nBasicFigure);
+    if (indexFigureType == 0)
+        indexFigureType = nBasicFigure;
+    end
     
-    if iFigure < 3
-        if (iFigure == 1)
+    barPlotHandle = figure('Name', figureName{iFigure}, 'visible', figure_visibility_string);
+    [output_rect] = fnFormatPaperSize(DefaultPaperSizeType, gcf, output_rect_fraction);
+    set(gcf(), 'Units', 'centimeters', 'Position', output_rect, 'PaperPosition', output_rect);
+
+    %set( axes,'fontsize', fontSize,  'FontName', fontType);
+    
+    if iFigure <= nBasicFigure
+        if (indexFigureType ~= nBasicFigure)
             likelihoodValues = basicLikelihood;
-            fileName = 'basicStrategyLikelihood';
         else
             likelihoodValues = basicProfLikelihood;
-            fileName = 'basicProfStrategyLikelihood';
         end
         strategyGroupLabels = {'basic', 'complex', 'temporal'};
     else
-        if (iFigure == 3)
+        if (indexFigureType ~= nBasicFigure)
             likelihoodValues = detailedLikelihood;
-            fileName = 'detailedStrategyLikelihood';
         else
             likelihoodValues = detailedProfLikelihood;
-            fileName = 'detailedProfStrategyLikelihood';
         end
         strategyGroupLabels = {'side-based', 'target-based', 'turn-taking', 'temporal'};
-    end
+    end  
+    if (indexFigureType < 3)
+        indexBarToDisplay = 2:3;
+    elseif (indexFigureType == 3)    
+        indexBarToDisplay = 1;
+    else
+        indexBarToDisplay = 1:3;
+    end    
     
     [~, nStrategyGroup] = size(likelihoodValues);
-    draw_bar_two_parametric_population(likelihoodValues', labelSubjectGroups, strategyGroupLabels, fontType, fontSize, pValue);
-    ylabel('average likelihood', 'fontsize', fontSize, 'FontName', fontType);
+    scatterSize = 32;
+    if (indexFigureType == 2)
+        connectLines = true;
+    else
+        connectLines = false;
+    end 
+    draw_bar_two_parametric_population(likelihoodValues(indexBarToDisplay,:)', labelSubjectGroups(indexBarToDisplay), strategyGroupLabels, scatterSize, barColor(:,indexBarToDisplay), connectLines, pValue);
+    ylabel('average likelihood');
     
-    set( gcf, 'PaperUnits','centimeters' );
-    xSize = 18; ySize = 14;   xLeft = 0; yTop = 0;
-    set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
-    print ( '-depsc', fileName, '-r600');
-    print('-dpdf', fileName, '-r600');
-    print('-dpng', fileName, '-r600');
-    savefig(fileName);
+    %set( gcf, 'PaperUnits','centimeters' );
+    %xSize = 18; ySize = 14;   xLeft = 0; yTop = 0;
+    %set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+    %print ( '-depsc', fileName, '-r600');
+    %print('-dpdf', fileName, '-r600');
+    %print('-dpng', fileName, '-r600');
+    
+    write_out_figure(barPlotHandle, [figureName{iFigure} '.pdf']);
+    write_out_figure(barPlotHandle, [figureName{iFigure} '.ps3']);
+    savefig(figureName{iFigure});
 end
 
 %% plot MI scatter plot for selected strategies
 colorList = zeros(5,3);
-basicColorList = [1.000, 0.40, 0.25; ...
+basicColorList = [0.250, 0.50, 0.75;...
+                  1.000, 0.40, 0.25; ...
                   0.625, 0.45, 0.50; ...
-                  0.250, 0.50, 0.75;...
                   1.000, 0.40, 0.25;...
                   0.625, 0.45, 0.50; ...
                   0.000, 0.20, 0.95];
 setMarker = {'o', 'o', 'o', 's', 's', 'd'};
-labelSubjectGroups = {'monkeys early', 'monkeys late', 'humans', 'monkeys in confederate training early', 'monkeys in confederate training late', 'confederate-trained monkeys'};
+labelSubjectGroups = {'humans', 'macaques early', 'macaques late', 'macaques vs. human confederate early', 'macaques vs. human confederate late', 'confederate-trained macaques'};
               
-sz = 18;
+sz = 96;
 nSetGroup = length(allSets);
 
-figureName = {'Naive', 'NaiveFaded', 'NaiveFaded_NHPwithSM', 'NaiveFaded_NHPwithSMFaded', 'All'};
+figureName = {'HumanOnly', 'MonkeyOnly', 'Naive', 'NaiveFaded', 'NaiveFaded_NHPwithSM', 'NaiveFaded_NHPwithSMFaded', 'All', 'All_labeled'};
+figureName = cellfun(@(x) ['Scatter_' x], figureName, 'UniformOutput', false);
 figureName = [figureName, cellfun(@(x) [x, '_Prof'], figureName, 'UniformOutput', false)];
 nFigure = length(figureName);
+nBasicFigure = nFigure/2;
 for iFigure = 1:nFigure   
-    if (iFigure <= nFigure/2)
+    if (iFigure <= nBasicFigure)
         setIndex = groupSetIndex;
         fileIndex = groupSessionIndex;
     else
@@ -1115,31 +1152,42 @@ for iFigure = 1:nFigure
         fileIndex = groupProficientSessionIndex;
     end
      
-    indexFigureType = mod(iFigure, 5);
+    indexFigureType = mod(iFigure, nBasicFigure);
     if (indexFigureType == 0)
-        indexFigureType = 5;
+        indexFigureType = nBasicFigure;
     end
     
     colorList = basicColorList;
-    if (indexFigureType > 1)
-        colorList(1:3, :) = basicColorList(1:3, :) + 0.3;
-    end
     if (indexFigureType > 3)
-        colorList(4, :) = basicColorList(4, :) + 0.3;
-    end   
+        colorList(1:3, :) = basicColorList(1:3, :) + 0.3;
+        if (indexFigureType > 5)
+           colorList(4:5, :) = basicColorList(4:5, :) + 0.3;
+        end   
+    end    
     colorList(colorList > 1) = 1;
     
-    nSetGroup = 3;
-    if (indexFigureType > 2)
-        nSetGroup = 5;
-    end
-    if (indexFigureType > 4)
-        nSetGroup = 6;
+    nSetGroup = 1;
+    if (indexFigureType > 1)
+        if (indexFigureType > 4)
+            if (indexFigureType > 6)
+                nSetGroup = 6;
+            else
+                nSetGroup = 5;
+            end
+        else    
+            nSetGroup = 3;
+        end    
     end 
+    
+    if (indexFigureType == 2) % only monkey plot
+        firstGroup = 2;
+    else
+        firstGroup = 1;
+    end    
     xData = cell(1,nSetGroup);
     yData = cell(1,nSetGroup);    
     
-    for iGroup = 1:nSetGroup
+    for iGroup = firstGroup:nSetGroup
         xData{iGroup} = zeros(1, length(setIndex{iGroup}));
         yData{iGroup} = zeros(1, length(setIndex{iGroup}));
         for i = 1:length(setIndex{iGroup})
@@ -1150,85 +1198,112 @@ for iFigure = 1:nFigure
             yData{iGroup}(i) = sessionMetrics(iSet).miTarget(iFile);    
         end    
     end
-    figure('Name', figureName{iFigure});
-    set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
+    scatterPlotHandle = figure('Name', figureName{iFigure}, 'visible', figure_visibility_string);
+    %set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
     hold on
-    for iGroup = 1:nSetGroup
+    for iGroup = firstGroup:nSetGroup
         rData = sqrt(xData{iGroup}.^2 + yData{iGroup}.^2);
         phiData = atan(xData{iGroup}./yData{iGroup});
         phiData(yData{iGroup} == 0) = pi()/2;
+        n = length(rData);
+        phiData = phiData + 0.002*((1:n) - n/2); % to make points discernable
         
-        if ((setMarker{iSetGroup} == 's') || (setMarker{iSetGroup} == 'o') || (setMarker{iSetGroup} == 'd'))
-            scatter(phiData, rData, sz, colorList(iGroup, :), setMarker{iGroup}, 'filled');
-        else
-            scatter(phiData, rData, sz, colorList(iGroup, :), setMarker{iGroup});
-        end
+        scatter(phiData, rData, sz, colorList(iGroup, :), setMarker{iGroup}, 'LineWidth',3);
+        if (indexFigureType == nBasicFigure)
+            indexStr = num2str((1:n)'); indexCell = cellstr(indexStr);
+            dx = 0.02; dy = 0.02; % displacement so the text does not overlay the data points
+            text(phiData+dx, rData+dy, indexCell,'Color', colorList(iGroup, :), 'Fontsize', 20);
+        end    
     end    
     hold off
-    axis([-0.05, pi()/2+1, -0.05, 1.2]);
-    ylabel('$\sqrt{\mathrm{MI}_\mathrm{side}^2 + \mathrm{MI}_\mathrm{target}^2}$', 'fontsize', fontSize, 'FontName', fontType, 'Interpreter', 'latex');
-    xlabel('$\mathrm{atan}\big(\mathrm{MI}_\mathrm{side}/\mathrm{MI}_\mathrm{target}\big), { }^\circ$', 'fontsize', fontSize, 'FontName', fontType, 'Interpreter', 'latex');
-    set( gca, 'xTick', [0, pi()/4, pi()/2], 'xTickLabel', {'0', '45', '90'}, 'fontsize', fontSize, 'FontName', fontType);
+    axis([-0.05, pi()/2+0.1, -0.05, 1.4]);
+    %ylabel('$\sqrt{\mathrm{MI}_\mathrm{side}^2 + \mathrm{MI}_\mathrm{target}^2}$', 'fontsize', fontSize, 'FontName', fontType, 'Interpreter', 'latex');
+    %xlabel('$\mathrm{atan}\big(\mathrm{MI}_\mathrm{side}/\mathrm{MI}_\mathrm{target}\big), { }^\circ$', 'fontsize', fontSize, 'FontName', fontType, 'Interpreter', 'latex');
+    %set( gca, 'xTick', [0, pi()/4, pi()/2], 'xTickLabel', {'0', '45', '90'}, 'fontsize', fontSize, 'FontName', fontType);
+    ylabel('Coordination strength (MI magnitude) [a.u.]');
+    xlabel('Coordination type (angle between MI`s) [degree]');
+    set( gca, 'xTick', [0, pi()/4, pi()/2], 'xTickLabel', {'Side-based (0)', 'Trial-by-trial (45)', 'Target-based (90)'});
     
-    legendHandle = legend(labelSubjectGroups(1:nSetGroup), 'location', 'NorthEast');
-    set(legendHandle, 'fontsize', fontSize, 'FontName', fontType);
+    if (indexFigureType ~= 2) % if not humans only
+        legendHandle = legend(labelSubjectGroups(1:nSetGroup), 'location', 'NorthWest');
+        set(legendHandle);
+    end 
+    %set( gcf, 'PaperUnits','centimeters' );
+    %xSize = 20; ySize = 14;
+    %xLeft = 0; yTop = 0;
+    %set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+    %print ( '-depsc', '-r600',figureName{iFigure});
     
-    set( gcf, 'PaperUnits','centimeters' );
-    xSize = 20; ySize = 14;
-    xLeft = 0; yTop = 0;
-    set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
-    print ( '-depsc', '-r600',figureName{iFigure});
-    print('-dpdf', figureName{iFigure}, '-r600');
+    [output_rect] = fnFormatPaperSize(DefaultPaperSizeType, gcf, output_rect_fraction);
+    set(gcf(), 'Units', 'centimeters', 'Position', output_rect, 'PaperPosition', output_rect);
+    write_out_figure(scatterPlotHandle, [figureName{iFigure} '.pdf']);
+    write_out_figure(scatterPlotHandle, [figureName{iFigure} '.ps3']);
+    %print('-dpdf', figureName{iFigure}, '-r600');
     savefig(figureName{iFigure});
 end
 %% plot dynamics of strategy likelihood
-iSet = 11;
-lastFileIndex = nFile(iSet) - 1;
-playerIndex = ones(2,nFile(iSet));
-playerIndex(1,end) = 2;
-playerIndex(2,1:end-1) = 2;
+fileName = {'likelihoodDynamics_FlaffusCurius', 'likelihoodDynamics_Human'};
+setIndex = [11,19];
+lastFileIndex = [nFile(setIndex(1)) - 1, nFile(setIndex(2))];
+nFigure = length(fileName);
+playerName = {'Flaffus', 'Curius'; 'Human Player 1', 'Human Player 2'};
 
-y = cell(1,2);
-for iPlayer = 1:2
-    y{iPlayer} = zeros(4,lastFileIndex);
-    for iFile = 1:lastFileIndex
-        y{iPlayer}(1,iFile) = sideStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
-        y{iPlayer}(2,iFile) = targetStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
-        y{iPlayer}(3,iFile) = turnTakingStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
-        y{iPlayer}(4,iFile) = temporalStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
-    end
-end    
-playerName = {'Flaffus', 'Curius'};
-fileName = 'likelihoodDynamics';
-strategyGroupLabels = {'side-based', 'target-based', 'turn-taking', 'temporal'};
-figure('Name', 'strategies likelihood');
-set( axes,'fontsize', fontSize,  'FontName', fontType);
-for iPlot = 1:2
-    subplot(2,1,iPlot)
-    plot(y{iPlot}', 'LineWidth', 2);
+for iFigure = 1:nFigure
+    iSet = setIndex(iFigure);
     
-    if iPlot == 1
-        legendHandle = legend(strategyGroupLabels, 'location', 'SouthEast');
-        set(legendHandle, 'fontsize', fontSize,  'FontName', fontType);  
-        set( gca, 'fontsize', fontSize, 'XTick', [], 'FontName', fontType);
-    else
-        [~, labelIndices] = unique(dataset{iSet}.captions);
-        correctLabel = dataset{iSet}.captions(sort(labelIndices));
-        set( gca, 'fontsize', fontSize, 'XTick', 1:lastFileIndex, 'XTickLabel', correctLabel, 'XTickLabelRotation',45, 'FontName', fontType);    
-    end
-    title(playerName{iPlot});
-    axis([0.9, lastFileIndex + 0.1, 0, 1]);
+    playerIndex = ones(2,nFile(iSet));
+    playerIndex(1,end) = 2;
+    playerIndex(2,1:end-1) = 2;
     
-    ylabel('average likelihood', 'fontsize', fontSize, 'FontName', fontType);  
+    y = cell(1,2);
+    for iPlayer = 1:2
+        y{iPlayer} = zeros(4,lastFileIndex(iFigure));
+        for iFile = 1:lastFileIndex(iFigure)
+            y{iPlayer}(1,iFile) = sideStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
+            y{iPlayer}(2,iFile) = targetStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
+            y{iPlayer}(3,iFile) = turnTakingStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
+            y{iPlayer}(4,iFile) = temporalStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
+        end
+    end
+    
+    strategyGroupLabels = {'side-based', 'target-based', 'turn-taking', 'temporal'};
+    dynamicsHandle = figure('Name', 'strategies likelihood');
+    [output_rect] = fnFormatPaperSize(DefaultPaperSizeType, gcf, output_rect_fraction);
+    set(gcf(), 'Units', 'centimeters', 'Position', output_rect, 'PaperPosition', output_rect);
+    
+    %set( axes,'fontsize', fontSize,  'FontName', fontType);
+    for iPlot = 1:2
+        subplot(2,1,iPlot)
+        plot(y{iPlot}', 'LineWidth', 2);
+        
+        if iPlot == 1
+            legendHandle = legend(strategyGroupLabels, 'location', 'NorthWest', 'orientation', 'horizontal');
+            set(legendHandle);
+        end
+        if (iFigure == 1)
+            [~, labelIndices] = unique(dataset{iSet}.captions);
+            correctLabel = dataset{iSet}.captions(sort(labelIndices));
+            set( gca, 'XTick', 1:lastFileIndex(iFigure), 'XTickLabel', correctLabel, 'XTickLabelRotation',45);
+        else
+            set( gca, 'XTick', 1:lastFileIndex(iFigure));
+        end
+        set( gca, 'YTick', 0:0.25:1);
+        title(playerName{iFigure, iPlot});
+        axis([0.9, lastFileIndex(iFigure) + 0.1, 0, 1.24]);
+        
+        ylabel('average likelihood');
+    end
+    %set( gcf, 'PaperUnits','centimeters' );
+    %xSize = 14; ySize = 12;  xLeft = 0; yTop = 0;
+    %set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+    %print ( '-depsc', fileName, '-r600');
+    %print('-dpdf', fileName, '-r600');
+    %print('-dpng', fileName, '-r600');
+    
+    write_out_figure(dynamicsHandle, [fileName{iFigure} '.pdf']);
+    write_out_figure(dynamicsHandle, [fileName{iFigure} '.ps3']);
+    savefig(fileName{iFigure});
 end
-set( gcf, 'PaperUnits','centimeters' );
-xSize = 14; ySize = 12;  xLeft = 0; yTop = 0;
-set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
-print ( '-depsc', fileName, '-r600');
-print('-dpdf', fileName, '-r600');
-print('-dpng', fileName, '-r600');
-savefig(fileName);
-
 
 
 %% RT prediction
@@ -1237,7 +1312,7 @@ savefig(fileName);
 monkeySetForReward = [1,7,9,21, 2,3,8,10];
 humanSetForReward = [18,19];
 allSetsForReward = {monkeySetForReward, humanSetForReward};
-labelGroupForReward = {'monkeys', 'humans'};
+labelGroupForReward = {'macaques', 'humans'};
 
 % compute reward distribution
 nSetGroupForReward = length(allSetsForReward);
@@ -1426,7 +1501,7 @@ for iSetGroup = 1:nSetGroupForReward
 end
 
 rewardPlotTitle = {'all participants', 'only effective pairs'};
-rewardRTgroupLabel = {'monkeys separate', 'monkeys joint', 'humans separate', 'humans joint'};
+rewardRTgroupLabel = {'macaques separate', 'macaques joint', 'humans separate', 'humans joint'};
 
 figure('Name', 'reward distribution plot');
 set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
@@ -1464,7 +1539,7 @@ print ( '-depsc', '-r600','RTandCoordinationPerSpecies');
 print('-dpdf', 'RTandCoordinationPerSpecies', '-r600');
 print('-dpng', 'RTandCoordinationPerSpecies', '-r600');
 
-rewardRTgroupLabel = {'monkeys, choice delay', 'monkeys, no delay', 'humans, choice delay', 'humans, no delay'};
+rewardRTgroupLabel = {'macaques, choice delay', 'macaques, no delay', 'humans, choice delay', 'humans, no delay'};
 
 figure('Name', 'reward distribution plot');
 set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
