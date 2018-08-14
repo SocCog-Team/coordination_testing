@@ -8,6 +8,12 @@ mfilepath = fileparts(fq_mfilename);
 close_figures_on_return = 1;
 process_sets_individually = 1;
 process_CNL_retreat_2018_sets_only = 1;
+opts = struct();
+
+only_copy_plots = 0;
+src_sub_dir = '..';
+targ_dir = fullfile(filesep, 'Users', 'smoeller', 'DPZ', 'Projects', 'ProgressReportsAndPresentations', 'LabReatreat2018_BvS', 'analysis');
+
 
 % Common abbreviations: MI - mutual information, TE - transfer entropy
 
@@ -572,12 +578,12 @@ teslaElmoNaiveCNL.filenames = {...
     'DATA_20180524T103704.A_Tesla.B_Elmo.SCP_01.triallog.A.Tesla.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 teslaElmoNaiveCNL.Captions = {...
-    '20180516T090940', ...
-    '20180517T085104', ...
-    '20180518T104104', ...
-    '20180522T101558', ...
-    '20180523T092531', ...
-    '20180524T103704', ...
+    '180516', ...
+    '180517', ...
+    '180518', ...
+    '180522', ...
+    '180523', ...
+    '180524', ...
     };
 
 flaffusCuriusConfederateCNL.setName = 'flaffusCuriusConfederateCNL';
@@ -621,7 +627,7 @@ end
 if (SCAN_ALL_DATASET)
     struct_set_cell = {teslaElmoNaive, teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate, elmoNaiveCuriusConfederate, SMTesla, SMElmo, JKElmo, magnusCuriusNaive, magnusNaiveCuriusConfederate, flaffusCuriusNaive, flaffusCuriusConfederate, flaffusEC, SMCurius, SMCuriusBlock, TNCurius, SMFlaffus, SMFlaffusBlock, FlaffusSM, humanPair, humanPairBlocked, SMhumanBlocked, magnusFlaffusNaive};
     fileOfInterest = {[], [], [], [], [], [], [], [], [], [], 1, [], [], [], [], [], [], [], [], [], [], []};
-
+    
     %struct_set_cell = {teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate};
     %struct_set_cell = {magnusFlaffusNaive};
 else
@@ -631,8 +637,32 @@ end
 
 
 if (process_CNL_retreat_2018_sets_only)
-   struct_set_cell = {teslaElmoNaiveCNL, };
-   fileOfInterest = {[], []};
+    struct_set_cell = {teslaElmoNaiveCNL, flaffusCuriusConfederateCNL};
+    fileOfInterest = {[], []};
+    opts.process_CNL_retreat_2018_sets_only = process_CNL_retreat_2018_sets_only;
+end
+
+if (only_copy_plots)
+    for i_set = 1 : length(struct_set_cell)
+        current_set = struct_set_cell{i_set};
+        current_setname = current_set.setName;
+        outdir = fullfile(targ_dir, current_setname);
+        if ~exist(outdir, 'dir')
+            mkdir(outdir)
+        end
+        
+        % loop over all files
+        current_session_id_list = current_set.filenames;
+        
+        for i_stem = 1 : length(current_session_id_list)
+            current_proto_stem = current_session_id_list{i_stem};
+            current_proto_stem = regexprep(current_proto_stem, '.isOwnChoice_sideChoice$', '');
+            current_stem = regexprep(current_proto_stem, '^DATA_', '');
+            disp(['Processing: ', current_stem]);
+            [status, message] = copyfile(fullfile(folder, src_sub_dir, [current_stem, '*']), [outdir, filesep]);
+        end
+    end
+    return
 end
 
 % filename - list of all files related to specific Set
@@ -643,7 +673,7 @@ num_sets = length(struct_set_cell);
 if (process_sets_individually)
     disp('Processing each set independently.');
     for i_set = 1 : num_sets
-        fnCreatePlots(folder, {struct_set_cell{i_set}.filenames}, {struct_set_cell{i_set}.Captions}, {struct_set_cell{i_set}.setName}, {fileOfInterest{i_set}}, close_figures_on_return)
+        fnCreatePlots(folder, {struct_set_cell{i_set}.filenames}, {struct_set_cell{i_set}.Captions}, {struct_set_cell{i_set}.setName}, {fileOfInterest{i_set}}, close_figures_on_return, opts)
     end
 else
     filename = cell([1 num_sets]);
@@ -654,7 +684,7 @@ else
         fileCaption{i_set} = struct_set_cell{i_set}.Captions;
         setName{i_set} = struct_set_cell{i_set}.setName;
     end
-    fnCreatePlots(folder, filename, fileCaption, setName, fileOfInterest, close_figures_on_return)
+    fnCreatePlots(folder, filename, fileCaption, setName, fileOfInterest, close_figures_on_return, opts)
 end
 
 % if (SCAN_ALL_DATASET)
@@ -676,7 +706,7 @@ disp([mfilename, ' took: ', num2str(timestamps.(mfilename).end / 60), ' minutes.
 return
 end
 
-function [] = fnCreatePlots(folder, filename, fileCaption, setName, fileOfInterest, close_figures_on_return)
+function [] = fnCreatePlots(folder, filename, fileCaption, setName, fileOfInterest, close_figures_on_return, opts)
 
 
 plotName = {'TEtarget', 'MutualInf', 'surprise_pos'};
@@ -692,28 +722,28 @@ colorList = [...
     % blue group: navy, purple, blue, light blue, lavender
     0.0, 0.0, 0.5; ...
     0.6, 0.2, 0.7; ...
-    0.2, 0.3, 0.8; ...    
+    0.2, 0.3, 0.8; ...
     0.5, 0.6, 1.0; ...
-    0.9, 0.7, 1.0; ...    
+    0.9, 0.7, 1.0; ...
     
     % cyan group: teal, light teal, cyan
     0.0, 0.5, 0.5; ...
     0.0, 0.8, 0.7; ...
-    0.3, 0.9, 0.9; ...   
-     
-    % green group: olive, lime, 
-    0.5, 0.5, 0.0; ...    
-    0.8, 0.9, 0.2; ... 
+    0.3, 0.9, 0.9; ...
+    
+    % green group: olive, lime,
+    0.5, 0.5, 0.0; ...
+    0.8, 0.9, 0.2; ...
     
     % red group: red, magenta, pink, coral
     0.8, 0.1, 0.2; ...
     1.0, 0.2, 0.7; ...
     1.0, 0.5, 0.6; ...
     1.0, 0.8, 0.8; ...
-        
+    
     % yellow group: maroon, brown, yellow
-    0.6, 0.0, 0.0; ... 
-    0.7, 0.4, 0.2; ...    
+    0.6, 0.0, 0.0; ...
+    0.7, 0.4, 0.2; ...
     1.0, 0.9, 0.5; ...
     
     ];
@@ -821,12 +851,12 @@ for iSet = 1:nSet
     %sm: ???
     blockBorder{iSet} = zeros(nFile(iSet), 2);
     
-%     if (strcmp(setName{iSet}, 'SMCuriusBlock'))
-%         blockBorder{iSet} = SMCuriusBlockBorder;   % predefined by constants
-%     else
-%         blockBorder{iSet} = zeros(nFile(iSet), 2); % will be taken from file
-%     end
-     
+    %     if (strcmp(setName{iSet}, 'SMCuriusBlock'))
+    %         blockBorder{iSet} = SMCuriusBlockBorder;   % predefined by constants
+    %     else
+    %         blockBorder{iSet} = zeros(nFile(iSet), 2); % will be taken from file
+    %     end
+    
     playerStrategy{iSet} = zeros(nFile(iSet), 8);
     playerNStateVisit{iSet} = zeros(nFile(iSet), 8);
     
@@ -980,6 +1010,96 @@ for iSet = 1:nSet
     %---- plot resuts ----
     %---------------------
     
+    if isfield(opts, 'opts.process_CNL_retreat_2018_sets_only') && (opts.process_CNL_retreat_2018_sets_only)
+        figure('Name',[setName{iSet}, ' per-session summary']);
+        set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        
+        nPlot = 6;% no TE plots
+        for iPlot = 1:nPlot
+            subplot(2, nPlot/2, iPlot);
+            if ((iPlot == 1) || (iPlot == 2) || (iPlot == 5)|| (iPlot == 6) || (iPlot == 7))
+                if (iPlot == 1)
+                    y = [shareOwnChoices{iSet, :}];
+                    minY = 0;
+                    maxY = 1;
+                    yCaption = {'share own choices'};
+                elseif (iPlot == 4)
+                    y = [shareLeftChoices{iSet, :}];
+                    minY = 0;
+                    maxY = 1;
+                    yCaption = {'share objective left choices'};
+                elseif (iPlot == 2)
+                    y = [playerMeanReward{iSet, :}];
+                    minY = 1;
+                    maxY = 4.1; % 3.51
+                    yCaption = {'average reward'};
+                end
+                hold on
+                plot(y(1,:), 'r-o', 'MarkerSize', markerSize);
+                plot(y(2,:), 'b-s', 'MarkerSize', markerSize);
+                if (iPlot == 1) || (iPlot == 4)
+                    plot([1,nFile(iSet)], [0.5, 0.5], 'k--')
+                elseif (iPlot == 2)
+                    plot([averReward{iSet, :}], 'MarkerSize', markerSize, 'Color', [0.5,0,0.5]);
+                end
+                hold off
+                
+            else
+                if (iPlot == 3)
+                    y = [miValueWhole{iSet, :}];
+                    yInt = [miThreshWhole{iSet, :}];
+                    minY = 0;
+                    maxY = 1;
+                    yCaption = {'target mutual information'};
+                    bottomAreaColor = [0.5, 0.5, 0.5];
+                elseif (iPlot == 6)
+                    y = [sideMIvalueWhole{iSet, :}];
+                    yInt = [sideMIthreshWhole{iSet, :}];
+                    minY = 0;
+                    maxY = 1;
+                    yCaption = {'side mutual information'};
+                    bottomAreaColor = [0.5, 0.5, 0.5];
+                elseif (iPlot == 5)
+                    %line([1 size(dltConfInterval(iSet, :), 2)], [0 0], 'Color', [0 0 0]);
+                    y = [dltReward{iSet, :}];
+                    yInt = [dltConfInterval{iSet, :}];
+                    yInt(2,:) = yInt(2,:) - yInt(1,:); % to provide white area below conf interval
+                    minY = -0.3;
+                    maxY = 1.1;
+                    yCaption = {'non-random reward'};
+                    bottomAreaColor = [1.0, 1.0, 1.0];
+                end
+                
+                hold on
+                h = area(yInt', minY);
+                
+                h(1).FaceColor = bottomAreaColor;
+                if (length(h) > 1)
+                    h(2).FaceColor = [1.0, 0.5, 1.0];
+                    line([1 size(dltConfInterval(iSet, :), 2)], [0 0], 'Color', [0 0 0]);
+                end
+                plot(y(1,:), '-d', 'MarkerSize', markerSize, 'Color', [0.5,0,0.5]);
+                hold off
+            end
+            %if (iPlot >= nPlot - 1)
+            %  xlabel('Session number', 'fontsize', FontSize, 'FontName', 'Arial');
+            %end
+            % sessions with non-unique labels are merged, so we need to select only unique labels
+            ylabel(yCaption, 'fontsize', FontSize, 'FontName', 'Arial');
+            axis([0.99, nFile(iSet) + 0.01, minY, maxY]);
+            [~, labelIndices] = unique(fileCaption{iSet});
+            correctLabel = fileCaption{iSet}(sort(labelIndices));
+            set( gca, 'fontsize', FontSize, 'XTick', 1:nFile(iSet), 'XTickLabel', correctLabel, 'XTickLabelRotation',45, 'FontName', 'Arial');%'FontName', 'Times');
+            %set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
+            %title(setName{1}, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+        end
+        set( gcf, 'PaperUnits','centimeters' );
+        xSize = 19; ySize = 25;
+        xLeft = 0; yTop = 0;
+        set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+        print ( '-depsc', '-r600', ['perSession', '_', setName{iSet}]);
+        print('-dpdf', ['perSessionCNL', '_', setName{iSet}], '-r600');   
+    end
     % plot per-session MI, TE, average and non-random reward
     figure('Name',[setName{iSet}, ' per-session summary']);
     set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
@@ -1081,6 +1201,8 @@ for iSet = 1:nSet
     set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
     print ( '-depsc', '-r600', ['perSession', '_', setName{iSet}]);
     print('-dpdf', ['perSession', '_', setName{iSet}], '-r600');
+    
+    
     
     % plot MI and TE dynamics over each session
     nFileCol = floor(sqrt(2*nFile(iSet)));
@@ -1263,105 +1385,105 @@ end
 
 %% draw pictures for single recordings
 if length(fileOfInterest) == nSet
-for iSet = 1:nSet
-    nFileOfInterest = length(fileOfInterest{iSet});
-    titleList = unique(fileCaption{iSet}, 'stable');
-    for iFile = 1:nFileOfInterest
-        trueFileIndex = fileOfInterest{iSet}(iFile);
-        isOwnChoice = allOwnChoice{iSet,trueFileIndex};
-        sideChoice = allSideChoice{iSet,trueFileIndex};
-        maxXvalue = length(isOwnChoice(1,:));
-        figure
-        set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
-        totalReward = 1 + 2.5*(isOwnChoice(1,:)+isOwnChoice(2,:));
-        totalReward(totalReward == 6) = 2;
-        subplot(5, 1, 1);
-        plot(totalReward, 'k-', 'linewidth', lineWidth);
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
-        axis([0.8, maxXvalue + 0.2, 0.5, 4.9]);
-        legendHandle = legend('Joint reward', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', FontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
-        title(titleList{trueFileIndex}, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
-        
-        subplot(5, 1, 2);
-        hold on
-        if (blockBorder{iSet}(iFile,:) > 0)
-            fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
-                [-0.01, -0.01, 1.8, 1.8], [0.8,0.8,0.8]);
+    for iSet = 1:nSet
+        nFileOfInterest = length(fileOfInterest{iSet});
+        titleList = unique(fileCaption{iSet}, 'stable');
+        for iFile = 1:nFileOfInterest
+            trueFileIndex = fileOfInterest{iSet}(iFile);
+            isOwnChoice = allOwnChoice{iSet,trueFileIndex};
+            sideChoice = allSideChoice{iSet,trueFileIndex};
+            maxXvalue = length(isOwnChoice(1,:));
+            figure
+            set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+            totalReward = 1 + 2.5*(isOwnChoice(1,:)+isOwnChoice(2,:));
+            totalReward(totalReward == 6) = 2;
+            subplot(5, 1, 1);
+            plot(totalReward, 'k-', 'linewidth', lineWidth);
+            set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+            axis([0.8, maxXvalue + 0.2, 0.5, 4.9]);
+            legendHandle = legend('Joint reward', 'location', 'NorthWest');
+            set(legendHandle, 'fontsize', FontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+            title(titleList{trueFileIndex}, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+            
+            subplot(5, 1, 2);
+            hold on
+            if (blockBorder{iSet}(iFile,:) > 0)
+                fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
+                    [-0.01, -0.01, 1.8, 1.8], [0.8,0.8,0.8]);
+            end
+            %h1 = plot(movmean(isOwnChoice(1,:), 8), 'r-', 'linewidth', lineWidth+1);
+            %h2 = plot(movmean(isOwnChoice(2,:), 8), 'b-', 'linewidth', lineWidth);
+            h1 = plot(isOwnChoice(1,:), 'r-', 'linewidth', lineWidth+1);
+            h2 = plot(isOwnChoice(2,:), 'b-', 'linewidth', lineWidth);
+            hold off
+            set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1]);%'FontName', 'Times');
+            axis([0.8, maxXvalue + 0.01, -0.01, 1.8]);
+            legendHandle = legend([h1, h2], 'Share own choices P1', 'Share own choices P2', 'location', 'NorthWest');
+            set(legendHandle, 'fontsize', FontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+            
+            subplot(5, 1, 3);
+            hold on
+            if (~isempty(blockBorder{iSet}))
+                fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
+                    [1.01*minValue, 1.01*minValue, 1.1*maxValue, 1.1*maxValue], [0.8,0.8,0.8]);
+            end
+            h1 = plot(localTargetTE1{iSet, trueFileIndex}, 'Color', [0.9, 0.5, 0.5], 'linewidth', lineWidth);
+            h2 = plot(localTargetTE2{iSet, trueFileIndex}, 'Color', [0.5, 0.5, 0.9], 'linewidth', lineWidth);
+            h3 = plot(targetTE1{iSet, trueFileIndex}, 'r-', 'linewidth', lineWidth+1);
+            h4 = plot(targetTE2{iSet, trueFileIndex}, 'b-', 'linewidth', lineWidth+1);
+            hold off
+            set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+            axis([0.8, maxXvalue + 0.2, 1.01*minValue, 1.1*maxValue]);
+            legendHandle = legend([h1, h2, h3, h4], '$\mathrm{te_{P1\rightarrow P2}}$', '$\mathrm{te_{P2\rightarrow P1}}$', '$\mathrm{TE_{P1\rightarrow P2}}$', '$\mathrm{TE_{P2\rightarrow P1}}$', 'location', 'NorthWest');
+            set(legendHandle, 'fontsize', FontSize-6, 'FontName', 'Times', 'Interpreter', 'latex');
+            
+            subplot(5, 1, 4);
+            hold on
+            if (~isempty(blockBorder{iSet}))
+                fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
+                    [-0.01, -0.01, 1.8, 1.8], [0.8,0.8,0.8]);
+            end
+            %h1 = plot(movmean(sideChoice(1,:), 8), 'r-', 'linewidth', lineWidth+1);
+            %h2 = plot(movmean(sideChoice(2,:), 8), 'b-', 'linewidth', lineWidth);
+            h1 = plot(sideChoice(1,:), 'r-', 'linewidth', lineWidth+1);
+            h2 = plot(sideChoice(2,:), 'b--', 'linewidth', lineWidth);
+            hold off
+            set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1]);%'FontName', 'Times');
+            axis([0.8, maxXvalue + 0.2, -0.01, 1.8]);
+            legendHandle = legend([h1, h2], 'Share left choices P1', 'Share left choices P2', 'location', 'NorthWest');
+            set(legendHandle, 'fontsize', FontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+            
+            subplot(5, 1, 5);
+            hold on
+            if (~isempty(blockBorder{iSet}))
+                fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
+                    [0, 0, 1.01*maxMIvalue, 1.01*maxMIvalue], [0.8,0.8,0.8]);
+            end
+            h1 = plot(locMutualInf{iSet, trueFileIndex}, 'Color', [0.7, 0.3, 0.7], 'linewidth', lineWidth);
+            h2 = plot(mutualInf{iSet, trueFileIndex}, 'Color', [0.4, 0.1, 0.4], 'linewidth', lineWidth+1);
+            hold off
+            set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+            %axis([0.8, maxXvalue + 0.2, 1.01*minMIvalue, 1.01*maxMIvalue]);
+            axis([0.8, maxXvalue + 0.2, 0, 1.01*maxMIvalue]);
+            legendHandle = legend([h1, h2], '$\mathrm{i(P1,P2)}$', '$\mathrm{MI(P1,P2)}$', 'location', 'NorthWest');
+            set(legendHandle, 'fontsize', FontSize-6, 'FontName', 'Times', 'Interpreter', 'latex');
+            
+            
+            set( gcf, 'PaperUnits','centimeters' );
+            set(gcf,'PaperSize',fliplr(get(gcf,'PaperSize')))
+            xSize = 21; ySize = 29;
+            xLeft = 0; yTop = 0;
+            set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+            print ( '-depsc', '-r600', ['set', num2str(iSet), '_session', num2str(trueFileIndex)]);
+            print('-r600', ['set', num2str(iSet), '_session', num2str(trueFileIndex)],'-dpng');
+            %print('-dpdf', ['set', num2str(iSet), '_session', num2str(trueFileIndex)], '-r600');
+            
+            %mean(sideChoice, 2)
+            %memoryLength = 2;
+            %plot_precursor_freq(isOwnChoice, isBottomChoice, memoryLength, {'other','own'});
+            %plot_precursor_freq(isBottomChoice, isOwnChoice, memoryLength, {'left','right'});
         end
-        %h1 = plot(movmean(isOwnChoice(1,:), 8), 'r-', 'linewidth', lineWidth+1);
-        %h2 = plot(movmean(isOwnChoice(2,:), 8), 'b-', 'linewidth', lineWidth);
-        h1 = plot(isOwnChoice(1,:), 'r-', 'linewidth', lineWidth+1);
-        h2 = plot(isOwnChoice(2,:), 'b-', 'linewidth', lineWidth);
-        hold off
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1]);%'FontName', 'Times');
-        axis([0.8, maxXvalue + 0.01, -0.01, 1.8]);
-        legendHandle = legend([h1, h2], 'Share own choices P1', 'Share own choices P2', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', FontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
-        
-        subplot(5, 1, 3);
-        hold on
-        if (~isempty(blockBorder{iSet}))
-            fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
-                [1.01*minValue, 1.01*minValue, 1.1*maxValue, 1.1*maxValue], [0.8,0.8,0.8]);
-        end
-        h1 = plot(localTargetTE1{iSet, trueFileIndex}, 'Color', [0.9, 0.5, 0.5], 'linewidth', lineWidth);
-        h2 = plot(localTargetTE2{iSet, trueFileIndex}, 'Color', [0.5, 0.5, 0.9], 'linewidth', lineWidth);
-        h3 = plot(targetTE1{iSet, trueFileIndex}, 'r-', 'linewidth', lineWidth+1);
-        h4 = plot(targetTE2{iSet, trueFileIndex}, 'b-', 'linewidth', lineWidth+1);
-        hold off
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
-        axis([0.8, maxXvalue + 0.2, 1.01*minValue, 1.1*maxValue]);
-        legendHandle = legend([h1, h2, h3, h4], '$\mathrm{te_{P1\rightarrow P2}}$', '$\mathrm{te_{P2\rightarrow P1}}$', '$\mathrm{TE_{P1\rightarrow P2}}$', '$\mathrm{TE_{P2\rightarrow P1}}$', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', FontSize-6, 'FontName', 'Times', 'Interpreter', 'latex');
-        
-        subplot(5, 1, 4);
-        hold on
-        if (~isempty(blockBorder{iSet}))
-            fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
-                [-0.01, -0.01, 1.8, 1.8], [0.8,0.8,0.8]);
-        end
-        %h1 = plot(movmean(sideChoice(1,:), 8), 'r-', 'linewidth', lineWidth+1);
-        %h2 = plot(movmean(sideChoice(2,:), 8), 'b-', 'linewidth', lineWidth);
-        h1 = plot(sideChoice(1,:), 'r-', 'linewidth', lineWidth+1);
-        h2 = plot(sideChoice(2,:), 'b--', 'linewidth', lineWidth);
-        hold off
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1]);%'FontName', 'Times');
-        axis([0.8, maxXvalue + 0.2, -0.01, 1.8]);
-        legendHandle = legend([h1, h2], 'Share left choices P1', 'Share left choices P2', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', FontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
-        
-        subplot(5, 1, 5);
-        hold on
-        if (~isempty(blockBorder{iSet}))
-            fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
-                [0, 0, 1.01*maxMIvalue, 1.01*maxMIvalue], [0.8,0.8,0.8]);
-        end
-        h1 = plot(locMutualInf{iSet, trueFileIndex}, 'Color', [0.7, 0.3, 0.7], 'linewidth', lineWidth);
-        h2 = plot(mutualInf{iSet, trueFileIndex}, 'Color', [0.4, 0.1, 0.4], 'linewidth', lineWidth+1);
-        hold off
-        set( gca, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
-        %axis([0.8, maxXvalue + 0.2, 1.01*minMIvalue, 1.01*maxMIvalue]);
-        axis([0.8, maxXvalue + 0.2, 0, 1.01*maxMIvalue]);
-        legendHandle = legend([h1, h2], '$\mathrm{i(P1,P2)}$', '$\mathrm{MI(P1,P2)}$', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', FontSize-6, 'FontName', 'Times', 'Interpreter', 'latex');
-        
-        
-        set( gcf, 'PaperUnits','centimeters' );
-        set(gcf,'PaperSize',fliplr(get(gcf,'PaperSize')))
-        xSize = 21; ySize = 29;
-        xLeft = 0; yTop = 0;
-        set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
-        print ( '-depsc', '-r600', ['set', num2str(iSet), '_session', num2str(trueFileIndex)]);
-        print('-r600', ['set', num2str(iSet), '_session', num2str(trueFileIndex)],'-dpng');
-        %print('-dpdf', ['set', num2str(iSet), '_session', num2str(trueFileIndex)], '-r600');
-        
-        %mean(sideChoice, 2)
-        %memoryLength = 2;
-        %plot_precursor_freq(isOwnChoice, isBottomChoice, memoryLength, {'other','own'});
-        %plot_precursor_freq(isBottomChoice, isOwnChoice, memoryLength, {'left','right'});
     end
-end
 else
     disp('Number of sets and number of fileOfInterest do not match, skipping...');
 end
