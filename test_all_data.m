@@ -15,6 +15,7 @@ end
 % filenames - list of all files related to specific Set
 % captions - captions of files, adjacent files may have the same caption
 % but the they are merged
+
 magnusCuriusNaive.setName = 'MagnusCuriusNaive';
 magnusCuriusNaive.filenames = {...
     'DATA_20171108T140407.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -93,34 +94,34 @@ magnusFlaffusNaive.filenames = {...
     'DATA_20180125T155742.A_Magnus.B_Flaffus.SCP_01.triallog.A.Magnus.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 magnusFlaffusNaive.captions = {...
-    '20171129', ...
-    '20171130', ...
-    '20171201', ...
-    '20171205', ...
-    '20171206', ...
-    '20171208', ...
-    '20171212', ...
-    '20171213', ...
-    '20171214', ...
-    '20171219', ...
-    '20180105', ...
-    '20180105', ...
-    '20180108', ...
-    '20180109', ...
-    '20180109', ...
-    '20180110T15', ...
-    '20180110T17', ...
-    '20180111', ...
-    '20180115', ...
-    '20180116', ...
-    '20180117', ...
-    '20180118T14', ...
-    '20180118T16', ...
-    '20180119', ...
-    '20180122', ...
-    '20180123', ...
-    '20180124', ...
-    '20180125', ...
+    '20171129T100056', ...
+    '20171130T093044', ...
+    '20171201T101044', ...
+    '20171205T103518', ...
+    '20171206T111532', ...
+    '20171208T092614', ...
+    '20171212T132217', ...
+    '20171213T142240', ...
+    '20171214T072407', ...
+    '20171219T135223', ...
+    '20180105T142814', ...
+    '20180105T150525', ...
+    '20180108T155548', ...
+    '20180109T171512', ...
+    '20180109T172928', ...
+    '20180110T151942', ...
+    '20180110T165831', ...
+    '20180111T150745', ...
+    '20180115T141937', ...
+    '20180116T144201', ...
+    '20180117T151458', ...
+    '20180118T140639', ...
+    '20180118T154054', ...
+    '20180119T143953', ...
+    '20180122T164338', ...
+    '20180123T151927', ...
+    '20180124T161657', ...
+    '20180125T155742', ...
     };
 
 
@@ -153,7 +154,6 @@ flaffusCuriusConfederate.setName = 'flaffusCuriusConfederate';
 flaffusCuriusConfederate.filenames = {...
     'DATA_20180418T143951.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180419T141311.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
-    'DATA_20180420T151954.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180424T121937.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180425T133936.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20180426T171117.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -164,7 +164,6 @@ flaffusCuriusConfederate.filenames = {...
 flaffusCuriusConfederate.captions = {...
     '2018.04.18',...
     '2018.04.19', ...
-    '2018.04.20', ...
     '2018.04.24', ...
     '2018.04.25', ...
     '2018.04.26', ...
@@ -201,12 +200,12 @@ teslaElmoNaive.filenames = {...
     'DATA_20180524T103704.A_Tesla.B_Elmo.SCP_01.triallog.A.Tesla.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 teslaElmoNaive.captions = {...
-    '20180516', ...
-    '20180517', ...
-    '20180518', ...
-    '20180522', ...
-    '20180523', ...
-    '20180524', ...
+    '20180516T090940', ...
+    '20180517T085104', ...
+    '20180518T104104', ...
+    '20180522T101558', ...
+    '20180523T092531', ...
+    '20180524T103704', ...
     };
 
 
@@ -218,10 +217,10 @@ teslaNaiveFlaffusConfederate.filenames = {...
     'DATA_20180509T122330.A_Tesla.B_Flaffus.SCP_01.triallog.A.Tesla.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 teslaNaiveFlaffusConfederate.captions = {...
-    '20180504', ...
-    '20180507', ...
-    '20180508', ...
-    '20180509', ...
+    '20180504T114516', ...
+    '20180507T151756', ...
+    '20180508T132214', ...
+    '20180509T122330', ...
     };
 
 
@@ -234,11 +233,34 @@ teslaNaiveCuriusConfederate.filenames = {...
     'DATA_20180531T104356.A_Tesla.B_Curius.SCP_01.triallog.A.Tesla.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 teslaNaiveCuriusConfederate.captions = {...
-    '20180525', ...
-    '20180528', ...
-    '20180529', ...
-    '20180530', ...
-    '20180531', ...
+    '20180525T091512', ...
+    '20180528T132259', ...
+    '20180529T130237', ...
+    '20180530T153325', ...
+    '20180531T104356', ...
+    };
+
+
+elmoNaiveCuriusConfederate.setName = 'ElmoNaiveCuriusConfederate';
+elmoNaiveCuriusConfederate.filenames = {...
+    'DATA_20180605T091549.A_Curius.B_Elmo.SCP_01.triallog.A.Curius.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20180606T111853.A_Curius.B_Elmo.SCP_01.triallog.A.Curius.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20180607T102506.A_Curius.B_Elmo.SCP_01.triallog.A.Curius.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20180611T112158.A_Curius.B_Elmo.SCP_01.triallog.A.Curius.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20180612T131016.A_Curius.B_Elmo.SCP_01.triallog.A.Curius.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20180613T095441.A_Curius.B_Elmo.SCP_01.triallog.A.Curius.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20180614T092826.A_Curius.B_Elmo.SCP_01.triallog.A.Curius.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20180615T111344.A_Curius.B_Elmo.SCP_01.triallog.A.Curius.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+    };
+elmoNaiveCuriusConfederate.captions = {...
+    '20180605T091549', ...
+    '20180606T111853', ...
+    '20180607T102506', ...
+    '20180611T112158', ...
+    '20180612T131016', ...
+    '20180613T095441', ...
+    '20180614T092826', ...
+    '20180615T111344', ...
     };
 
 
@@ -249,9 +271,9 @@ JKElmo.filenames = {...
     'DATA_20180622T071433.A_JK.B_Elmo.SCP_01.triallog.A.JK.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 JKElmo.captions = {...
-    '20180620', ...
-    '20180621', ...
-    '20180622', ...
+    '20180620T095959', ...
+    '20180621T080841', ...
+    '20180622T071433', ...
     };
 
 
@@ -273,20 +295,20 @@ SMTesla.filenames = {...
     'DATA_20180618T140913.A_Tesla.B_SM.SCP_01.triallog.A.Tesla.B.SM_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 SMTesla.captions = {...
-    '20180601', ...
-    '20180604', ...
-    '20180605', ...
-    '20180606', ...
-    '20180607', ...
-    '20180607', ...
-    '20180608', ...
-    '20180611', ...
-    '20180612', ...
-    '20180613', ...
-    '20180614', ...
-    '20180615', ...
-    '20180615', ...
-    '20180618', ...
+    '20180601T122747', ...
+    '20180604T150239', ...
+    '20180605T150607', ...
+    '20180606T142829', ...
+    '20180607T142823', ...
+    '20180607T145715', ...
+    '20180608T100903', ...
+    '20180611T150057', ...
+    '20180612T162540', ...
+    '20180613T141225', ...
+    '20180614T165947', ...
+    '20180615T150245', ...
+    '20180615T154238', ...
+    '20180618T140913', ...
     };
 
 
@@ -295,7 +317,7 @@ SMElmo.filenames = {...
     'DATA_20180619T150344.A_SM.B_Elmo.SCP_01.triallog.A.SM.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 SMElmo.captions = {...
-    '20180619', ...
+    '20180619T150344', ...
     };
 
 
@@ -449,11 +471,11 @@ TNCurius.captions = {...
 
 humanPair.setName = 'HumanPairs';
 humanPair.filenames = {...
-    'DATA_20170425T160951.A_21001.B_22002.SCP_00.triallog.A.21001.B.22002_IC_JointTrials.isOwnChoice_sideChoice', ...
-    'DATA_20170426T102304.A_21003.B_22004.SCP_00.triallog.A.21003.B.22004_IC_JointTrials.isOwnChoice_sideChoice', ...
-    'DATA_20170426T133343.A_21005.B_12006.SCP_00.triallog.A.21005.B.12006_IC_JointTrials.isOwnChoice_sideChoice', ...
-    'DATA_20170427T092352.A_21007.B_12008.SCP_00.triallog.A.21007.B.12008_IC_JointTrials.isOwnChoice_sideChoice', ...
-    'DATA_20170427T132036.A_21009.B_12010.SCP_00.triallog.A.21009.B.12010_IC_JointTrials.isOwnChoice_sideChoice', ...
+%    'DATA_20170425T160951.A_21001.B_22002.SCP_00.triallog.A.21001.B.22002_IC_JointTrials.isOwnChoice_sideChoice', ...
+%    'DATA_20170426T102304.A_21003.B_22004.SCP_00.triallog.A.21003.B.22004_IC_JointTrials.isOwnChoice_sideChoice', ...
+%    'DATA_20170426T133343.A_21005.B_12006.SCP_00.triallog.A.21005.B.12006_IC_JointTrials.isOwnChoice_sideChoice', ...
+%    'DATA_20170427T092352.A_21007.B_12008.SCP_00.triallog.A.21007.B.12008_IC_JointTrials.isOwnChoice_sideChoice', ...
+%    'DATA_20170427T132036.A_21009.B_12010.SCP_00.triallog.A.21009.B.12010_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20171113T162815.A_20011.B_10012.SCP_01.triallog.A.20011.B.10012_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20171115T165545.A_20013.B_10014.SCP_01.triallog.A.20013.B.10014_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20171116T164137.A_20015.B_10016.SCP_01.triallog.A.20015.B.10016_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -467,11 +489,11 @@ humanPair.filenames = {...
     'DATA_20171205T163542.A_20029.B_10030.SCP_01.triallog.A.20029.B.10030_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 humanPair.captions = {...
-    '01vs02', ...
-    '03vs04', ...
-    '05vs06', ...
-    '07vs08', ...
-    '09vs10', ...
+ %   '01vs02', ...
+ %   '03vs04', ...
+ %   '05vs06', ...
+ %   '07vs08', ...
+ %   '09vs10', ...
     '11vs12', ...
     '13vs14', ...
     '15vs16', ...
@@ -519,12 +541,12 @@ SMhumanBlocked.captions = {...
     'Human Confederate 5', ...
     };
 
-
+   
 % flag indicating whether to scan all datasets or only selected ones
 SCAN_ALL_DATASET = 1;
 %SCAN_ALL_DATASET = 0;
 if (SCAN_ALL_DATASET)
-    dataset = {teslaElmoNaive, teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate, SMTesla, SMElmo, JKElmo, magnusCuriusNaive, magnusNaiveCuriusConfederate, flaffusCuriusNaive, flaffusCuriusConfederate, flaffusEC, SMCurius, SMCuriusBlock, TNCurius, SMFlaffus, SMFlaffusBlock, FlaffusSM, humanPair, humanPairBlocked, SMhumanBlocked, magnusFlaffusNaive};
+    dataset = {teslaElmoNaive, teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate, elmoNaiveCuriusConfederate, SMTesla, SMElmo, JKElmo, magnusCuriusNaive, magnusNaiveCuriusConfederate, flaffusCuriusNaive, flaffusCuriusConfederate, flaffusEC, SMCurius, SMCuriusBlock, TNCurius, SMFlaffus, SMFlaffusBlock, FlaffusSM, humanPair, humanPairBlocked, SMhumanBlocked, magnusFlaffusNaive};
     %dataset = {teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate};
     %dataset = {magnusFlaffusNaive};
 else
@@ -535,12 +557,13 @@ end
 %% plotting parameters
 % COPY FROM HERE
 fontSize = 8;
+fontType = 'Arial';
 markerSize = 4;
 lineWidth = 1.0;
 
 plotName = {'TEtarget', 'MutualInf', 'surprise_pos'};
 
-colorList = [...
+commonColorList = [...
     % blue group: navy, purple, blue, light blue, lavender
     0.0, 0.0, 0.5; ...
     0.6, 0.2, 0.7; ...
@@ -587,125 +610,20 @@ compute_coordination_metrics(dataset, cfg, resultFilename);
 load(resultFilename); 
 %% test strategies
 
-% prepare strategies for testing
-strategyNames = {'Own target following', 'Other target following', ...
-                 'Left side following', 'Right side following', ...
-                 'Side turn-taking', 'Turn-taking', 'Challenger', ... 
-                 'Long turn-taking', 'Leader-Follower', 'Follower', ...
-                 };
-nStrategy = length(strategyNames);
-strategyArray = cell(1, nStrategy);
-basicStrategyIndex = [1,2,3,4];
-
-nRow = 4;     
-nCol = 12;
-for iStrategy = 1:nStrategy
-    strategyArray{iStrategy} = zeros(nRow, nCol);
-end
+basicStrategyIndex = 1:4;
+complexStrategyIndex = 5:8;
+temporalStrategyIndex = [9,10];
+sideStrategyIndex = 3:4;
+targetStrategyIndex = 1:2;
+turnTakingStrategyIndex = 5:7;
+competitiveStrategyIndex = 8;
 
 goodProbabilityThreshold = 0.95;
 minProbabilityThreshold = 0.33;
-minDRT = 200;
+minDRT = 150;
 
-PARAM_MARK = 2;
-maxParamValue = ones(1, nStrategy);
-% ----------Side Strategies----------
-%{
-% Left side following
-strategyArray{1}(1, [11,12]) = 1;
-strategyArray{1}(1, [1,2, 5,6, 9,10]) = 0.5;
-strategyArray{1}(2, [3,4, 7,8, 11,12]) = 1;
-strategyArray{1}(2, [1,2, 5,6, 9,10]) = 0.5;
-strategyArray{1}(3, [9,10]) = 1;
-strategyArray{1}(3, [3,4, 7,8, 11,12]) = 0.5;
-strategyArray{1}(4, [1,2, 5,6, 9,10]) = 1;
-strategyArray{1}(4, [3,4, 7,8, 11,12]) = 0.5;
-
-% Right side following
-strategyArray{2}(4, [11,12]) = 1;
-strategyArray{2}(4, [1,2, 5,6, 9,10]) = 0.5;
-strategyArray{2}(3, [3,4, 7,8, 11,12]) = 1;
-strategyArray{2}(3, [1,2, 5,6, 9,10]) = 0.5;
-strategyArray{2}(2, [9,10]) = 1;
-strategyArray{2}(2, [3,4, 7,8, 11,12]) = 0.5;
-strategyArray{2}(1, [1,2, 5,6, 9,10]) = 1;
-strategyArray{2}(1, [3,4, 7,8, 11,12]) = 0.5;
-%}
-% ------- basic strategies --------
-% Insister
-strategyArray{1}(1, 1:12) = 1;
-% Conformist (the same as Follower, but without clear temporal following)
-strategyArray{2}(1, 5:12) = 0.5;
-
-% Cautious left side following
-strategyArray{3}(1, 1:6) = PARAM_MARK;  %indicates parameter value that should be computed
-strategyArray{3}(1, 9:12) = 1;
-strategyArray{3}(2, :) = 1;
-strategyArray{3}(3, [1,2, 5,6]) = PARAM_MARK;  %indicates parameter value that should be computed;
-strategyArray{3}(3, [9,10]) = 1;
-strategyArray{3}(3, [3,4, 7,8, 11,12]) = 0.5;
-strategyArray{3}(4, [1,2, 5,6, 9,10]) = 1;
-strategyArray{3}(4, [3,4, 7,8, 11,12]) = 0.5;
-maxParamValue(3) = 0.6;
-
-% Cautious right side following
-strategyArray{4}(4, 1:6) = PARAM_MARK;  %indicates parameter value that should be computed
-strategyArray{4}(4, 9:12) = 1;
-strategyArray{4}(3, :) = 1;
-strategyArray{4}(2, [1,2, 5,6]) = PARAM_MARK;  %indicates parameter value that should be computed
-strategyArray{4}(2, [9,10]) = 1;
-strategyArray{4}(2, [3,4, 7,8, 11,12]) = 0.5;
-strategyArray{4}(1, [1,2, 5,6, 9,10]) = 1;
-strategyArray{4}(1, [3,4, 7,8, 11,12]) = 0.5;
-maxParamValue(4) = 0.6;
-
-% ------- more complex strategies strategies --------
-% Side turn-taking
-strategyArray{5}(1, [1,4, 5,7,8, 9,10,12]) = 0.5;
-strategyArray{5}(1, [3, 11]) = 1;
-strategyArray{5}(2, [1,4, 5,7,8, 9,11,12]) = 0.5;
-strategyArray{5}(2, [2, 10]) = 1;
-strategyArray{5}(3:4, :) = strategyArray{5}(2:-1:1, :);
-
-% Turn-taking
-strategyArray{6}(1, [3,7,9:12]) = 1;
-strategyArray{6}(1, [1,4]) = PARAM_MARK;  %indicates parameter value that should be computed
-
-% Challenger
-% not entirely stubborn, but still unyilding
-strategyArray{7}(1, [2, 6, 9:12]) = 1;
-strategyArray{7}(1, [1,4]) = 0.9; 
-strategyArray{7}(1, [5,8]) = PARAM_MARK;
-
-% Long-term turn-taking
-% Similar to Challenger but behaviour after uncoordinated choice 
-% in not important (should be rare)
-% Human confederate can be classified either as challenger or as LT turn-taker
-strategyArray{8}(1, [2, 6, 9:12]) = 1;
-strategyArray{8}(1, [1,4]) = 0.5;
-strategyArray{8}(1, [5,8]) = PARAM_MARK;
-
-% Leader-Follower
-strategyArray{9}(1, [1:3, 9:11]) = 1;
-strategyArray{9}(1, [4,8,12]) = 0.5;
-
-% Follower
-strategyArray{10}(1, 9:11) = 1;
-strategyArray{10}(1, [4,8,12]) = 0.5;
-
-% in target strategies all rows are the same, so just copy them
-targetStrategyIndex = [1,2, 6:nStrategy];
-for iStrategy = targetStrategyIndex
-    strategyArray{iStrategy}(2:4,:) = repmat(strategyArray{iStrategy}(1,:), 3, 1);
-end
-
-% allow for "trembling hand effect"
-minErrorProb = 0.01;
-for iStrategy = 1:nStrategy
-    strategyArray{iStrategy}(strategyArray{iStrategy} == 1) = 1 - minErrorProb;
-    strategyArray{iStrategy}(strategyArray{iStrategy} == 0) = minErrorProb;
-end
-% ---------end of strategy description---------
+[strategyArray, strategyNames] = generate_principal_strategies();
+nStrategy = length(strategyNames);
 
 strategyParam = cell(nSet, max(nFile));
 strategyProbabilityPerTrial = cell(nSet, max(nFile));
@@ -715,16 +633,34 @@ strategyLogMeanProbability = cell(nSet, max(nFile));
 identifiedStrategyIndex = cell(nSet, 1);
 identifiedStrategyProb = cell(nSet, 1);
 identifiedStrategyParam = cell(nSet, 1);
+
+basicStrategyLikelihood = cell(nSet, 1);
+complexStrategyLikelihood = cell(nSet, 1);
+temporalStrategyLikelihood = cell(nSet, 1);
+sideStrategyLikelihood = cell(nSet, 1);
+targetStrategyLikelihood = cell(nSet, 1);
+turnTakingStrategyLikelihood = cell(nSet, 1);
+competitiveStrategyLikelihood = cell(nSet, 1);
+
 for iSet = 1:nSet
-    disp(['Test strategies for cfg.minDRT' num2str(iSet)]);
+    disp(['Test strategies for minDRT: ' num2str(iSet)]);
     
     identifiedStrategyIndex{iSet} = zeros(2, nFile(iSet));
     identifiedStrategyProb{iSet} = zeros(2, nFile(iSet));
     identifiedStrategyParam{iSet} = zeros(2, nFile(iSet));
+    
+    basicStrategyLikelihood{iSet} = zeros(2, nFile(iSet));
+    complexStrategyLikelihood{iSet} = zeros(2, nFile(iSet));
+    temporalStrategyLikelihood{iSet} = zeros(2, nFile(iSet));
+    sideStrategyLikelihood{iSet} = zeros(2, nFile(iSet));
+    targetStrategyLikelihood{iSet} = zeros(2, nFile(iSet));
+    turnTakingStrategyLikelihood{iSet} = zeros(2, nFile(iSet));
+    competitiveStrategyLikelihood{iSet} = zeros(2, nFile(iSet));
+    
     for iFile = 1:nFile(iSet)
         % here we consider only equilibrium (stabilized) values
         nTrial = length(allOwnChoice{iSet, iFile});
-        fistTestIndex = max(minStationarySegmentStart, nTrial-stationarySegmentLength);
+        fistTestIndex = max(cfg.minStationarySegmentStart, nTrial-cfg.stationarySegmentLength);
         testIndices = fistTestIndex:nTrial;
         nTestIndices = length(testIndices);
         
@@ -735,13 +671,13 @@ for iSet = 1:nSet
         strategyForTest = cell(2, nStrategy);
         strategyForTest(1,:) = strategyArray;
         strategyForTest(2,:) = strategyArray;
+        %{
         % estimate strategy parameters
         strategyParam{iSet, iFile} = -ones(2, nStrategy); %initialize with invalid values
         [strategy, nStateVisit] = estimate_strategy(isOwnChoice, sideChoice, RT, minDRT);                
         strategy{1}(isnan(strategy{1})) = 0;
         strategy{2}(isnan(strategy{2})) = 0;
-
-        for iStrategy = 1:nStrategy
+        for iStrategy = 1:nStrategy            
             m = zeros(1,2);
             n = zeros(1,2);
             paramIndex = (strategyArray{iStrategy} == PARAM_MARK);
@@ -765,52 +701,26 @@ for iSet = 1:nSet
                 end              
             end    
         end
-%{        
-        for iStrategy = 1:nStrategy
-            m1 = zeros(1,2);
-            n1 = zeros(1,2);
-            m2 = zeros(1,2);
-            n2 = zeros(1,2);
-            paramPosIndex = strategyArray{iStrategy} == PARAM_MARK;
-            if (nnz(paramPosIndex) > 0)
-                for iPlayer = 1:2   
-                    m1(iPlayer) = sum(sum(strategy{iPlayer}(paramPosIndex).*nStateVisit{iPlayer}(paramPosIndex)));
-                    n1(iPlayer) = sum(sum(nStateVisit{iPlayer}(paramPosIndex)));
-                end    
-            end
-            paramInvIndex = strategyArray{iStrategy} == INVERSE_PARAM_MARK;
-            if (nnz(paramInvIndex) > 0)
-                for iPlayer = 1:2   
-                    m2(iPlayer) = sum(sum(strategy{iPlayer}(paramInvIndex).*nStateVisit{iPlayer}(paramInvIndex)));
-                    n2(iPlayer) = sum(sum(nStateVisit{iPlayer}(paramInvIndex)));
-                end   
-            end
-            paramValue = (m1+(n2-m2))./(n1+n2);            
-            paramValue(n1 + n2 == 0) = 0.5; % replace incorrect values by uncertainty
-               
-            paramErrorProb = 0.05;
-            paramValue(paramValue > 1 - paramErrorProb) = 1 - paramErrorProb;
-            paramValue(paramValue < paramErrorProb) = paramErrorProb;
-            paramValue(paramValue > maxParamValue(iStrategy)) = maxParamValue(iStrategy);
-            
-            strategyParam{iSet, iFile}(:, iStrategy) = paramValue;
-            for iPlayer = 1:2  
-                if (nnz(paramPosIndex) > 0)
-                    strategyForTest{iPlayer,iStrategy}(paramPosIndex) = paramValue(iPlayer);
-                end
-                if (nnz(paramInvIndex) > 0)
-                    strategyForTest{iPlayer,iStrategy}(paramInvIndex) = 1 - paramValue(iPlayer);
-                end                
-            end    
-        end
-%}            
+        %}  
                
         [strategyMeanProbability{iSet, iFile}, strategyLogMeanProbability{iSet, iFile}, ...
          strategyProbabilityPerTrial{iSet, iFile}] = check_strategy_probability(isOwnChoice, sideChoice, strategyForTest, RT, minDRT);        
      
-       
-        % first test basic strategies
-        for iPlayer = 1:2 
+        % likelihood of simple/complex/temporal strategy
+        for iPlayer = 1:2                         
+            basicStrategyLikelihood{iSet}(iPlayer, iFile) = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, basicStrategyIndex));
+            complexStrategyLikelihood{iSet}(iPlayer, iFile) = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, complexStrategyIndex));
+            temporalStrategyLikelihood{iSet}(iPlayer, iFile) = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, temporalStrategyIndex));
+            sideStrategyLikelihood{iSet}(iPlayer, iFile) = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, sideStrategyIndex));
+            targetStrategyLikelihood{iSet}(iPlayer, iFile) = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, targetStrategyIndex));
+            turnTakingStrategyLikelihood{iSet}(iPlayer, iFile) = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, turnTakingStrategyIndex));
+            competitiveStrategyLikelihood{iSet}(iPlayer, iFile) = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, competitiveStrategyIndex));
+        end    
+     
+     
+        % identify winning strategy
+        for iPlayer = 1:2             
+            % first test basic strategies
             [bestBasicStrategyProb, bestBasicStrategyIndex] = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, basicStrategyIndex));
             if (bestBasicStrategyProb >= goodProbabilityThreshold)
                 identifiedStrategyProb{iSet}(iPlayer, iFile) = bestBasicStrategyProb;
@@ -818,7 +728,7 @@ for iSet = 1:nSet
             else
                 [identifiedStrategyProb{iSet}(iPlayer, iFile), maxStrategyIndex] = max(strategyLogMeanProbability{iSet, iFile}(iPlayer, :));
                 identifiedStrategyIndex{iSet}(iPlayer, iFile) = maxStrategyIndex;
-                identifiedStrategyParam{iSet}(iPlayer, iFile) = strategyParam{iSet, iFile}(iPlayer, maxStrategyIndex);  
+                %identifiedStrategyParam{iSet}(iPlayer, iFile) = strategyParam{iSet, iFile}(iPlayer, maxStrategyIndex);  
             end
         end    
     end
@@ -840,7 +750,7 @@ for iSet = 1:nSet
         figureTitle = {' Transfer Entropy', ' Mutual Information'};
         for iPlot = 1:2
             figure('Name',[dataset{iSet}.setName, figureTitle{iPlot}]);
-            set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+            set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 
             for iFile = 1:nFile(iSet)
                 subplot(nFileRow, nFileCol, iFile)
@@ -864,7 +774,7 @@ for iSet = 1:nSet
                     plot([1, length(locMutualInf{iSet, iFile})], [0 0], 'k--', 'linewidth', 1.2)
                 end
                 hold off
-                set( gca, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+                set( gca, 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
                 if (iPlot == 1)
                     axis([0.8, length(targetTE1{iSet, iFile}) + 0.2, 1.01*minValue, 1.01*maxValue]);
                 else
@@ -879,7 +789,7 @@ for iSet = 1:nSet
                     set(legendHandle, 'fontsize', fontSize-1, 'FontName', 'Times', 'Interpreter', 'latex');
                 end
 
-                title(dataset{iSet}.captions{iFile}, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+                title(dataset{iSet}.captions{iFile}, 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
             end
             set( gcf, 'PaperUnits','centimeters' );
             xSize = 29; ySize = 21;
@@ -895,26 +805,26 @@ for iSet = 1:nSet
     % distribution of MI, TE and non-random reward component for given block
     if (plot_blockwise_result) && (blockBorder{iSet}(1,1) > 0)
         figure('Name', [dataset{iSet}.setName ' block-wise plot']);
-        set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
         subplot(1,4,1)
         boxplot(miValueBlock{iSet});
-        title('Mutual information (target)', 'fontsize', fontSize,  'FontName', 'Arial');
-        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+        title('Mutual information (target)', 'fontsize', fontSize,  'FontName', fontType);
+        set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
         
         subplot(1,4,2)
-        boxplot(sideMIvalueBlock{iSet});
-        title('Mutual information (side)', 'fontsize', fontSize,  'FontName', 'Arial');
-        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+        boxplot(miSideValueBlock{iSet});
+        title('Mutual information (side)', 'fontsize', fontSize,  'FontName', fontType);
+        set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
         
         subplot(1,4,3)
         boxplot(teBlock1{iSet});
-        title('Transfer entropy', 'fontsize', fontSize,  'FontName', 'Arial');
-        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+        title('Transfer entropy', 'fontsize', fontSize,  'FontName', fontType);
+        set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
         
         subplot(1,4,4)
         boxplot(deltaRewardBlock{iSet});
-        title('Non-random reward', 'fontsize', fontSize,  'FontName', 'Arial');
-        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+        title('Non-random reward', 'fontsize', fontSize,  'FontName', fontType);
+        set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
         
         set( gcf, 'PaperUnits','centimeters' );
         set(gcf,'PaperSize',fliplr(get(gcf,'PaperSize')))
@@ -937,7 +847,7 @@ humanSet = [18,19,20];
 allSets = {monkeyNaiveSet, monkeyTrainedSet, monkeyConfederateSet,humanSet};
 %allSets = {naiveSet, trainedSet, humanConfederateSet};
 setMarker = {'o', 's', 'd', '+', 'x'};
-selectedColorList = [colorList(1,:); colorList(4,:); colorList(5,:); colorList(6,:); colorList(8,:); colorList(9,:); colorList(10,:); colorList(12,:); colorList(14,:); colorList(15,:)];
+selectedColorList = [commonColorList(1,:); commonColorList(4,:); commonColorList(5,:); commonColorList(6,:); commonColorList(8,:); commonColorList(9,:); commonColorList(10,:); commonColorList(12,:); commonColorList(14,:); commonColorList(15,:)];
 legendIndex = [allSets{:}];
 
 totalFileIndex = 1;
@@ -957,7 +867,7 @@ end
 sz = 16;
 nSetGroup = length(allSets);
 figure('Name', 'MI scatter plot');
-set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 hold on
 for iSetGroup = 1:nSetGroup
   for iSet = 1:length(allSets{iSetGroup}) 
@@ -971,12 +881,12 @@ for iSetGroup = 1:nSetGroup
 end
 hold off
 axis([-0.1, 1.6, -0.1, 1.0]);
-xlabel('side Mutual Information', 'fontsize', fontSize, 'FontName', 'Arial');
-ylabel('target Mutual Information', 'fontsize', fontSize, 'FontName', 'Arial');
-set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+xlabel('side Mutual Information', 'fontsize', fontSize, 'FontName', fontType);
+ylabel('target Mutual Information', 'fontsize', fontSize, 'FontName', fontType);
+set( gca, 'fontsize', fontSize, 'FontName', fontType);%'FontName', 'Times');
 
 legendHandle = legend(cellfun(@(x) x.setName, dataset(legendIndex), 'UniformOutput', false), 'location', 'NorthEast');
-set(legendHandle, 'fontsize', fontSize, 'FontName', 'Arial', 'Interpreter', 'latex');
+set(legendHandle, 'fontsize', fontSize, 'FontName', fontType, 'Interpreter', 'latex');
 
 set( gcf, 'PaperUnits','centimeters' );
 xSize = 20; ySize = 14;
@@ -986,7 +896,7 @@ print ( '-depsc', '-r600','MutualInformationScatterPlot');
 print('-dpdf', 'MutualInformationScatterPlot', '-r600');
 
 
-%% plot overall reward scatter plot
+%% plot MI scatter plot with angular transformation
 monkeyNaiveSet = [1,7,9,21];
 monkeyTrainedSet = [2,3,8,10];
 monkeyConfederateSet = [4,5,6,11,12,14,15,17];
@@ -996,7 +906,7 @@ humanSet = [18,19,20];
 allSets = {monkeyNaiveSet, monkeyTrainedSet, monkeyConfederateSet,humanSet};
 %allSets = {naiveSet, trainedSet, humanConfederateSet};
 setMarker = {'o', 's', 'd', '+', 'x'};
-selectedColorList = [colorList(1,:); colorList(4,:); colorList(5,:); colorList(6,:); colorList(8,:); colorList(9,:); colorList(10,:); colorList(12,:); colorList(14,:); colorList(15,:)];
+selectedColorList = [commonColorList(1,:); commonColorList(9,:); commonColorList(12,:); commonColorList(15,:); commonColorList(4,:); commonColorList(5,:); commonColorList(6,:); commonColorList(8,:); commonColorList(10,:); commonColorList(14,:)];
 legendIndex = [allSets{:}];
 
 totalFileIndex = 1;
@@ -1013,39 +923,313 @@ for iSet = 1:nSet
     end
 end    
 %}
-sz = 16;
+sz = 18;
 nSetGroup = length(allSets);
 figure('Name', 'Reward scatter plot');
-set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 hold on
 for iSetGroup = 1:nSetGroup
   for iSet = 1:length(allSets{iSetGroup}) 
     i = allSets{iSetGroup}(iSet);
-    xData = sessionMetrics(i).dltReward;
-    yData = max([max(sessionMetrics(i).teTarget, [], 1); max(sessionMetrics(i).teSide, [], 1)], [], 1);
+    xData = sessionMetrics(i).miSide;
+    yData = sessionMetrics(i).miTarget;
+    
+    rData = sqrt(xData.^2 + yData.^2);
+    phiData = atan(xData./yData);
+    phiData(yData == 0) = pi()/2;
 
     if ((setMarker{iSetGroup} == 's') || (setMarker{iSetGroup} == 'o') || (setMarker{iSetGroup} == 'd'))
-        scatter(xData, yData, sz, selectedColorList(iSet, :), setMarker{iSetGroup}, 'filled');
+        scatter(phiData, rData, sz, selectedColorList(iSet, :), setMarker{iSetGroup}, 'filled');
     else    
-        scatter(xData, yData, sz, selectedColorList(iSet, :), setMarker{iSetGroup});
+        scatter(phiData, rData, sz, selectedColorList(iSet, :), setMarker{iSetGroup});
     end    
   end  
 end
 hold off
-axis([-0.1, 1.2, 0, 0.7]);
-xlabel('Non-random reward', 'fontsize', fontSize, 'FontName', 'Arial');
-ylabel('Average reward', 'fontsize', fontSize, 'FontName', 'Arial');
-set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+axis([-0.05, pi()/2+1, -0.05, 1.2]);
+ylabel('$\sqrt{\mathrm{MI}_\mathrm{side}^2 + \mathrm{MI}_\mathrm{target}^2}$', 'fontsize', fontSize, 'FontName', fontType, 'Interpreter', 'latex');
+xlabel('$\mathrm{atan}\big(\mathrm{MI}_\mathrm{side}/\mathrm{MI}_\mathrm{target}\big), { }^\circ$', 'fontsize', fontSize, 'FontName', fontType, 'Interpreter', 'latex');
+set( gca, 'xTick', [0, pi()/4, pi()/2], 'xTickLabel', {'0', '45', '90'}, 'fontsize', fontSize, 'FontName', fontType);
 
-legendHandle = legend(cellfun(@(x) x.setName, dataset(legendIndex), 'UniformOutput', false), 'location', 'North');
-set(legendHandle, 'fontsize', fontSize, 'FontName', 'Arial', 'Interpreter', 'latex');
+legendHandle = legend(cellfun(@(x) x.setName, dataset(legendIndex), 'UniformOutput', false), 'location', 'NorthEast');
+set(legendHandle, 'fontsize', fontSize, 'FontName', fontType, 'Interpreter', 'latex');
 
 set( gcf, 'PaperUnits','centimeters' );
 xSize = 20; ySize = 14;
 xLeft = 0; yTop = 0;
 set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
-print ( '-depsc', '-r600','RewardScatterPlot');
-print('-dpdf', 'RewardScatterPlot', '-r600');
+print ( '-depsc', '-r600','MIangularScatterPlot');
+print('-dpdf', 'MIangularScatterPlot', '-r600');
+
+
+%% plot likelihoods of employed strategies
+
+monkeyEarlySetIndex = [1,2,3,4,8,10,22];
+monkeyEarlySessionIndex = ones(1,length(monkeyEarlySetIndex));
+monkeyEarlyProficientSessionIndex = zeros(1,length(monkeyEarlySetIndex));
+for i = 1:length(monkeyEarlySetIndex)
+    iSet = monkeyEarlySetIndex(i);
+    monkeyEarlyProficientSessionIndex(i) = find(sessionMetrics(iSet).isPairProficient, 1, 'first');
+end    
+
+monkeyLateSetIndex = [1,2,3,4,9,10,22];
+monkeyLateSessionIndex = nFile(monkeyLateSetIndex);
+monkeyLateProficientSessionIndex = zeros(1,length(monkeyEarlySetIndex));
+for i = 1:length(monkeyEarlySetIndex)
+    iSet = monkeyLateSetIndex(i);
+    monkeyLateProficientSessionIndex(i) = find(sessionMetrics(iSet).isPairProficient, 1, 'last');
+end    
+
+iHumanSet = 19;
+humanSetIndex = iHumanSet*ones(1,nFile(iHumanSet));
+humanSessionIndex = 1:nFile(iHumanSet);
+humanProficientSessionIndex = find(sessionMetrics(iHumanSet).isPairProficient);
+humanProficientSetIndex = iHumanSet*ones(1,length(humanProficientSessionIndex));
+
+
+monkeySMearlySetIndex = [5,6,13,16];
+monkeySMearlySessionIndex = ones(1, length(monkeySMearlySetIndex));
+monkeySMearlyProficientSetIndex = [13,16];
+monkeySMearlyProficientSessionIndex = zeros(1,length(monkeySMearlyProficientSetIndex));
+for i = 1:length(monkeySMearlyProficientSetIndex)
+    iSet = monkeySMearlyProficientSetIndex(i);
+    monkeySMearlyProficientSessionIndex(i) = find(sessionMetrics(iSet).isPairProficient, 1, 'first');
+end    
+
+monkeySMlateSetIndex = [5,7,13,16];
+monkeySMlateSessionIndex = nFile(monkeySMlateSetIndex);
+monkeySMlateProficientSetIndex = [13,16];
+monkeySMlateProficientSessionIndex = zeros(1,length(monkeySMlateProficientSetIndex));
+for i = 1:length(monkeySMlateProficientSetIndex)
+    iSet = monkeySMlateProficientSetIndex(i);
+    monkeySMlateProficientSessionIndex(i) = find(sessionMetrics(iSet).isPairProficient, 1, 'last');
+end   
+
+
+
+iConfederateTrained = 11;
+confederateTrainedSessionIndex = 1:nFile(iConfederateTrained) - 1;
+confederateTrainedSetIndex = iConfederateTrained*ones(1,length(confederateTrainedSessionIndex));
+ 
+
+
+groupSetIndex = {monkeyEarlySetIndex, monkeyLateSetIndex, humanSetIndex, monkeySMearlySetIndex, monkeySMlateSetIndex, confederateTrainedSetIndex};
+groupSessionIndex = {monkeyEarlySessionIndex, monkeyLateSessionIndex, humanSessionIndex, monkeySMearlySessionIndex, monkeySMlateSessionIndex, confederateTrainedSessionIndex};
+groupProficientSetIndex = {monkeyEarlySetIndex, monkeyLateSetIndex, humanProficientSetIndex, monkeySMearlyProficientSetIndex, monkeySMlateProficientSetIndex, confederateTrainedSetIndex};
+groupProficientSessionIndex = {monkeyEarlyProficientSessionIndex, monkeyLateProficientSessionIndex, humanProficientSessionIndex, monkeySMearlyProficientSessionIndex, monkeySMlateProficientSessionIndex, confederateTrainedSessionIndex};
+
+nGroup = 3;
+basicLikelihood = cell(nGroup, 3);
+detailedLikelihood = cell(nGroup, 4);
+basicProfLikelihood = cell(nGroup, 3);
+detailedProfLikelihood = cell(nGroup, 4);
+for iGroup = 1:3
+    for i = 1:length(groupSetIndex{iGroup})
+        iSet = groupSetIndex{iGroup}(i);
+        iFile = groupSessionIndex{iGroup}(i);
+        basicLikelihood{iGroup, 1}(2*i-1:2*i) = basicStrategyLikelihood{iSet}(:, iFile);
+        basicLikelihood{iGroup, 2}(2*i-1:2*i) = complexStrategyLikelihood{iSet}(:, iFile);
+        basicLikelihood{iGroup, 3}(2*i-1:2*i) = temporalStrategyLikelihood{iSet}(:, iFile);
+        detailedLikelihood{iGroup, 1}(2*i-1:2*i) = sideStrategyLikelihood{iSet}(:, iFile);
+        detailedLikelihood{iGroup, 2}(2*i-1:2*i) = targetStrategyLikelihood{iSet}(:, iFile);
+        detailedLikelihood{iGroup, 3}(2*i-1:2*i) = turnTakingStrategyLikelihood{iSet}(:, iFile);
+        detailedLikelihood{iGroup, 4}(2*i-1:2*i) = temporalStrategyLikelihood{iSet}(:, iFile);         
+    end
+    for i = 1:length(groupProficientSetIndex{iGroup})   
+        iSet = groupProficientSetIndex{iGroup}(i);
+        iFile = groupProficientSessionIndex{iGroup}(i);
+        basicProfLikelihood{iGroup, 1}(2*i-1:2*i) = basicStrategyLikelihood{iSet}(:, iFile);
+        basicProfLikelihood{iGroup, 2}(2*i-1:2*i) = complexStrategyLikelihood{iSet}(:, iFile);
+        basicProfLikelihood{iGroup, 3}(2*i-1:2*i) = temporalStrategyLikelihood{iSet}(:, iFile);
+        detailedProfLikelihood{iGroup, 1}(2*i-1:2*i) = sideStrategyLikelihood{iSet}(:, iFile);
+        detailedProfLikelihood{iGroup, 2}(2*i-1:2*i) = targetStrategyLikelihood{iSet}(:, iFile);
+        detailedProfLikelihood{iGroup, 3}(2*i-1:2*i) = turnTakingStrategyLikelihood{iSet}(:, iFile);
+        detailedProfLikelihood{iGroup, 4}(2*i-1:2*i) = temporalStrategyLikelihood{iSet}(:, iFile);         
+    end
+end    
+
+pValue = 0.05;
+labelSubjectGroups = {'monkeys early', 'monkeys late', 'humans'};
+labelProfSubjectGroups = {'monkeys proficient early', 'monkeys proficient late', 'proficient humans'};
+
+for iFigure = 1:4
+    figure('Name', 'strategies likelihood');
+    set( axes,'fontsize', fontSize,  'FontName', fontType);
+    
+    if iFigure < 3
+        if (iFigure == 1)
+            likelihoodValues = basicLikelihood;
+            fileName = 'basicStrategyLikelihood';
+        else
+            likelihoodValues = basicProfLikelihood;
+            fileName = 'basicProfStrategyLikelihood';
+        end
+        strategyGroupLabels = {'basic', 'complex', 'temporal'};
+    else
+        if (iFigure == 3)
+            likelihoodValues = detailedLikelihood;
+            fileName = 'detailedStrategyLikelihood';
+        else
+            likelihoodValues = detailedProfLikelihood;
+            fileName = 'detailedProfStrategyLikelihood';
+        end
+        strategyGroupLabels = {'side-based', 'target-based', 'turn-taking', 'temporal'};
+    end
+    
+    [~, nStrategyGroup] = size(likelihoodValues);
+    draw_bar_two_parametric_population(likelihoodValues', labelSubjectGroups, strategyGroupLabels, fontType, fontSize, pValue);
+    ylabel('average likelihood', 'fontsize', fontSize, 'FontName', fontType);
+    
+    set( gcf, 'PaperUnits','centimeters' );
+    xSize = 18; ySize = 14;   xLeft = 0; yTop = 0;
+    set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+    print ( '-depsc', fileName, '-r600');
+    print('-dpdf', fileName, '-r600');
+    print('-dpng', fileName, '-r600');
+    savefig(fileName);
+end
+
+%% plot MI scatter plot for selected strategies
+colorList = zeros(5,3);
+basicColorList = [1.000, 0.40, 0.25; ...
+                  0.625, 0.45, 0.50; ...
+                  0.250, 0.50, 0.75;...
+                  1.000, 0.40, 0.25;...
+                  0.625, 0.45, 0.50; ...
+                  0.000, 0.20, 0.95];
+setMarker = {'o', 'o', 'o', 's', 's', 'd'};
+labelSubjectGroups = {'monkeys early', 'monkeys late', 'humans', 'monkeys in confederate training early', 'monkeys in confederate training late', 'confederate-trained monkeys'};
+              
+sz = 18;
+nSetGroup = length(allSets);
+
+figureName = {'Naive', 'NaiveFaded', 'NaiveFaded_NHPwithSM', 'NaiveFaded_NHPwithSMFaded', 'All'};
+figureName = [figureName, cellfun(@(x) [x, '_Prof'], figureName, 'UniformOutput', false)];
+nFigure = length(figureName);
+for iFigure = 1:nFigure   
+    if (iFigure <= nFigure/2)
+        setIndex = groupSetIndex;
+        fileIndex = groupSessionIndex;
+    else
+        setIndex = groupProficientSetIndex;
+        fileIndex = groupProficientSessionIndex;
+    end
+     
+    indexFigureType = mod(iFigure, 5);
+    if (indexFigureType == 0)
+        indexFigureType = 5;
+    end
+    
+    colorList = basicColorList;
+    if (indexFigureType > 1)
+        colorList(1:3, :) = basicColorList(1:3, :) + 0.3;
+    end
+    if (indexFigureType > 3)
+        colorList(4, :) = basicColorList(4, :) + 0.3;
+    end   
+    colorList(colorList > 1) = 1;
+    
+    nSetGroup = 3;
+    if (indexFigureType > 2)
+        nSetGroup = 5;
+    end
+    if (indexFigureType > 4)
+        nSetGroup = 6;
+    end 
+    xData = cell(1,nSetGroup);
+    yData = cell(1,nSetGroup);    
+    
+    for iGroup = 1:nSetGroup
+        xData{iGroup} = zeros(1, length(setIndex{iGroup}));
+        yData{iGroup} = zeros(1, length(setIndex{iGroup}));
+        for i = 1:length(setIndex{iGroup})
+            iSet = setIndex{iGroup}(i);
+            iFile = fileIndex{iGroup}(i);
+        
+            xData{iGroup}(i) = sessionMetrics(iSet).miSide(iFile);
+            yData{iGroup}(i) = sessionMetrics(iSet).miTarget(iFile);    
+        end    
+    end
+    figure('Name', figureName{iFigure});
+    set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
+    hold on
+    for iGroup = 1:nSetGroup
+        rData = sqrt(xData{iGroup}.^2 + yData{iGroup}.^2);
+        phiData = atan(xData{iGroup}./yData{iGroup});
+        phiData(yData{iGroup} == 0) = pi()/2;
+        
+        if ((setMarker{iSetGroup} == 's') || (setMarker{iSetGroup} == 'o') || (setMarker{iSetGroup} == 'd'))
+            scatter(phiData, rData, sz, colorList(iGroup, :), setMarker{iGroup}, 'filled');
+        else
+            scatter(phiData, rData, sz, colorList(iGroup, :), setMarker{iGroup});
+        end
+    end    
+    hold off
+    axis([-0.05, pi()/2+1, -0.05, 1.2]);
+    ylabel('$\sqrt{\mathrm{MI}_\mathrm{side}^2 + \mathrm{MI}_\mathrm{target}^2}$', 'fontsize', fontSize, 'FontName', fontType, 'Interpreter', 'latex');
+    xlabel('$\mathrm{atan}\big(\mathrm{MI}_\mathrm{side}/\mathrm{MI}_\mathrm{target}\big), { }^\circ$', 'fontsize', fontSize, 'FontName', fontType, 'Interpreter', 'latex');
+    set( gca, 'xTick', [0, pi()/4, pi()/2], 'xTickLabel', {'0', '45', '90'}, 'fontsize', fontSize, 'FontName', fontType);
+    
+    legendHandle = legend(labelSubjectGroups(1:nSetGroup), 'location', 'NorthEast');
+    set(legendHandle, 'fontsize', fontSize, 'FontName', fontType);
+    
+    set( gcf, 'PaperUnits','centimeters' );
+    xSize = 20; ySize = 14;
+    xLeft = 0; yTop = 0;
+    set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+    print ( '-depsc', '-r600',figureName{iFigure});
+    print('-dpdf', figureName{iFigure}, '-r600');
+    savefig(figureName{iFigure});
+end
+%% plot dynamics of strategy likelihood
+iSet = 11;
+lastFileIndex = nFile(iSet) - 1;
+playerIndex = ones(2,nFile(iSet));
+playerIndex(1,end) = 2;
+playerIndex(2,1:end-1) = 2;
+
+y = cell(1,2);
+for iPlayer = 1:2
+    y{iPlayer} = zeros(4,lastFileIndex);
+    for iFile = 1:lastFileIndex
+        y{iPlayer}(1,iFile) = sideStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
+        y{iPlayer}(2,iFile) = targetStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
+        y{iPlayer}(3,iFile) = turnTakingStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
+        y{iPlayer}(4,iFile) = temporalStrategyLikelihood{iSet}(playerIndex(iPlayer,iFile), iFile);
+    end
+end    
+playerName = {'Flaffus', 'Curius'};
+fileName = 'likelihoodDynamics';
+strategyGroupLabels = {'side-based', 'target-based', 'turn-taking', 'temporal'};
+figure('Name', 'strategies likelihood');
+set( axes,'fontsize', fontSize,  'FontName', fontType);
+for iPlot = 1:2
+    subplot(2,1,iPlot)
+    plot(y{iPlot}', 'LineWidth', 2);
+    
+    if iPlot == 1
+        legendHandle = legend(strategyGroupLabels, 'location', 'SouthEast');
+        set(legendHandle, 'fontsize', fontSize,  'FontName', fontType);  
+        set( gca, 'fontsize', fontSize, 'XTick', [], 'FontName', fontType);
+    else
+        [~, labelIndices] = unique(dataset{iSet}.captions);
+        correctLabel = dataset{iSet}.captions(sort(labelIndices));
+        set( gca, 'fontsize', fontSize, 'XTick', 1:lastFileIndex, 'XTickLabel', correctLabel, 'XTickLabelRotation',45, 'FontName', fontType);    
+    end
+    title(playerName{iPlot});
+    axis([0.9, lastFileIndex + 0.1, 0, 1]);
+    
+    ylabel('average likelihood', 'fontsize', fontSize, 'FontName', fontType);  
+end
+set( gcf, 'PaperUnits','centimeters' );
+xSize = 14; ySize = 12;  xLeft = 0; yTop = 0;
+set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+print ( '-depsc', fileName, '-r600');
+print('-dpdf', fileName, '-r600');
+print('-dpng', fileName, '-r600');
+savefig(fileName);
+
+
 
 %% RT prediction
 
@@ -1054,14 +1238,6 @@ monkeySetForReward = [1,7,9,21, 2,3,8,10];
 humanSetForReward = [18,19];
 allSetsForReward = {monkeySetForReward, humanSetForReward};
 labelGroupForReward = {'monkeys', 'humans'};
-
-%{
-monkeyNaive = [1,7,9,21];
-monkeyTrained = [2,3,8,10];
-humanSetForReward = [18,19];
-allSetsForReward = {monkeyNaive, monkeyTrained, humanSetForReward};
-labelGroupForReward = {'naive monkeys', 'trained monkeys', 'humans'};
-%}
 
 % compute reward distribution
 nSetGroupForReward = length(allSetsForReward);
@@ -1073,8 +1249,8 @@ for iSetGroup = 1:nSetGroupForReward
     rewardDistr = {[], []};
     for iSet = 1:length(allSetsForReward{iSetGroup}) 
         i = allSetsForReward{iSetGroup}(iSet);
-        rewardDistr{1} = [rewardDistr{1}, [playerMeanReward{i, :}]];
-        rewardDistr{2} = [rewardDistr{2}, [playerMeanReward{i, sessionMetrics(i).isPairProficient}]];
+        rewardDistr{1} = [rewardDistr{1}, sessionMetrics(i).playerReward];
+        rewardDistr{2} = [rewardDistr{2}, sessionMetrics(i).playerReward(:, sessionMetrics(i).isPairProficient)];
     end  
     for i = 1:2 % for all and for proficient pairs
         rewardBonusForCooperation = 2;
@@ -1092,30 +1268,30 @@ end
 
 rewardPlotTitle = {'all participants', 'only effective pairs'};
 figure('Name', 'reward distribution plot');
-set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 for iPlot = 1:2
   subplot(1,4,iPlot);
   boxplot(groupedReward{iPlot},groupIndex{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', fontType);
+  set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   axis([0.5, nSetGroupForReward + 0.5, 1.0, 4.01]);
-  xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
+  xlabel('species', 'fontsize', fontSize, 'FontName', fontType);
   if iPlot == 1
-    ylabel('mean per-session reward', 'fontsize', fontSize, 'FontName', 'Arial');
+    ylabel('mean per-session reward', 'fontsize', fontSize, 'FontName', fontType);
   end
-  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', fontType);%'FontName', 'Times');
 end
 for iPlot = 1:2
   subplot(1,4,2 + iPlot);
   boxplot(groupedFairness{iPlot},fairnessGroupIndex{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', fontType);
+  set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   axis([0.5, nSetGroupForReward + 0.5, 0.32, 0.501]);
-  xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
+  xlabel('species', 'fontsize', fontSize, 'FontName', fontType);
   if iPlot == 1
-    ylabel('reward share', 'fontsize', fontSize, 'FontName', 'Arial');
+    ylabel('reward share', 'fontsize', fontSize, 'FontName', fontType);
   end
-  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', fontType);%'FontName', 'Times');
 end
 
 set( gcf, 'PaperUnits','centimeters' );
@@ -1129,18 +1305,18 @@ print('-dpng', 'RewardDistributionPerSpecies', '-r600');
 
 
 figure('Name', 'reward distribution plot');
-set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 for iPlot = 1:2
   subplot(1,2,iPlot);
   boxplot(groupedReward{iPlot},groupIndex{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', fontType);
+  set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   axis([0.5, nSetGroupForReward + 0.5, 1.0, 4.01]);
-  %xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
+  %xlabel('species', 'fontsize', fontSize, 'FontName', fontType);
   if iPlot == 1
-    ylabel('mean per-session reward', 'fontsize', fontSize, 'FontName', 'Arial');
+    ylabel('mean per-session reward', 'fontsize', fontSize, 'FontName', fontType);
   end
-  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', fontType);%'FontName', 'Times');
 end
 
 set( gcf, 'PaperUnits','centimeters' );
@@ -1155,19 +1331,19 @@ print('-dpng', 'RewardLevelPerSpecies', '-r600');
 
 
 figure('Name', 'sharing the spoils');
-set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 
 for iPlot = 1:2
   subplot(1,2,iPlot);
   boxplot(groupedFairness{iPlot},fairnessGroupIndex{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', fontType);
+  set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   axis([0.5, nSetGroupForReward + 0.5, 0.32, 0.501]);
-  %xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
+  %xlabel('species', 'fontsize', fontSize, 'FontName', fontType);
   if iPlot == 1
-    ylabel('reward share', 'fontsize', fontSize, 'FontName', 'Arial');
+    ylabel('reward share', 'fontsize', fontSize, 'FontName', fontType);
   end
-  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', fontType);%'FontName', 'Times');
 end
 
 set( gcf, 'PaperUnits','centimeters' );
@@ -1195,21 +1371,21 @@ for iSetGroup = 1:nSetGroupForReward
     rewardDistrPerCategory = {[], []; [], []};
 
     largeRTshareDistr = {[], []};
-    for iSet = 1:length(allSetsForReward{iSetGroup}) 
-        i = allSetsForReward{iSetGroup}(iSet);
-        shareLargeRT = zeros(1, nFile(i));        
-        for iFile = 1:nFile(i)
+    for i = 1:length(allSetsForReward{iSetGroup}) 
+        iSet = allSetsForReward{iSetGroup}(i);
+        shareLargeRT = zeros(1, nFile(iSet));        
+        for iFile = 1:nFile(iSet)
             
-            if (i == 18) && (iFile < 6)
+            if (iSet == 18) && (iFile < 6)
                 continue
             end    
             
-            nTrial = length(allRT{i, iFile});
-            fistTestIndex = max(minStationarySegmentStart, nTrial-stationarySegmentLength);
+            nTrial = length(allRT{iSet, iFile});
+            fistTestIndex = max(cfg.minStationarySegmentStart, nTrial-cfg.stationarySegmentLength);
             testIndices = fistTestIndex:nTrial;
             nTestIndices = length(testIndices);
-            RT = allRT{i, iFile}(:,testIndices);
-            isOwnChoice = allOwnChoice{i, iFile}(:,testIndices);
+            RT = allRT{iSet, iFile}(:,testIndices);
+            isOwnChoice = allOwnChoice{iSet, iFile}(:,testIndices);
             isJointChoice = xor(isOwnChoice(1,:),isOwnChoice(2,:));
             
             rtDiff = abs(RT(1,:) - RT(2,:));
@@ -1253,31 +1429,31 @@ rewardPlotTitle = {'all participants', 'only effective pairs'};
 rewardRTgroupLabel = {'monkeys separate', 'monkeys joint', 'humans separate', 'humans joint'};
 
 figure('Name', 'reward distribution plot');
-set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 for iPlot = 1:2
   subplot(1,2,iPlot);
   boxplot(groupRTdiff{iPlot},groupRewardClass{iPlot}, 'Widths', 0.7);
-  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', rewardRTgroupLabel, 'XTickLabelRotation', 45);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', fontType);
+  set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', rewardRTgroupLabel, 'XTickLabelRotation', 45);%'FontName', 'Times');
   %axis([0.5, nSetGroupForReward + 0.5, 1.0, 4.01]);
-  %xlabel('grou', 'fontsize', fontSize, 'FontName', 'Arial');
+  %xlabel('grou', 'fontsize', fontSize, 'FontName', fontType);
   if iPlot == 1
-    ylabel('reaction time differences', 'fontsize', fontSize, 'FontName', 'Arial');
+    ylabel('reaction time differences', 'fontsize', fontSize, 'FontName', fontType);
   end
-  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', fontType);%'FontName', 'Times');
 end
 %{
 for iPlot = 1:2
   subplot(1,4,2 + iPlot);
   boxplot(groupedLargeRTshare{iPlot},groupIndexRTshare{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', fontType);
+  set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   %axis([0.5, 2.5, 1.0, 4.01]);
-  xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
+  xlabel('species', 'fontsize', fontSize, 'FontName', fontType);
   if iPlot == 1
-    ylabel('share of trials with dRT > 150', 'fontsize', fontSize, 'FontName', 'Arial');
+    ylabel('share of trials with dRT > 150', 'fontsize', fontSize, 'FontName', fontType);
   end
-  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', fontType);%'FontName', 'Times');
 end
 %}
 set( gcf, 'PaperUnits','centimeters' );
@@ -1291,34 +1467,34 @@ print('-dpng', 'RTandCoordinationPerSpecies', '-r600');
 rewardRTgroupLabel = {'monkeys, choice delay', 'monkeys, no delay', 'humans, choice delay', 'humans, no delay'};
 
 figure('Name', 'reward distribution plot');
-set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 
 for iPlot = 1:2
   nPoint = length(rewardConfPerCategory(:,iPlot));
   subplot(1,2,iPlot);
   errorbar(rewardPerCategory(:,iPlot),rewardConfPerCategory(:,iPlot), 's','MarkerSize',5,...
     'MarkerEdgeColor','red','MarkerFaceColor','red');
-  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTick', 1:nPoint, 'XTickLabel', rewardRTgroupLabel, 'XTickLabelRotation', 45);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', fontType);
+  set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTick', 1:nPoint, 'XTickLabel', rewardRTgroupLabel, 'XTickLabelRotation', 45);%'FontName', 'Times');
   axis([0.5, nPoint + 0.5, 2.95, 3.45]);
-  %xlabel('grou', 'fontsize', fontSize, 'FontName', 'Arial');
+  %xlabel('grou', 'fontsize', fontSize, 'FontName', fontType);
   if iPlot == 1
-    ylabel('average reward', 'fontsize', fontSize, 'FontName', 'Arial');
+    ylabel('average reward', 'fontsize', fontSize, 'FontName', fontType);
   end
-  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', fontType);%'FontName', 'Times');
 end
 %{
 for iPlot = 1:2
   subplot(1,4,2 + iPlot);
   boxplot(groupedLargeRTshare{iPlot},groupIndexRTshare{iPlot}, 'Widths', 0.8);
-  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', fontType);
+  set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', labelGroupForReward);%'FontName', 'Times');
   %axis([0.5, 2.5, 1.0, 4.01]);
-  xlabel('species', 'fontsize', fontSize, 'FontName', 'Arial');
+  xlabel('species', 'fontsize', fontSize, 'FontName', fontType);
   if iPlot == 1
-    ylabel('share of trials with dRT > 150', 'fontsize', fontSize, 'FontName', 'Arial');
+    ylabel('share of trials with dRT > 150', 'fontsize', fontSize, 'FontName', fontType);
   end
-  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  set( gca, 'fontsize', fontSize, 'FontName', fontType);%'FontName', 'Times');
 end
 %}
 set( gcf, 'PaperUnits','centimeters' );
@@ -1363,7 +1539,7 @@ end
 basicStrategyBorder = max(basicStrategyIndex) + 0.5;
 rewardPlotTitle = {'all participants', 'only effective pairs'};
 figure('Name', 'reward distribution plot');
-set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 for iPlot = 1:2
   maxStrategyProb = max(max(strategyDistribution{iPlot}));
   subplot(2,1,iPlot);
@@ -1371,18 +1547,18 @@ for iPlot = 1:2
   bar(strategyDistribution{iPlot}');
   plot([basicStrategyBorder,basicStrategyBorder], [0, maxStrategyProb + 0.05], 'k--')
   hold off
-  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', 'Arial');
-  set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', strategyLabels, 'XTickLabelRotation',45);%'FontName', 'Times');
+  title(rewardPlotTitle{iPlot}, 'fontsize', fontSize,  'FontName', fontType);
+  set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', strategyLabels, 'XTickLabelRotation',45);%'FontName', 'Times');
   axis([0.5, nStrategy + 1.5, 0, maxStrategyProb + 0.02]);
   if iPlot == 1
     legendHandle = legend(labelGroupForReward, 'location', 'NorthEast');
-    set(legendHandle, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+    set(legendHandle, 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
   end      
  % if iPlot == 2
- %     xlabel('strategy', 'fontsize', fontSize, 'FontName', 'Arial');
+ %     xlabel('strategy', 'fontsize', fontSize, 'FontName', fontType);
  % end
-  ylabel('relative frequency', 'fontsize', fontSize, 'FontName', 'Arial');
-  set( gca, 'fontsize', fontSize, 'FontName', 'Arial');%'FontName', 'Times');
+  ylabel('relative frequency', 'fontsize', fontSize, 'FontName', fontType);
+  set( gca, 'fontsize', fontSize, 'FontName', fontType);%'FontName', 'Times');
 end
 
 set( gcf, 'PaperUnits','centimeters' );
@@ -1407,7 +1583,7 @@ maxXvalue = length(isOwnChoice(1,:));
 
 fontSize = 8;
 figure('Name', [setName{iSet} ' block-wise plot']);
-set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 
 subplot(2,4,1:2);
 hold on
@@ -1416,12 +1592,12 @@ fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
 h1 = plot(movmean(isOwnChoice(1,:), 8), 'r-', 'linewidth', lineWidth+1);
 h2 = plot(movmean(isOwnChoice(2,:), 8), 'b-', 'linewidth', lineWidth);
 hold off
-set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1], 'XTick', []);%'FontName', 'Times');
+set( gca, 'fontsize', fontSize,  'FontName', fontType, 'yTick', [0,0.5,1], 'XTick', []);%'FontName', 'Times');
 axis([0.8, maxXvalue + 0.01, -0.01, 1.9]);
-ylabel( {'Share of own', ' choice in 8 rounds'}, 'fontsize', fontSize, 'FontName', 'Arial');
-title('(a)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+ylabel( {'Share of own', ' choice in 8 rounds'}, 'fontsize', fontSize, 'FontName', fontType);
+title('(a)', 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
 legendHandle = legend([h1, h2], 'Human confederate', 'Monkey', 'location', 'NorthWest');
-set(legendHandle, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+set(legendHandle, 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
 
 
 totalReward = 1 + 2.5*(isOwnChoice(1,:)+isOwnChoice(2,:));
@@ -1432,37 +1608,37 @@ fill([blockBorder{iSet}(iFile,:), blockBorder{iSet}(iFile,2:-1:1)], ...
     [0.9, 0.9, 3.6, 3.6], [0.8,0.8,0.8]);
 h1 = plot(totalReward, 'm-', 'linewidth', lineWidth);
 hold off
-set( gca, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+set( gca, 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
 axis([0.8, maxXvalue + 0.2, 0.9, 3.6]);
-ylabel( ' Average reward ', 'fontsize', fontSize, 'FontName', 'Arial');
-title('(b)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+ylabel( ' Average reward ', 'fontsize', fontSize, 'FontName', fontType);
+title('(b)', 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
 
 
 subplot(2,4,3)
 boxplot(vertcat(miValueBlock{monkeyBlockSetIndex}));
-ylabel('Mutual information', 'fontsize', fontSize,  'FontName', 'Arial');
-set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTick', []);%'FontName', 'Times');
+ylabel('Mutual information', 'fontsize', fontSize,  'FontName', fontType);
+set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTick', []);%'FontName', 'Times');
 axis([0.5,3.5, -0.03, 0.77]);
-title('(c)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+title('(c)', 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
 
 subplot(2,4,4)
 boxplot(vertcat(miValueBlock{humanBlockSetIndex}));
-set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTick', []);%'FontName', 'Times');
+set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTick', []);%'FontName', 'Times');
 axis([0.5,3.5, -0.03, 0.77]);
-title('(d)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+title('(d)', 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
 
 subplot(2,4,7)
 boxplot(vertcat(teBlock1{monkeyBlockSetIndex}));
-ylabel('Transfer entropy', 'fontsize', fontSize,  'FontName', 'Arial');
-set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+ylabel('Transfer entropy', 'fontsize', fontSize,  'FontName', fontType);
+set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
 axis([0.5,3.5, -0.01, 0.34]);
-title('(e)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+title('(e)', 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
 
 subplot(2,4,8)
 boxplot(vertcat(teBlock1{humanBlockSetIndex}));
-set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
+set( gca, 'fontsize', fontSize,  'FontName', fontType, 'XTickLabel', {'before', 'block', 'after'});%'FontName', 'Times');
 axis([0.5,3.5, -0.01, 0.34]);
-title('(f)', 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+title('(f)', 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
 
 set( gcf, 'PaperUnits','centimeters' );
 %    set(gcf,'PaperSize',fliplr(get(gcf,'PaperSize')))
@@ -1490,16 +1666,16 @@ for iSet = 1:nSet
         sideChoice = allSideChoice{iSet,trueFileIndex};
         maxXvalue = length(isOwnChoice(1,:));
         figure
-        set( axes,'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        set( axes,'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
         totalReward = 1 + 2.5*(isOwnChoice(1,:)+isOwnChoice(2,:));
         totalReward(totalReward == 6) = 2;
         subplot(5, 1, 1);
         plot(totalReward, 'k-', 'linewidth', lineWidth);
-        set( gca, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        set( gca, 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
         axis([0.8, maxXvalue + 0.2, 0.5, 4.9]);
         legendHandle = legend('Joint reward', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', fontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
-        title(titleList{trueFileIndex}, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+        set(legendHandle, 'fontsize', fontSize-6,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
+        title(titleList{trueFileIndex}, 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
         
         subplot(5, 1, 2);
         hold on
@@ -1512,10 +1688,10 @@ for iSet = 1:nSet
         h1 = plot(isOwnChoice(1,:), 'r-', 'linewidth', lineWidth+1);
         h2 = plot(isOwnChoice(2,:), 'b-', 'linewidth', lineWidth);
         hold off
-        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1]);%'FontName', 'Times');
+        set( gca, 'fontsize', fontSize,  'FontName', fontType, 'yTick', [0,0.5,1]);%'FontName', 'Times');
         axis([0.8, maxXvalue + 0.01, -0.01, 1.8]);
         legendHandle = legend([h1, h2], 'Share own choices P1', 'Share own choices P2', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', fontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+        set(legendHandle, 'fontsize', fontSize-6,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
         
         subplot(5, 1, 3);
         hold on
@@ -1528,7 +1704,7 @@ for iSet = 1:nSet
         h3 = plot(targetTE1{iSet, trueFileIndex}, 'r-', 'linewidth', lineWidth+1);
         h4 = plot(targetTE2{iSet, trueFileIndex}, 'b-', 'linewidth', lineWidth+1);
         hold off
-        set( gca, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        set( gca, 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
         axis([0.8, maxXvalue + 0.2, 1.01*minValue, 1.1*maxValue]);
         legendHandle = legend([h1, h2, h3, h4], '$\mathrm{te_{P1\rightarrow P2}}$', '$\mathrm{te_{P2\rightarrow P1}}$', '$\mathrm{TE_{P1\rightarrow P2}}$', '$\mathrm{TE_{P2\rightarrow P1}}$', 'location', 'NorthWest');
         set(legendHandle, 'fontsize', fontSize-6, 'FontName', 'Times', 'Interpreter', 'latex');
@@ -1544,10 +1720,10 @@ for iSet = 1:nSet
         h1 = plot(sideChoice(1,:), 'r-', 'linewidth', lineWidth+1);
         h2 = plot(sideChoice(2,:), 'b--', 'linewidth', lineWidth);
         hold off
-        set( gca, 'fontsize', fontSize,  'FontName', 'Arial', 'yTick', [0,0.5,1]);%'FontName', 'Times');
+        set( gca, 'fontsize', fontSize,  'FontName', fontType, 'yTick', [0,0.5,1]);%'FontName', 'Times');
         axis([0.8, maxXvalue + 0.2, -0.01, 1.8]);
         legendHandle = legend([h1, h2], 'Share left choices P1', 'Share left choices P2', 'location', 'NorthWest');
-        set(legendHandle, 'fontsize', fontSize-6,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
+        set(legendHandle, 'fontsize', fontSize-6,  'FontName', fontType);%'FontName', 'Times', 'Interpreter', 'latex');
         
         subplot(5, 1, 5);
         hold on
@@ -1558,7 +1734,7 @@ for iSet = 1:nSet
         h1 = plot(locMutualInf{iSet, trueFileIndex}, 'Color', [0.7, 0.3, 0.7], 'linewidth', lineWidth);
         h2 = plot(mutualInf{iSet, trueFileIndex}, 'Color', [0.4, 0.1, 0.4], 'linewidth', lineWidth+1);
         hold off
-        set( gca, 'fontsize', fontSize,  'FontName', 'Arial');%'FontName', 'Times');
+        set( gca, 'fontsize', fontSize,  'FontName', fontType);%'FontName', 'Times');
         %axis([0.8, maxXvalue + 0.2, 1.01*minMIvalue, 1.01*maxMIvalue]);
         axis([0.8, maxXvalue + 0.2, 0, 1.01*maxMIvalue]);
         legendHandle = legend([h1, h2], '$\mathrm{i(P1,P2)}$', '$\mathrm{MI(P1,P2)}$', 'location', 'NorthWest');

@@ -196,8 +196,8 @@ for iSet = 1:nSet
         x = isOwnChoice(1, testIndices);
         y = isOwnChoice(2, testIndices);
         [sessionMetrics(iSet).miTarget(iFile), ...
-            sessionMetrics(iSet).miTargetsignif(iFile), ...
-            sessionMetrics(iSet).miTargetthresh(iFile)] = calc_whole_mutual_information(x, y, cfg.pValueForMI);
+            sessionMetrics(iSet).miTargetSignif(iFile), ...
+            sessionMetrics(iSet).miTargetThresh(iFile)] = calc_whole_mutual_information(x, y, cfg.pValueForMI);
         teValue1 = calc_transfer_entropy(y, x, cfg.memoryLength, nTestIndices);
         teValue2 = calc_transfer_entropy(x, y, cfg.memoryLength, nTestIndices);
         sessionMetrics(iSet).teTarget(:, iFile) = [teValue1(1);teValue2(1)];
