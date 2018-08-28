@@ -7,12 +7,13 @@ fq_mfilename = mfilename('fullpath');
 mfilepath = fileparts(fq_mfilename);
 close_figures_on_return = 1;
 process_sets_individually = 1;
-process_CNL_retreat_2018_sets_only = 1;
+process_CNL_retreat_2018_sets_only = 0;
 opts = struct();
 
-only_copy_plots = 0;
+only_copy_plots = 1;
 src_sub_dir = '..';
-targ_dir = fullfile(filesep, 'Users', 'smoeller', 'DPZ', 'Projects', 'ProgressReportsAndPresentations', 'LabReatreat2018_BvS', 'analysis');
+targ_dir = fullfile(filesep, 'Users', 'smoeller', 'DPZ', 'Projects', 'ProgressReportsAndPresentations', 'LabReatreat2018_BvS', 'analysis', 'new_RT_colors');
+targ_dir = fullfile(filesep, 'Users', 'smoeller', 'DPZ', 'Projects', 'ProgressReportsAndPresentations', 'LabReatreat2018_BvS', 'analysis', 'new_RT_colors_payoffmatrixmarker');
 
 
 % Common abbreviations: MI - mutual information, TE - transfer entropy
@@ -34,7 +35,11 @@ else
 end
 
 % make sure the pictures end up
-cd(fullfile(SCPDirs.SCP_DATA_BaseDir, 'SCP_DATA', 'ANALYSES', 'hms-beagle2', '2018', 'CoordinationCheck', 'Plots'));
+output_dir = fullfile(SCPDirs.SCP_DATA_BaseDir, 'SCP_DATA', 'ANALYSES', 'hms-beagle2', '2018', 'CoordinationCheck', 'Plots');
+if ~exist(output_dir, 'dir')
+    mkdir(output_dir)
+end
+cd(output_dir);
 
 
 
@@ -643,6 +648,8 @@ if (process_CNL_retreat_2018_sets_only)
 end
 
 if (only_copy_plots)
+     struct_set_cell = {teslaElmoNaiveCNL, flaffusCuriusConfederateCNL, teslaElmoNaive, teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate, elmoNaiveCuriusConfederate, SMTesla, SMElmo, JKElmo, magnusCuriusNaive, magnusNaiveCuriusConfederate, flaffusCuriusNaive, flaffusCuriusConfederate, flaffusEC, SMCurius, SMCuriusBlock, TNCurius, SMFlaffus, SMFlaffusBlock, FlaffusSM, humanPair, humanPairBlocked, SMhumanBlocked, magnusFlaffusNaive};
+
     for i_set = 1 : length(struct_set_cell)
         current_set = struct_set_cell{i_set};
         current_setname = current_set.setName;
@@ -1010,14 +1017,24 @@ for iSet = 1:nSet
     %---- plot resuts ----
     %---------------------
     
-    if isfield(opts, 'opts.process_CNL_retreat_2018_sets_only') && (opts.process_CNL_retreat_2018_sets_only)
+    if isfield(opts, 'process_CNL_retreat_2018_sets_only') && (opts.process_CNL_retreat_2018_sets_only)
         figure('Name',[setName{iSet}, ' per-session summary']);
         set( axes,'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times');
+ 
+        DefaultAxesType = 'PrimateNeurobiology2018DPZ'; % DPZ2017Evaluation, PrimateNeurobiology2018DPZ
+        fnFormatDefaultAxes(DefaultAxesType);
+
+        DefaultPaperSizeType = 'PrimateNeurobiology2018DPZ0.5'; % DPZ2017Evaluation, PrimateNeurobiology2018DPZ
+        output_rect_fraction = 3; % default 0.5
+        [output_rect] = fnFormatPaperSize(DefaultPaperSizeType, gcf, output_rect_fraction);
+        set(gcf(), 'PaperUnits', 'centimeters', 'Units', 'centimeters', 'Position', output_rect, 'PaperPosition', output_rect);
+
+        
         
         nPlot = 6;% no TE plots
         for iPlot = 1:nPlot
             subplot(2, nPlot/2, iPlot);
-            if ((iPlot == 1) || (iPlot == 2) || (iPlot == 5)|| (iPlot == 6) || (iPlot == 7))
+            if ((iPlot == 1) || (iPlot == 2) || (iPlot == 4))
                 if (iPlot == 1)
                     y = [shareOwnChoices{iSet, :}];
                     minY = 0;
@@ -1089,15 +1106,15 @@ for iSet = 1:nSet
             axis([0.99, nFile(iSet) + 0.01, minY, maxY]);
             [~, labelIndices] = unique(fileCaption{iSet});
             correctLabel = fileCaption{iSet}(sort(labelIndices));
-            set( gca, 'fontsize', FontSize, 'XTick', 1:nFile(iSet), 'XTickLabel', correctLabel, 'XTickLabelRotation',45, 'FontName', 'Arial');%'FontName', 'Times');
+            set( gca, 'fontsize', 20, 'XTick', 1:nFile(iSet), 'XTickLabel', correctLabel, 'XTickLabelRotation',45, 'FontName', 'Arial');%'FontName', 'Times');
             %set( gca, 'fontsize', FontSize, 'FontName', 'Arial');%'FontName', 'Times');
             %title(setName{1}, 'fontsize', FontSize,  'FontName', 'Arial');%'FontName', 'Times', 'Interpreter', 'latex');
         end
-        set( gcf, 'PaperUnits','centimeters' );
-        xSize = 19; ySize = 25;
-        xLeft = 0; yTop = 0;
-        set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
-        print ( '-depsc', '-r600', ['perSession', '_', setName{iSet}]);
+%         set( gcf, 'PaperUnits','centimeters' );
+%         xSize = 19; ySize = 25;
+%         xLeft = 0; yTop = 0;
+%         set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ] );
+        print ( '-depsc', '-r600', ['perSessionCNL', '_', setName{iSet}]);
         print('-dpdf', ['perSessionCNL', '_', setName{iSet}], '-r600');   
     end
     % plot per-session MI, TE, average and non-random reward
