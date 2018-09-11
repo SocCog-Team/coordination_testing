@@ -285,7 +285,7 @@ if (linearize_coordination_metrics_struct)
     
     % TrialsInCurrentSetIdx can be naively linearized so remove it
     fieldnames_to_remove_list = {'TrialsInCurrentSetIdx'}; % add all fields that should not be linearized to this list
-    tmp_cfg = rmfield(tmp_cfg, fieldnames_to_remove_list);
+    tmp_cfg = rmfield(cfg, fieldnames_to_remove_list);
     
     coordination_metrics_row = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});     
 
