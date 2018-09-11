@@ -313,7 +313,7 @@ if (linearize_coordination_metrics_struct)
 end
 if (create_coordination_metrics_row_header)
     % the cfg variables
-    [~, coordination_metrics_row_header] = fn_linearize_struct(cfg, 'add_suffix_to_all_columns', {'cfg'});     
+    [~, coordination_metrics_row_header] = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'cfg'});     
     %coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
     
     [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'});
