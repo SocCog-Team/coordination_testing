@@ -1,21 +1,17 @@
-function plotProbabilitiesToSee(pSee, isOwnChoice, imageName, needToPlotSigmoid)
+function plotProbabilitiesToSee(initialFixationTime, isOwnChoice, imageName, needToPlotSigmoid)
 
+minDRT = 50;
+pSee = calc_probabilities_to_see(initialFixationTime, minDRT);
+  
 isOtherChoice = 1 - isOwnChoice;
 nTrial = length(pSee);
 
-[rValue1,pValue1] = corrcoef(pSee(1,:)', isOtherChoice(1,:)');
-[rValue2,pValue2] = corrcoef(pSee(2,:)', isOtherChoice(2,:)');
-corrCoefValue = [rValue1(2,1), rValue2(2,1)];
-corrPValue = [pValue1(2,1), pValue2(2,1)];
-
-windowSize = 10;
+windowSize = 8;
 pSeeAveraged = movmean(pSee, windowSize, 2);
 pAccomodate = movmean(isOtherChoice, windowSize, 2);
- 
-[rValue1,pValue1] = corrcoef(pSeeAveraged(1,:)', pAccomodate(1,:)');
-[rValue2,pValue2] = corrcoef(pSeeAveraged(2,:)', pAccomodate(2,:)');
-corrCoefAveraged = [rValue1(2,1), rValue2(2,1)];
-corrPValueAveraged = [pValue1(2,1), pValue2(2,1)];
+
+[corrCoefValue, corrPValue, corrCoefAveraged, corrPValueAveraged] ...
+    = calc_prob_to_see_correlation(pSee, isOwnChoice, windowSize);
 
 
 LineWidth = 2;
@@ -29,6 +25,8 @@ figure
 set( axes,'fontsize', FontSize, 'FontName', fontType);  
 if needToPlotSigmoid
     subplot(2,3,1:3:4)
+    k = 0.04;
+    minDRT = 80;
     x = 1:150;
     y = 1./(1 + exp(-k*(x - minDRT)));
     plot (x, y, 'linewidth', LineWidth);

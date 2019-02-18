@@ -95,10 +95,10 @@ SMCuriusFilenames = {...
     'DATA_20180423T162330.A_SM.B_Curius.SCP_01.triallog.A.SM.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 
-needToPlotSigmoid = 0;
-%fileArray = flaffusCuriusConfederateFilenames;
+needToPlotSigmoid = 1;
+fileArray = flaffusCuriusConfederateFilenames;
 %fileArray = flaffusCuriusNaiveFilenames;
-%imageNameBase = 'FlaffusCurius_PseeAndChoice';
+imageNameBase = 'FlaffusCurius_PseeAndChoice';
 
 %fileArray = humanTransparentPairFilenames;
 %imageNameBase = 'human_PseeAndChoice';
@@ -109,8 +109,8 @@ needToPlotSigmoid = 0;
 %fileArray = SMTeslaFilenames;
 %imageNameBase = 'Tesla_SM';
 
-fileArray = SMCuriusFilenames;
-imageNameBase = 'SM_Curius';
+%fileArray = SMCuriusFilenames;
+%imageNameBase = 'SM_Curius';
 
 meanRT = zeros(2, length(fileArray));
 medianRT = zeros(2, length(fileArray));
@@ -126,12 +126,10 @@ for i = 1:length(fileArray)
     meanRT(:, i) = mean(initialFixationTime, 2);
     medianRT(:, i) = median(initialFixationTime, 2);
     
-    minDRT = 50;
-    %pSee = computeProbabilitiesToSee(initialFixationTime, minDRT);
-    
     imageName = [imageNameBase int2str(i)];
-    %plotProbabilitiesToSee(pSee, isOwnChoice, imageName, needToPlotSigmoid);
+    plotProbabilitiesToSee(initialFixationTime, isOwnChoice, imageName, needToPlotSigmoid);
 end
+%{
 figure
 subplot(2,1,1)
 title('mean')
@@ -140,7 +138,7 @@ lHandle = legend('SM', 'Curius');
 subplot(2,1,2)
 title('median')
 plot(medianRT')
-
+%}
 %{
 meanRT = [meanRT(:, 1:15),meanRT(2:-1:1, 16:24)];
 medianRT = [medianRT(:, 1:15),medianRT(2:-1:1, 16:24)];
