@@ -23,6 +23,11 @@ shortStrategy = zeros(2, nCol);
 % describing the corresponding entry in strategy matrix
 [rowIndex, colIndex] = compute_strategy_entries(target, side, RT, minDRT);
 
+if isempty(rowIndex) && isempty(colIndex)
+   disp('Could not compute staretgy entries, too few trials in selected subset?');
+   return
+end
+
 % compute number of visits in each entry of a strategy and probability to
 % select own in each entry (the strategy)
 for iTrial = 2:nTrial

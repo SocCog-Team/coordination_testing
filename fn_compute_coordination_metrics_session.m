@@ -279,11 +279,15 @@ coordination_metrics_struct.per_trial = per_trial;
 
 
 %TODO:
-%   linearize the data and create a matchig header
+%   linearize the data and create a matching header
 coordStructBlock_suffix_list = {'visible_pre', 'invisible', 'visible_post'};
 if (linearize_coordination_metrics_struct)
     
-    coordination_metrics_row = fn_linearize_struct(cfg, 'add_suffix_to_all_columns', {'_cfg'});     
+    % TrialsInCurrentSetIdx can be naively linearized so remove it
+    fieldnames_to_remove_list = {'TrialsInCurrentSetIdx'}; % add all fields that should not be linearized to this list
+    tmp_cfg = rmfield(cfg, fieldnames_to_remove_list);
+    
+    coordination_metrics_row = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});     
 
     coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'})];   
     coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'A', 'B'})];
@@ -309,7 +313,7 @@ if (linearize_coordination_metrics_struct)
 end
 if (create_coordination_metrics_row_header)
     % the cfg variables
-    [~, coordination_metrics_row_header] = fn_linearize_struct(cfg, 'add_suffix_to_all_columns', {'cfg'});     
+    [~, coordination_metrics_row_header] = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'cfg'});     
     %coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
     
     [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'});
