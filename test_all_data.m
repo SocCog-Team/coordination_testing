@@ -320,7 +320,6 @@ SMElmo.captions = {...
     '20180619T150344', ...
     };
 
-
 SMCurius.setName = 'SMCurius';
 SMCurius.filenames = {...
     'DATA_20171206T141710.A_SM.B_Curius.SCP_01.triallog.A.SM.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -407,7 +406,6 @@ SMFlaffus.captions = {...
     '28.02.18', ...
     };
 
-
 FlaffusSM.setName = 'FlaffusSM';
 FlaffusSM.filenames = {...
     'DATA_20180406T111431.A_Flaffus.B_SM.SCP_01.triallog.A.Flaffus.B.SM_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -469,13 +467,24 @@ TNCurius.captions = {...
     };
 
 
-humanPair.setName = 'HumanPairs';
-humanPair.filenames = {...
-%    'DATA_20170425T160951.A_21001.B_22002.SCP_00.triallog.A.21001.B.22002_IC_JointTrials.isOwnChoice_sideChoice', ...
-%    'DATA_20170426T102304.A_21003.B_22004.SCP_00.triallog.A.21003.B.22004_IC_JointTrials.isOwnChoice_sideChoice', ...
-%    'DATA_20170426T133343.A_21005.B_12006.SCP_00.triallog.A.21005.B.12006_IC_JointTrials.isOwnChoice_sideChoice', ...
-%    'DATA_20170427T092352.A_21007.B_12008.SCP_00.triallog.A.21007.B.12008_IC_JointTrials.isOwnChoice_sideChoice', ...
-%    'DATA_20170427T132036.A_21009.B_12010.SCP_00.triallog.A.21009.B.12010_IC_JointTrials.isOwnChoice_sideChoice', ...
+humanNontransparentPair.setName = 'HumanNontransparentPairs';
+humanNontransparentPair.filenames = {...
+    'DATA_20170425T160951.A_21001.B_22002.SCP_00.triallog.A.21001.B.22002_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20170426T102304.A_21003.B_22004.SCP_00.triallog.A.21003.B.22004_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20170426T133343.A_21005.B_12006.SCP_00.triallog.A.21005.B.12006_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20170427T092352.A_21007.B_12008.SCP_00.triallog.A.21007.B.12008_IC_JointTrials.isOwnChoice_sideChoice', ...
+    'DATA_20170427T132036.A_21009.B_12010.SCP_00.triallog.A.21009.B.12010_IC_JointTrials.isOwnChoice_sideChoice' ...
+    };
+humanNontransparentPair.captions = {...
+    '01vs02', ...
+    '03vs04', ...
+    '05vs06', ...
+    '07vs08', ...
+    '09vs10'...
+    };
+
+humanTransparentPair.setName = 'HumanTransparentPairs';
+humanTransparentPair.filenames = {...
     'DATA_20171113T162815.A_20011.B_10012.SCP_01.triallog.A.20011.B.10012_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20171115T165545.A_20013.B_10014.SCP_01.triallog.A.20013.B.10014_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20171116T164137.A_20015.B_10016.SCP_01.triallog.A.20015.B.10016_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -488,12 +497,7 @@ humanPair.filenames = {...
     'DATA_20171130T164300.A_20027.B_10028.SCP_01.triallog.A.20027.B.10028_IC_JointTrials.isOwnChoice_sideChoice', ...
     'DATA_20171205T163542.A_20029.B_10030.SCP_01.triallog.A.20029.B.10030_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
-humanPair.captions = {...
- %   '01vs02', ...
- %   '03vs04', ...
- %   '05vs06', ...
- %   '07vs08', ...
- %   '09vs10', ...
+humanTransparentPair.captions = {...
     '11vs12', ...
     '13vs14', ...
     '15vs16', ...
@@ -546,11 +550,13 @@ SMhumanBlocked.captions = {...
 SCAN_ALL_DATASET = 1;
 %SCAN_ALL_DATASET = 0;
 if (SCAN_ALL_DATASET)
-    dataset = {teslaElmoNaive, teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate, elmoNaiveCuriusConfederate, SMTesla, SMElmo, JKElmo, magnusCuriusNaive, magnusNaiveCuriusConfederate, flaffusCuriusNaive, flaffusCuriusConfederate, flaffusEC, SMCurius, SMCuriusBlock, TNCurius, SMFlaffus, SMFlaffusBlock, FlaffusSM, humanPair, humanPairBlocked, SMhumanBlocked, magnusFlaffusNaive};
+    dataset = {teslaElmoNaive, teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate, elmoNaiveCuriusConfederate, SMTesla, SMElmo, JKElmo, magnusCuriusNaive, magnusNaiveCuriusConfederate, flaffusCuriusNaive, flaffusCuriusConfederate, flaffusEC, SMCurius, SMCuriusBlock, TNCurius, SMFlaffus, SMFlaffusBlock, FlaffusSM, humanNontransparentPair, humanTransparentPair, humanPairBlocked, SMhumanBlocked, magnusFlaffusNaive};
+    %dataset = {teslaElmoNaive, teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate, elmoNaiveCuriusConfederate, SMTesla, SMElmo, JKElmo, magnusCuriusNaive, magnusNaiveCuriusConfederate, flaffusCuriusNaive, flaffusCuriusConfederate, flaffusEC, SMCurius, TNCurius, SMFlaffus, FlaffusSM, humanPair, humanPairBlocked, SMhumanBlocked, magnusFlaffusNaive};
     %dataset = {teslaNaiveFlaffusConfederate, teslaNaiveCuriusConfederate};
     %dataset = {magnusFlaffusNaive};
 else
-    dataset = {SMhumanBlocked};
+    %dataset = {magnusNaiveCuriusConfederate, flaffusCuriusNaive, flaffusCuriusConfederate, humanPair};
+    dataset = {magnusCuriusNaive, flaffusCuriusNaive, flaffusCuriusConfederate, humanPair};
 end
 
 
@@ -567,7 +573,7 @@ figure_visibility_string = 'on';
 output_rect_fraction = 3; % default 0.5
 DefaultAxesType = 'PrimateNeurobiology2018DPZ'; % DPZ2017Evaluation, PrimateNeurobiology2018DPZ
 DefaultPaperSizeType = 'PrimateNeurobiology2018DPZ0.5'; % DPZ2017Evaluation, PrimateNeurobiology2018DPZ
-fnFormatDefaultAxes(DefaultAxesType);
+%fnFormatDefaultAxes(DefaultAxesType);
 
 
 plotName = {'TEtarget', 'MutualInf', 'surprise_pos'};
@@ -608,7 +614,7 @@ cfg.memoryLength = 1; % number of previous trials that affect the choices on the
 cfg.minSampleNum = 6*(2.^(cfg.memoryLength+1))*(2.^cfg.memoryLength);
 cfg.stationarySegmentLength = 200;  % number of last trials supposedly corresponding to equilibrium state
 cfg.minStationarySegmentStart = 20; % earliest possible start of equilibrium state
-cfg.minDRT = 200; %minimal difference of reaction times allowing the slower partner to se the choice of the faster 
+cfg.minDRT = 50; %minimal difference of reaction times allowing the slower partner to se the choice of the faster 
 
 %% run analysis 
 resultFilename = 'coordinationData.mat';
@@ -617,6 +623,12 @@ compute_coordination_metrics(dataset, cfg, resultFilename);
 %    error('Processing failed, please debug');
 %end    
 load(resultFilename); 
+
+%% detect factors affecting the strategy 
+[ influence, influenceFingerprint, influenceTrialwise ] = compute_influences_on_choices(dataset, cfg);
+%c = cluster_strategy_fingerprints(dataset, cfg);
+
+
 %% test strategies
 
 basicStrategyIndex = 1:4;
@@ -629,12 +641,16 @@ competitiveStrategyIndex = 8;
 
 goodProbabilityThreshold = 0.95;
 minProbabilityThreshold = 0.33;
-minDRT = 150;
+minDRT = 120;
 
 [strategyArray, strategyNames] = generate_principal_strategies();
 nStrategy = length(strategyNames);
 
+nSet = length(dataset);
+nFile = cell2mat(cellfun(@(x) length(unique(x.captions)), dataset, 'UniformOutput',false));
+
 strategyParam = cell(nSet, max(nFile));
+strategy = cell(nSet, max(nFile));
 strategyProbabilityPerTrial = cell(nSet, max(nFile));
 strategyMeanProbability = cell(nSet, max(nFile));
 strategyLogMeanProbability = cell(nSet, max(nFile));
@@ -680,10 +696,12 @@ for iSet = 1:nSet
         strategyForTest = cell(2, nStrategy);
         strategyForTest(1,:) = strategyArray;
         strategyForTest(2,:) = strategyArray;
-        %{
+      %{
         % estimate strategy parameters
         strategyParam{iSet, iFile} = -ones(2, nStrategy); %initialize with invalid values
-        [strategy, nStateVisit] = estimate_strategy(isOwnChoice, sideChoice, RT, minDRT);                
+        [~, strategy{iSet, iFile}, nStateVisit] = estimate_strategy(isOwnChoice, sideChoice, RT, minDRT);                
+          
+        
         strategy{1}(isnan(strategy{1})) = 0;
         strategy{2}(isnan(strategy{2})) = 0;
         for iStrategy = 1:nStrategy            
@@ -711,7 +729,7 @@ for iSet = 1:nSet
             end    
         end
         %}  
-               
+         %{      
         [strategyMeanProbability{iSet, iFile}, strategyLogMeanProbability{iSet, iFile}, ...
          strategyProbabilityPerTrial{iSet, iFile}] = check_strategy_probability(isOwnChoice, sideChoice, strategyForTest, RT, minDRT);        
      
@@ -740,6 +758,7 @@ for iSet = 1:nSet
                 %identifiedStrategyParam{iSet}(iPlayer, iFile) = strategyParam{iSet, iFile}(iPlayer, maxStrategyIndex);  
             end
         end    
+        %}
     end
     badIdentificationIndex = identifiedStrategyProb{iSet} < minProbabilityThreshold;
     identifiedStrategyIndex{iSet}(badIdentificationIndex) = 0;
@@ -973,7 +992,7 @@ print('-dpdf', 'MIangularScatterPlot', '-r600');
 
 %% plot likelihoods of employed strategies
 
-monkeyEarlySetIndex = [1,2,3,4,8,10,22];
+monkeyEarlySetIndex = [1,2,3,4,8,10,23];
 monkeyEarlySessionIndex = ones(1,length(monkeyEarlySetIndex));
 monkeyEarlyProficientSessionIndex = zeros(1,length(monkeyEarlySetIndex));
 for i = 1:length(monkeyEarlySetIndex)
@@ -981,7 +1000,7 @@ for i = 1:length(monkeyEarlySetIndex)
     monkeyEarlyProficientSessionIndex(i) = find(sessionMetrics(iSet).isPairProficient, 1, 'first');
 end    
 
-monkeyLateSetIndex = [1,2,3,4,9,10,22];
+monkeyLateSetIndex = [1,2,3,4,9,10,23];
 monkeyLateSessionIndex = nFile(monkeyLateSetIndex);
 monkeyLateProficientSessionIndex = zeros(1,length(monkeyEarlySetIndex));
 for i = 1:length(monkeyEarlySetIndex)
@@ -989,7 +1008,7 @@ for i = 1:length(monkeyEarlySetIndex)
     monkeyLateProficientSessionIndex(i) = find(sessionMetrics(iSet).isPairProficient, 1, 'last');
 end    
 
-iHumanSet = 19;
+iHumanSet = 20;
 humanSetIndex = iHumanSet*ones(1,nFile(iHumanSet));
 humanSessionIndex = 1:nFile(iHumanSet);
 humanProficientSessionIndex = find(sessionMetrics(iHumanSet).isPairProficient);
@@ -1136,8 +1155,6 @@ setMarker = {'o', 'o', 'o', 's', 's', 'd'};
 labelSubjectGroups = {'humans', 'macaques early', 'macaques late', 'macaques vs. human confederate early', 'macaques vs. human confederate late', 'confederate-trained macaques'};
               
 sz = 96;
-nSetGroup = length(allSets);
-
 figureName = {'HumanOnly', 'MonkeyOnly', 'Naive', 'NaiveFaded', 'NaiveFaded_NHPwithSM', 'NaiveFaded_NHPwithSMFaded', 'All', 'All_labeled'};
 figureName = cellfun(@(x) ['Scatter_' x], figureName, 'UniformOutput', false);
 figureName = [figureName, cellfun(@(x) [x, '_Prof'], figureName, 'UniformOutput', false)];
@@ -1203,6 +1220,8 @@ for iFigure = 1:nFigure
     hold on
     for iGroup = firstGroup:nSetGroup
         rData = sqrt(xData{iGroup}.^2 + yData{iGroup}.^2);
+        rDataCoef = min([sqrt(1 + xData{iGroup}.^2); sqrt(1 + yData{iGroup}.^2)]);
+        rData = rData./rDataCoef;       
         phiData = atan(xData{iGroup}./yData{iGroup});
         phiData(yData{iGroup} == 0) = pi()/2;
         n = length(rData);

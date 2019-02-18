@@ -1,4 +1,4 @@
-function [strategy, nStateVisit] = estimate_strategy(target, side, RT, minDRT)
+function [strategy, shortStrategy, nStateVisit] = estimate_strategy(target, side, RT, minDRT)
 nRow = 4;      % previous location x current location
 nColBasic = 4; % previous own choice x previous partner choce
 if (~exist('RT', 'var'))
@@ -12,11 +12,12 @@ if (~exist('minDRT', 'var'))
 end
 nTrial = length(target);
 nStateVisit = cell(2, 1);
-strategy = cell(2, 1);
+nStateChoices = cell(2, 1);
 for iPlayer = 1:2
     nStateVisit{iPlayer} = zeros(nRow, nCol);
-    strategy{iPlayer} = zeros(nRow, nCol);
+    nStateChoices{iPlayer} = zeros(nRow, nCol);
 end
+shortStrategy = zeros(2, nCol);
 
 % for each trial starting from 2nd compute row and column indices
 % describing the corresponding entry in strategy matrix
@@ -29,8 +30,11 @@ for iTrial = 2:nTrial
     for iPlayer = 1:2
         iCol = colIndex(iPlayer, iTrial-1);
         nStateVisit{iPlayer}(iRow, iCol) = nStateVisit{iPlayer}(iRow, iCol) + 1;
-        strategy{iPlayer}(iRow, iCol) = strategy{iPlayer}(iRow, iCol) + target(iPlayer, iTrial);
+        nStateChoices{iPlayer}(iRow, iCol) = nStateChoices{iPlayer}(iRow, iCol) + target(iPlayer, iTrial);
     end
 end
-strategy = cellfun(@rdivide, strategy, nStateVisit, 'UniformOutput', false);
+strategy = cellfun(@rdivide, nStateChoices, nStateVisit, 'UniformOutput', false);
+
+shortStrategy(1,:) = sum(nStateChoices{1}, 1)./sum(nStateVisit{1}, 1);
+shortStrategy(2,:) = sum(nStateChoices{2}, 1)./sum(nStateVisit{2}, 1);
 end

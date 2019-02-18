@@ -6,10 +6,11 @@ end
 
 if (exist(resultFilename,'file'))
     prev = load(resultFilename, 'dataset', 'cfg');
-end
-if (isfield(prev,'dataset') && isfield(prev, 'cfg') && isequal(prev.cfg, cfg) && isequal(prev.dataset, dataset))
-    disp('dataset already processed'); %display the value of myVar
-    return
+
+    if (isfield(prev,'dataset') && isfield(prev, 'cfg') && isequal(prev.cfg, cfg) && isequal(prev.dataset, dataset))
+        disp('dataset already processed'); %display the value of myVar
+        return
+    end    
 end
 
 %-------------------- initialization --------------------
@@ -58,7 +59,10 @@ sessionMetrics = struct('teTarget', cell(1, nSet), ...
     'dltConfInterval', cell(1, nSet), ...
     'shareOwnChoices', cell(1, nSet), ...
     'shareLeftChoices', cell(1, nSet), ...
-    'shareJointChoices', cell(1, nSet));
+    'shareJointChoices', cell(1, nSet), ...
+    'firstSegment', cell(1, nSet), ...
+    'lastSegment', cell(1, nSet) ...
+);
 
 % strategy - probability to select own target given the state, incorporating
 % previous outcome, current stimuli location and current partner's choice (if visible)
@@ -116,6 +120,8 @@ for iSet = 1:nSet
     sessionMetrics(iSet).shareOwnChoices = zeros(2, nFile(iSet));
     sessionMetrics(iSet).shareLeftChoices = zeros(2, nFile(iSet));
     sessionMetrics(iSet).shareJointChoices = zeros(1, nFile(iSet));
+    sessionMetrics(iSet).firstSegment = zeros(2, nFile(iSet));
+    sessionMetrics(iSet).lastSegment = zeros(2, nFile(iSet));
     
     % preallocate blockwise quanities
     miValueBlock{iSet} = NaN(nFile(iSet), 3);
@@ -134,14 +140,18 @@ for iSet = 1:nSet
     playerStrategy{iSet} = zeros(nFile(iSet), 8);
     playerNStateVisit{iSet} = zeros(nFile(iSet), 8);
     
+    [~, idx] = unique(dataset{iSet}.captions);
+    sessionName = dataset{iSet}.captions(idx);
     % analyse all sessions for the given players pair
     filenameIndex = 1;
+    close all
     for iFile = 1:nFile(iSet)
         % merge data for all files having the same caption
         isOwnChoice = [];
         sideChoice = [];
         isTrialVisible = [];
         targetAcquisitionTime = [];
+        trialStartTime = [];
         
         i = filenameIndex;
         while(length(dataset{iSet}.filenames) >= i)
@@ -166,17 +176,115 @@ for iSet = 1:nSet
             end
             isTrialVisible = [isTrialVisible, PerTrialStruct.isTrialInvisible_AB'];
             targetAcquisitionTime = [targetAcquisitionTime, [PerTrialStruct.A_TargetAcquisitionRT'; PerTrialStruct.B_TargetAcquisitionRT']];
+            trialStartTime = [trialStartTime, PerTrialStruct.AB_TrialStartTimeMS'];
             i = i + 1;
         end
+        
+        trialDuration = diff(trialStartTime);
+        trialDuration = medfilt1([trialDuration(1), trialDuration]);
+        
+        nTrial = length(isOwnChoice);
+        if (nTrial < cfg.minSampleNum)
+            sessionMetrics(iSet).firstSegment(:, iFile) = [1, nTrial];
+            sessionMetrics(iSet).lastSegment(:, iFile) = [1, nTrial];
+            continue;
+        end
+        
         filenameIndex = i;
         allOwnChoice{iSet, iFile} = isOwnChoice;
         allSideChoice{iSet, iFile} = sideChoice;
-        allRT{iSet, iFile} = targetAcquisitionTime;
+        allRT{iSet, iFile} = targetAcquisitionTime;        
+
+        sameChoice = xor(isOwnChoice(1,:),isOwnChoice(2,:));
+        rewardP1 = 1 + isOwnChoice(1,:) + 2*sameChoice;
+        rewardP2 = 1 + isOwnChoice(2,:) + 2*sameChoice;
+        averReward = (rewardP1 + rewardP2)/2; 
+                
+        threshValue = 3.0;
+        minDist = cfg.minSampleNum;      
+        stationarySegmentBorders = [1, findchangepts(averReward, 'MinDistance', minDist, 'MinThreshold', threshValue), nTrial];
+        nSegment = length(stationarySegmentBorders) - 1;
         
-        % here we consider only equilibrium (stabilized) values
-        nTrial = length(isOwnChoice);
-        fistTestIndex = max(cfg.minStationarySegmentStart, nTrial-cfg.stationarySegmentLength);
-        testIndices = fistTestIndex:nTrial;
+        sessionMetrics(iSet).firstSegment(:, iFile) = [1, stationarySegmentBorders(2)];
+        sessionMetrics(iSet).lastSegment(:, iFile) = sessionMetrics(iSet).firstSegment(:, iFile);
+        for iSegment = nSegment:-1:2
+            currSegment = [stationarySegmentBorders(iSegment) + 1, stationarySegmentBorders(iSegment + 1)];            
+               
+            % test reaction rate for the segment 
+            if (1)  
+                sessionMetrics(iSet).lastSegment(:, iFile) = currSegment;
+                break;
+            end    
+        end    
+        
+        showSegmentPlot = true;
+        %showSegmentPlot = false;
+        if (showSegmentPlot)
+            choiceToShow = isOwnChoice;
+            choiceToShow(1,:) = movmean(choiceToShow(1,:),8);
+            choiceToShow(2,:) = movmean(choiceToShow(2,:),8);
+            
+            figname = [dataset{iSet}.setName num2str(iFile) '.fig'];
+            figure('Name', [dataset{iSet}.setName sessionName{iFile}])
+
+            meanReward = zeros(1, nSegment);
+            meanDuration = zeros(1, nSegment);
+            xStart = zeros(1, nSegment);
+            xEnd = zeros(1, nSegment);
+            for iSegment = 1 : nSegment
+                xStart(iSegment) = stationarySegmentBorders(iSegment);
+                if (iSegment > 1)
+                    xStart = xStart + 1;
+                end
+                xEnd(iSegment) = stationarySegmentBorders(iSegment+1);
+                meanReward(iSegment) = mean(averReward(xStart(iSegment):xEnd(iSegment)));
+                meanDuration(iSegment) = mean(trialDuration(xStart(iSegment):xEnd(iSegment)));
+                
+            end
+        
+            subplot(3,1,1)
+            hold on
+            plot(choiceToShow(2:-1:1,:)')
+            for ix = 2 : nSegment
+                x = stationarySegmentBorders(ix);
+                plot( [x x], [-1 2], '--', 'Color', [1,0.4,1], 'Linewidth', 2);
+            end
+            hold off
+            axis([1, length(averReward), -0.1, 1.5]);
+            title(['$K = ' num2str(threshValue) ',\;L \geq' num2str(minDist) '$'], 'Interpreter', 'latex');
+
+            subplot(3,1,2)
+            hold on
+            plot(averReward)
+            for ix = 2 : nSegment
+                x = stationarySegmentBorders(ix);
+                plot( [x x], [1 4], '--', 'Color', [1,0.4,1], 'Linewidth', 2);
+            end
+            for iSegment = 1 : nSegment
+                plot( [xStart(iSegment) xEnd(iSegment)], [meanReward(iSegment) meanReward(iSegment)], 'b-', 'Linewidth', 2);
+            end
+            hold off
+            axis([1, length(averReward), 1, 4]); 
+            
+            subplot(3,1,3)
+            hold on
+            plot(trialDuration)
+            for ix = 2 : nSegment
+                x = stationarySegmentBorders(ix);
+                plot( [x x], [0 1], '--', 'Color', [1,0.4,1], 'Linewidth', 2);
+            end
+            for iSegment = 1 : nSegment
+                plot( [xStart(iSegment) xEnd(iSegment)], [meanDuration(iSegment) meanDuration(iSegment)], 'b-', 'Linewidth', 2);
+            end
+            hold off
+            axis([1, length(averReward), 0, 1.1*max(trialDuration)]);             
+            %plot(movmean(diff(PerTrialStruct.AB_TrialStartTimeMS),8))
+            %plot(medfilt1(diff(PerTrialStruct.AB_TrialStartTimeMS)))
+            savefig(figname);
+        end    
+        
+        % here we consider only equilibrium (stabilized) values        
+        testIndices = sessionMetrics(iSet).lastSegment(1, iFile):sessionMetrics(iSet).lastSegment(2, iFile);
         nTestIndices = length(testIndices);
         
         % estimate strategy over equilibrium trials
