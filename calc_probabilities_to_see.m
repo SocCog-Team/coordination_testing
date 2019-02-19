@@ -24,7 +24,9 @@
     minDRT = 50;
     pSee = calc_probabilities_to_see(initialFixationTime, minDRT);
 %}
-function pSee = calc_probabilities_to_see(reactionTime, minDRT)
+%function pSee = calc_probabilities_to_see(reactionTime, minDRT)
+function pSee = calc_probabilities_to_see(reactionTime)
+minDRT = 50;
 k = 0.04; % set the slope of the logistic curve
           % smaller k - smooth transition, higher k - abrupt transition   
 
