@@ -36,10 +36,11 @@ end
 coordination_metrics_row = [];
 coordination_metrics_row_header = {};
 linearize_coordination_metrics_struct = 0;
+info_struct = struct();
 
 if nargout > 1
     linearize_coordination_metrics_struct = 1;
-    structs_to_linearize_list = {'sessionMetrics', 'coordination_struct'};
+    structs_to_linearize_list = {'sessionMetrics', 'coordination_struct', 'info_struct'};
 end
 if nargout > 2
     create_coordination_metrics_row_header = 1;
@@ -116,10 +117,10 @@ testIndices = firstTestIndex:nTrial;
 nTestIndices = length(testIndices);
 
 % add information about the number of analyzed trials to the output
-cfg.use_all_trials = use_all_trials;
-cfg.nTrials = nTrial;
-cfg.firstTestIndex = firstTestIndex;
-cfg.nTestIndices = nTestIndices;
+info_struct.use_all_trials = use_all_trials;
+info_struct.nTrials = nTrial;
+info_struct.firstTestIndex = firstTestIndex;
+info_struct.nTestIndices = nTestIndices;
 
 
 if isempty(testIndices)
@@ -217,31 +218,33 @@ if (linearize_coordination_metrics_struct)
     % TrialsInCurrentSetIdx can not be naively linearized (unequal length) so remove it
     fieldnames_to_remove_list = {'TrialsInCurrentSetIdx'}; % add all fields that should not be linearized to this list
     tmp_cfg = rmfield(cfg, fieldnames_to_remove_list);
-    
     coordination_metrics_row = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});     
-
-    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'})];   
-    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'A', 'B'})];     
+    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(info_struct, 'add_suffix_to_all_columns', {'_info'})];
+    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(sessionMetrics, 'add_suffix', {'_A', '_B'})];   
+    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'_A', '_B'})];     
 end
 
 if (create_coordination_metrics_row_header)
     % the cfg variables
-    [~, coordination_metrics_row_header] = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'cfg'});     
+    [~, coordination_metrics_row_header] = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});     
     %coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+
+    [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(info_struct, 'add_suffix_to_all_columns', {'_info'});     
+    coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+
     
-    [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics, 'add_suffix', {'A', 'B'});
+    [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics, 'add_suffix', {'_A', '_B'});
     % fix up some column names...
     tmp_coordination_metrics_row_header{(strcmp('dltConfInterval_A', tmp_coordination_metrics_row_header))} = 'dltConfInterval_Lower';
     tmp_coordination_metrics_row_header{(strcmp('dltConfInterval_B', tmp_coordination_metrics_row_header))} = 'dltConfInterval_Upper';
     coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
     
     % the coordStruct
-    [ ~, tmp_coordination_metrics_row_header] = fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'A', 'B'});
+    [ ~, tmp_coordination_metrics_row_header] = fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'_A', '_B'});
     coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
 
     % now unconditionally sandwich all header items between prefix_string and
     % suffix_string
-    n_columns = length(coordination_metrics_row_header);
     for i_header_column = 1 : length(coordination_metrics_row_header)
         coordination_metrics_row_header{i_header_column} = [prefix_string, coordination_metrics_row_header{i_header_column}, suffix_string];
     end
@@ -283,7 +286,7 @@ for i_field = 1 : length(field_list)
             if (convert_fieldnames_2_column_names)
                
                 if strcmp(list_handling_command, 'add_suffix_to_all_columns')
-                     header_list{end + 1} = [field_list{i_field}, '_', list_suffix_list{1}];
+                     header_list{end + 1} = [field_list{i_field}, list_suffix_list{1}];
                 else
                      header_list{end + 1} = field_list{i_field};
                 end
@@ -296,7 +299,7 @@ for i_field = 1 : length(field_list)
                         for i_item = 1 : length(current_data)
                             data_row(end + 1) = current_data(i_item);
                             if (convert_fieldnames_2_column_names)
-                                header_list{end + 1} = [field_list{i_field}, '_', list_suffix_list{i_item}];
+                                header_list{end + 1} = [field_list{i_field}, list_suffix_list{i_item}];
                             end
                         end
                     else
@@ -308,7 +311,7 @@ for i_field = 1 : length(field_list)
                         for i_item = 1 : length(current_data)
                             data_row(end + 1) = current_data(i_item);
                             if (convert_fieldnames_2_column_names)
-                                header_list{end + 1} = [field_list{i_field}, '_', list_suffix_list{i_item}];
+                                header_list{end + 1} = [field_list{i_field}, list_suffix_list{i_item}];
                             end
                         end
                     else
