@@ -1,4 +1,4 @@
-function [ coordination_metrics_struct, coordination_metrics_row, coordination_metrics_row_header ] = fn_compute_coordination_metrics_session_by_indexedtrials( isOwnChoiceArray, sideChoiceArray, PerTrialStruct, cfg, trial_index, prefix_string, suffix_string )
+function [ coordination_metrics_struct, coordination_metrics_row, coordination_metrics_row_header ] = fn_compute_coordination_metrics_session_by_indexedtrials( isOwnChoiceArray, sideChoiceArray, PerTrialStruct, cfg, trial_index, use_all_trials, prefix_string, suffix_string )
 %FN_COMPUTE_COORDINATION_METRICS_SESSION_BY_INDEXEDTRIALS Summary of this function goes here
 %   This is supposed to do the same as compute_coortdination_mtrics, but
 %   only for a single session and expects to get the data passed in instead
@@ -8,14 +8,20 @@ function [ coordination_metrics_struct, coordination_metrics_row, coordination_m
 %   suffix
 
 % TODO:
+%   if trial_index, prefix_string, suffix_string are cell arrays, loop over
+%   the elements and create and concatenate all sets.
+%   Allow manual override of the stationarySegmentLength, minStationarySegmentStart
+%   logic to use the full supplied index...
+%   Calculate and return the coordination measures for the confederate
+%   case, so based on the confederates choices
+
+% DONE:
 %   change to take in a list of trial indices and just calculate and return
-%   header and data for that set, also allow to pass in a common suffic
+%   header and data for that set, also allow to pass in a common suffix
 %   string to make sure the header fields can be made unique, that also
 %   allows to get rid of the special casing of the invisibility trials and
 %   will return the exact same measures for each subset.
-%
-%   also calculate and return the coordination measures for the confederate
-%   case, so based on the confederates choices
+%   
 
 
 % use the following two to decorate all variable names for the coordination_metrics_row_header
@@ -101,18 +107,23 @@ sessionMetrics.shareJointChoices = NaN(1, 1);
 
 % here we consider only equilibrium (stabilized) values
 nTrial = length(isOwnChoiceArray);
-firstTestIndex = max(cfg.minStationarySegmentStart, nTrial-cfg.stationarySegmentLength);
-testIndices = firstTestIndex:nTrial;
+if ~(use_all_trials)    
+    firstTestIndex = max(cfg.minStationarySegmentStart, nTrial-cfg.stationarySegmentLength);       
+else
+    firstTestIndex = 1;
+end
+testIndices = firstTestIndex:nTrial; 
 nTestIndices = length(testIndices);
 
 % add information about the number of analyzed trials to the output
+cfg.use_all_trials = use_all_trials;
 cfg.nTrials = nTrial;
 cfg.firstTestIndex = firstTestIndex;
 cfg.nTestIndices = nTestIndices;
 
 
 if isempty(testIndices)
-    disp(['fn_compute_coordination_metrics_session: found less than ', num2str(cfg.minStationarySegmentStart), ' trials, coordination metrics will not be calculated.']);
+    disp([mfilename, ': found less than ', num2str(cfg.minStationarySegmentStart), ' trials, coordination metrics will not be calculated.']);
     return
 end
     
@@ -228,8 +239,11 @@ if (create_coordination_metrics_row_header)
     [ ~, tmp_coordination_metrics_row_header] = fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'A', 'B'});
     coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
 
-    % now sandwich all header elements between prefix and suffix
-    if ()
+    % now unconditionally sandwich all header items between prefix_string and
+    % suffix_string
+    n_columns = length(coordination_metrics_row_header);
+    for i_header_column = 1 : length(coordination_metrics_row_header)
+        coordination_metrics_row_header{i_header_column} = [prefix_string, coordination_metrics_row_header{i_header_column}, suffix_string];
     end
 
 end
