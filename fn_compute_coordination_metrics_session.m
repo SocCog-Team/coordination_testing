@@ -4,6 +4,16 @@ function [ coordination_metrics_struct, coordination_metrics_row, coordination_m
 %   only for a single session and expects to get the data passed in instead
 %   of being passed a (list of) file name(s) for the data set(s)
 
+% TODO:
+%   change to take in a list of trial indices and just calculate and return
+%   header and data for that set, also allow to pass in a common suffic
+%   string to make sure the header fields can be made unique, that also
+%   allows to get rid of the special casing of the invisibility trials and
+%   will return the exact same measures for each subset.
+%
+%   also calculate and return the coordination measures for the confederate
+%   case, so based on the confederates choices
+
 
 coordination_metrics_row = [];
 coordination_metrics_row_header = {};
@@ -66,6 +76,13 @@ sideTEblock2 = {};
 averageRewardBlock = {}; % average reward of two players
 deltaRewardBlock = {};   % non-random reward component of each player
 deltaSignifBlock = {};   % significance of non-random reward components
+
+shareOwnChoicesBlock_A = {};
+shareLeftChoicesBlock_A = {};
+
+shareOwnChoicesBlock_B = {};
+shareLeftChoicesBlock_B = {};
+
 coordStructBlock = cell(1, 3);   % outcomes of coordination tests
 
 blockBorder = {};
@@ -105,6 +122,11 @@ averageRewardBlock = NaN(1, 3);
 deltaRewardBlock = NaN(1, 3);
 deltaSignifBlock = NaN(1, 3);
 
+shareOwnChoicesBlock_A = NaN(1, 3);
+shareLeftChoicesBlock_A = NaN(1, 3);
+shareOwnChoicesBlock_B = NaN(1, 3);
+shareLeftChoicesBlock_B = NaN(1, 3);
+
 blockBorder = zeros(1, 2);
 
 
@@ -117,7 +139,7 @@ testIndices = fistTestIndex:nTrial;
 nTestIndices = length(testIndices);
 
 if isempty(testIndices)
-    disp(['fn_compute_coordination_metrics_session: found less than', num2str(cfg.minStationarySegmentStart), ' trials, coordination metrics will not be calculated.']);
+    disp(['fn_compute_coordination_metrics_session: found less than ', num2str(cfg.minStationarySegmentStart), ' trials, coordination metrics will not be calculated.']);
     return
 end
     
@@ -246,6 +268,11 @@ for iBlock = 1:nBlock
         
         coordStructBlock{1, iBlock} = ...
             check_coordination(isOwnChoiceArray(:,index), sideChoiceArray(:,index), cfg.check_coordination_alpha);
+        
+        shareOwnChoicesBlock_A(1, iBlock) = mean(isOwnChoiceArray(1, index), 2);
+        shareLeftChoicesBlock_A(1, iBlock) = mean(sideChoiceArray(1, index), 2);
+        shareOwnChoicesBlock_B(1, iBlock) = mean(isOwnChoiceArray(2, index), 2);
+        shareLeftChoicesBlock_B(1, iBlock) = mean(sideChoiceArray(2, index), 2);
     end
 end
 
@@ -262,6 +289,10 @@ sessionMetrics_by_visibilty_blocks.sideTEblock2 = sideTEblock2;
 sessionMetrics_by_visibilty_blocks.averageRewardBlock = averageRewardBlock;
 sessionMetrics_by_visibilty_blocks.deltaRewardBlock = deltaRewardBlock;
 sessionMetrics_by_visibilty_blocks.deltaSignifBlock = deltaSignifBlock;
+sessionMetrics_by_visibilty_blocks.shareOwnChoicesBlock_A = shareOwnChoicesBlock_A;
+sessionMetrics_by_visibilty_blocks.shareLeftChoicesBlock_A = shareLeftChoicesBlock_A;
+sessionMetrics_by_visibilty_blocks.shareOwnChoicesBlock_B = shareOwnChoicesBlock_B;
+sessionMetrics_by_visibilty_blocks.shareLeftChoicesBlock_B = shareLeftChoicesBlock_B;
 %sessionMetrics_by_visibilty_blocks.coordination_struct_block = coordStructBlock;
 
 
