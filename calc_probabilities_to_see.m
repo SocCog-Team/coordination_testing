@@ -25,6 +25,9 @@ function [ pSee, sigmoid_struct ] = calc_probabilities_to_see( reactionTime, min
     minDRT = 50;
     pSee = calc_probabilities_to_see(initialFixationTime, minDRT);
 %}
+
+%function pSee = calc_probabilities_to_see(reactionTime, minDRT)
+
 k = 0.04; % set the slope of the logistic curve
 % smaller k - smooth transition, higher k - abrupt transition
 

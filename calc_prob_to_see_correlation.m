@@ -22,6 +22,8 @@ isOtherChoice = 1 - isOwnChoice;
 [rValue2,pValue2] = corrcoef(pSee(2,:)', isOtherChoice(2,:)');
 corrCoefValue = [rValue1(2,1), rValue2(2,1)];
 corrPValue = [pValue1(2,1), pValue2(2,1)];
+corrCoefValue(isnan(corrCoefValue))=0;
+corrPValue(isnan(corrPValue))=0;
 
 pSeeAveraged = movmean(pSee, windowSize, 2);
 pSelectOther = movmean(isOtherChoice, windowSize, 2);
@@ -30,3 +32,5 @@ pSelectOther = movmean(isOtherChoice, windowSize, 2);
 [rValue2,pValue2] = corrcoef(pSeeAveraged(2,:)', pSelectOther(2,:)');
 corrCoefAveraged = [rValue1(2,1), rValue2(2,1)];
 corrPValueAveraged = [pValue1(2,1), pValue2(2,1)];
+corrCoefAveraged(isnan(corrCoefAveraged))=0;
+corrPValueAveraged(isnan(corrPValueAveraged))=0;

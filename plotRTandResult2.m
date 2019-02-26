@@ -95,16 +95,16 @@ SMCuriusFilenames = {...
     'DATA_20180423T162330.A_SM.B_Curius.SCP_01.triallog.A.SM.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
     };
 
-needToPlotSigmoid = 1;
-fileArray = flaffusCuriusConfederateFilenames;
+needToPlotSigmoid = 0;
+%fileArray = flaffusCuriusConfederateFilenames;
 %fileArray = flaffusCuriusNaiveFilenames;
-imageNameBase = 'FlaffusCurius_PseeAndChoice';
+%imageNameBase = 'FlaffusCurius_PseeAndChoice';
 
 %fileArray = humanTransparentPairFilenames;
 %imageNameBase = 'human_PseeAndChoice';
 
-%fileArray = SMFlaffusFilenames;
-%imageNameBase = 'SM_Flaffus';
+fileArray = SMFlaffusFilenames;
+imageNameBase = 'SM_Flaffus';
 
 %fileArray = SMTeslaFilenames;
 %imageNameBase = 'Tesla_SM';
@@ -186,7 +186,7 @@ print ( '-dpng', '-r600', 'TouchPanelTimeDifference.png');
 %% joint picture
 allOwnChoice = [];
 allInitialFixationTime = [];
-for i = length(fileArray)-5:length(fileArray)
+for i = length(fileArray)-6:length(fileArray)
     fullname = [folder '\' fileArray{i} '.mat'];
     load(fullname);
     
@@ -198,10 +198,9 @@ for i = length(fileArray)-5:length(fileArray)
 end
 
 minDRT = 50;
-pSee = computeProbabilitiesToSee(allInitialFixationTime, minDRT);
-    
-imageName = 'FlaffusCuriusNaive6last';
-plotProbabilitiesToSee(pSee, allOwnChoice, imageName, needToPlotSigmoid);
+%pSee = computeProbabilitiesToSee(allInitialFixationTime, minDRT);
+imageName = 'FlaffusCuriusNaive7last';
+plotProbabilitiesToSee(allInitialFixationTime, allOwnChoice, imageName, needToPlotSigmoid);
 
 
 %%
