@@ -284,6 +284,7 @@ per_trial.pSee_TargAcq = calc_probabilities_to_see(targetAcquisitionTime, cfg.mi
 % the probability to select the other's target is the inverse of selecting
 % the preferred target
 per_trial.full_isOtherChoice = 1 - full_isOwnChoiceArray;
+per_trial.isOtherChoice = 1 - isOwnChoiceArray;
 cfg.pSee_windowSize = 8;
 % these go to the 
 [sessionMetrics.IniTargRel_corrCoefValue, sessionMetrics.IniTargRel_corrPValue, sessionMetrics.IniTargRel_corrCoefAveraged, sessionMetrics.IniTargRel_corrPValueAveraged] ...
