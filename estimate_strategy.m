@@ -25,6 +25,7 @@ shortStrategy = zeros(2, nCol);
 
 if isempty(rowIndex) && isempty(colIndex)
    disp('Could not compute staretgy entries, too few trials in selected subset?');
+   strategy = [];
    return
 end
 
