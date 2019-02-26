@@ -8,12 +8,13 @@ function [ coordination_metrics_struct, coordination_metrics_row, coordination_m
 %   suffix
 
 % TODO:
-%   if trial_index, prefix_string, suffix_string are cell arrays, loop over
-%   the elements and create and concatenate all sets.
-%   Allow manual override of the stationarySegmentLength, minStationarySegmentStart
-%   logic to use the full supplied index...
+%   if trial_index, use_all_trials, prefix_string, suffix_string are cell 
+%   arrays, loop over the elements and create and concatenate all sets.
 %   Calculate and return the coordination measures for the confederate
-%   case, so based on the confederates choices
+%   case, so based on the confederates choices is that possible?
+%   Add the calculation of correlation between chance to follow and RT
+%   difference
+%   Add the average rewrad for by RTdiff (for faster and slower player, test by fisher exact test)
 
 % DONE:
 %   change to take in a list of trial indices and just calculate and return
@@ -21,6 +22,8 @@ function [ coordination_metrics_struct, coordination_metrics_row, coordination_m
 %   string to make sure the header fields can be made unique, that also
 %   allows to get rid of the special casing of the invisibility trials and
 %   will return the exact same measures for each subset.
+%   Allow manual override of the stationarySegmentLength, minStationarySegmentStart
+%   logic to use the full supplied index...
 %   
 
 
@@ -51,7 +54,14 @@ coordination_metrics_struct = struct();
 isTrialVisible = PerTrialStruct.isTrialInvisible_AB(trial_index)';
 
 % reduce the data to the indexed subset
+intialTargetReleaseTime = [PerTrialStruct.A_InitialTargetReleaseRT(trial_index)'; PerTrialStruct.B_InitialTargetReleaseRT(trial_index)'];
 targetAcquisitionTime = [PerTrialStruct.A_TargetAcquisitionRT(trial_index)'; PerTrialStruct.B_TargetAcquisitionRT(trial_index)'];
+
+RewardByTrial = [PerTrialStruct.RewardByTrial_A(trial_index)'; PerTrialStruct.RewardByTrial_B(trial_index)'];
+
+full_isOwnChoiceArray = isOwnChoiceArray;
+full_sideChoiceArray = sideChoiceArray;
+
 isOwnChoiceArray = isOwnChoiceArray(:, trial_index);
 sideChoiceArray = sideChoiceArray(:, trial_index);
 
@@ -74,7 +84,13 @@ sideChoiceArray = sideChoiceArray(:, trial_index);
 %     'dltConfInterval', {}, ...
 %     'shareOwnChoices', {}, ...
 %     'shareLeftChoices', {}, ...
-%     'shareJointChoices', {});
+%     'shareJointChoices', {}, ...
+%     'avgRewardFasterIniTargRel', {}, ...
+%     'avgRewardSlowerIniTargRel', {}, ...
+%     'avgRewardFasterTargAcq', {}, ...
+%     'avgRewardSlowerTargAcq', {}, ...
+%      );
+
 
 % strategy - probability to select own target given the state, incorporating
 % previous outcome, current stimuli location and current partner's choice (if visible)
@@ -101,6 +117,26 @@ sessionMetrics.dltConfInterval = NaN(2, 1);
 sessionMetrics.shareOwnChoices = NaN(2, 1);
 sessionMetrics.shareLeftChoices = NaN(2, 1);
 sessionMetrics.shareJointChoices = NaN(1, 1);
+% to get a handle on whether the faster player earned more reward
+sessionMetrics.avgRewardFasterIniTargRel = NaN(1, 1);
+sessionMetrics.avgRewardSlowerIniTargRel = NaN(1, 1);
+sessionMetrics.avgRewardByIniTargRelDiffSignif = NaN(1, 1);
+sessionMetrics.avgRewardFasterTargAcq = NaN(1, 1);
+sessionMetrics.avgRewardSlowerTargAcq = NaN(1, 1);
+sessionMetrics.avgRewardByTargAcqDiffSignif = NaN(1, 1);
+
+% for the correlation between seeing the other's action and selecting the
+% others target
+sessionMetrics.IniTargRel_corrCoefValue = NaN(2, 1);
+sessionMetrics.IniTargRel_corrPValue = NaN(2, 1);
+sessionMetrics.IniTargRel_corrCoefAveraged = NaN(2, 1);
+sessionMetrics.IniTargRel_corrPValueAveraged = NaN(2, 1);
+
+sessionMetrics.TargAcq_corrCoefValue = NaN(2, 1);
+sessionMetrics.TargAcq_corrPValue = NaN(2, 1);
+sessionMetrics.TargAcq_corrCoefAveraged = NaN(2, 1);
+sessionMetrics.TargAcq_corrPValueAveraged = NaN(2, 1);
+
 
 
 
@@ -131,7 +167,7 @@ end
 % estimate strategy over equilibrium trials
 % this analysis results in the strategy description vectors used in the
 % transparent games simulations.
-[playerStrategy, playerNStateVisit] = ...
+[playerStrategy, playerShortStrategy, playerNStateVisit] = ...
     estimate_strategy(isOwnChoiceArray(:, testIndices), sideChoiceArray(:,testIndices), targetAcquisitionTime(:,testIndices), cfg.minDRT);
 
 strategy_struct.playerStrategy = playerStrategy;
@@ -170,6 +206,46 @@ teValue1 = calc_transfer_entropy(y, x, cfg.memoryLength, nTestIndices);
 teValue2 = calc_transfer_entropy(x, y, cfg.memoryLength, nTestIndices);
 sessionMetrics.teSide(:) = [teValue1(1); teValue2(1)];
 
+
+
+% get an handle on the advantage of being faster (ignore the equally fast case here)
+IniTargRel_A_faster_idx = find(intialTargetReleaseTime(1,:) > intialTargetReleaseTime(2,:));
+IniTargRel_B_faster_idx = find(intialTargetReleaseTime(1,:) < intialTargetReleaseTime(2,:));
+IniTargRel_A_slower_idx = IniTargRel_B_faster_idx;
+IniTargRel_B_slower_idx = IniTargRel_A_faster_idx;
+% collect for each trial the amount of reward earne by the faster and the
+% slower agent
+RewardByFasterIniTargRelList = [RewardByTrial(1, IniTargRel_A_faster_idx), RewardByTrial(2, IniTargRel_B_faster_idx)];
+RewardBySlowerIniTargRelList = [RewardByTrial(1, IniTargRel_A_slower_idx), RewardByTrial(2, IniTargRel_B_slower_idx)];
+% now find the number of 4s in each set
+cont_table = [length(find(RewardByFasterIniTargRelList == 4)), length(RewardByFasterIniTargRelList); length(find(RewardBySlowerIniTargRelList == 4)), length(RewardBySlowerIniTargRelList)];
+[fet_h, fet_p, fet_stats] = fishertest(cont_table, 'Alpha', cfg.pValueForFisherExactTests, 'Tail', 'both');
+
+sessionMetrics.avgRewardFasterIniTargRel = nanmean(RewardByFasterIniTargRelList);
+sessionMetrics.avgRewardSlowerIniTargRel = nanmean(RewardBySlowerIniTargRelList);
+sessionMetrics.avgRewardByIniTargRelDiffSignif = fet_p;
+
+
+TargAcq_A_faster_idx = find(targetAcquisitionTime(1,:) > targetAcquisitionTime(2,:));
+TargAcq_B_faster_idx = find(targetAcquisitionTime(1,:) < targetAcquisitionTime(2,:));
+TargAcq_A_slower_idx = TargAcq_B_faster_idx;
+TargAcq_B_slower_idx = TargAcq_A_faster_idx;
+% collect for each trial the amount of reward earne by the faster and the
+% slower agent
+RewardByFasterTargAcqList = [RewardByTrial(1, TargAcq_A_faster_idx), RewardByTrial(2, TargAcq_B_faster_idx)];
+RewardBySlowerTargAcqList = [RewardByTrial(1, TargAcq_A_slower_idx), RewardByTrial(2, TargAcq_B_slower_idx)];
+
+% now find the number of 4s in each set
+cont_table = [length(find(RewardByFasterTargAcqList == 4)), length(RewardByFasterTargAcqList); length(find(RewardBySlowerTargAcqList == 4)), length(RewardBySlowerTargAcqList)];
+[fet_h, fet_p, fet_stats] = fishertest(cont_table, 'Alpha', cfg.pValueForFisherExactTests, 'Tail', 'both');
+
+
+sessionMetrics.avgRewardFasterTargAcq = nanmean(RewardByFasterTargAcqList);
+sessionMetrics.avgRewardSlowerTargAcq = nanmean(RewardBySlowerTargAcqList);
+sessionMetrics.avgRewardByTargAcqDiffSignif = fet_p;
+
+
+
 % perform coordination tests.
 % To simplify visual inspection, results of all tests are qathered in single table
 coordStruct = ...
@@ -177,6 +253,9 @@ coordStruct = ...
 
 
 %%% THE FOLLOWING SHOULD MOVE OUT INTO the caller, as this is showing per
+
+% NOTE WE ONLY CALCULATE THIS FOR THE CURRENT TRIAL SUBSET
+
 %%% trial data instead of per session aggregates
 % compute MI and TE, as well as local MI and TE in windows
 x = isOwnChoiceArray(1, :);
@@ -198,6 +277,20 @@ per_trial.localTargetTE1 = localTargetTE1;
 per_trial.localTargetTE2 = localTargetTE2;
 per_trial.mutualInf = mutualInf;
 per_trial.locMutualInf = locMutualInf;
+% now calculate and add the probability to see the other curves here
+% do this for all trials
+per_trial.pSee_iniTargRel = calc_probabilities_to_see(intialTargetReleaseTime, cfg.minDRT);
+per_trial.pSee_TargAcq = calc_probabilities_to_see(targetAcquisitionTime, cfg.minDRT);
+% the probability to select the other's target is the inverse of selecting
+% the preferred target
+per_trial.full_isOtherChoice = 1 - full_isOwnChoiceArray;
+cfg.pSee_windowSize = 8;
+% these go to the 
+[sessionMetrics.IniTargRel_corrCoefValue, sessionMetrics.IniTargRel_corrPValue, sessionMetrics.IniTargRel_corrCoefAveraged, sessionMetrics.IniTargRel_corrPValueAveraged] ...
+    = calc_prob_to_see_correlation(per_trial.pSee_iniTargRel, isOwnChoiceArray, cfg.pSee_windowSize);
+
+[sessionMetrics.TargAcq_corrCoefValue, sessionMetrics.TargAcq_corrPValue, sessionMetrics.TargAcq_corrCoefAveraged, sessionMetrics.TargAcq_corrPValueAveraged] ...
+    = calc_prob_to_see_correlation(per_trial.pSee_TargAcq, isOwnChoiceArray, cfg.pSee_windowSize);
 %%% THE PRECEEDING SHOULD MOVE OUT
 
 
@@ -208,6 +301,7 @@ coordination_metrics_struct.strategy_struct = strategy_struct;
 coordination_metrics_struct.sessionMetrics = sessionMetrics;
 coordination_metrics_struct.coordination_struct = coordStruct;
 coordination_metrics_struct.per_trial = per_trial;
+coordination_metrics_struct.info_struct = info_struct;
 
 
 
