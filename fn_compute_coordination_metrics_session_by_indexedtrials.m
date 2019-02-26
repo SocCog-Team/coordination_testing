@@ -293,7 +293,7 @@ pSee_iniTargRel.corrCoefValue = sessionMetrics.IniTargRel_corrCoefValue;
 pSee_iniTargRel.corrPValue = sessionMetrics.IniTargRel_corrPValue;
 pSee_iniTargRel.corrCoefAveraged = sessionMetrics.IniTargRel_corrCoefAveraged;
 pSee_iniTargRel.corrPValueAveraged = sessionMetrics.IniTargRel_corrPValueAveraged;
-per_trial.pSee_iniTargRel = pSee_iniTargRel;
+per_trial.pSee_iniTargRel_Cor = pSee_iniTargRel;
 
 [sessionMetrics.TargAcq_corrCoefValue, sessionMetrics.TargAcq_corrPValue, sessionMetrics.TargAcq_corrCoefAveraged, sessionMetrics.TargAcq_corrPValueAveraged] ...
     = calc_prob_to_see_correlation(per_trial.pSee_TargAcq, isOwnChoiceArray, cfg.pSee_windowSize);
@@ -301,7 +301,7 @@ pSee_TargAcq.corrCoefValue = sessionMetrics.IniTargRel_corrCoefValue;
 pSee_TargAcq.corrPValue = sessionMetrics.IniTargRel_corrPValue;
 pSee_TargAcq.corrCoefAveraged = sessionMetrics.IniTargRel_corrCoefAveraged;
 pSee_TargAcq.corrPValueAveraged = sessionMetrics.IniTargRel_corrPValueAveraged;
-per_trial.pSee_TargAcq = pSee_TargAcq;
+per_trial.pSee_TargAcq_Cor = pSee_TargAcq;
 
 
 %%% THE PRECEEDING SHOULD MOVE OUT
