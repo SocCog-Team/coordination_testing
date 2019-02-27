@@ -277,6 +277,7 @@ per_trial.localTargetTE1 = localTargetTE1;
 per_trial.localTargetTE2 = localTargetTE2;
 per_trial.mutualInf = mutualInf;
 per_trial.locMutualInf = locMutualInf;
+
 % now calculate and add the probability to see the other curves here
 % do this for all trials
 per_trial.pSee_iniTargRel = calc_probabilities_to_see(intialTargetReleaseTime, cfg.minDRT);
@@ -297,10 +298,10 @@ per_trial.pSee_iniTargRel_Cor = pSee_iniTargRel;
 
 [sessionMetrics.TargAcq_corrCoefValue, sessionMetrics.TargAcq_corrPValue, sessionMetrics.TargAcq_corrCoefAveraged, sessionMetrics.TargAcq_corrPValueAveraged] ...
     = calc_prob_to_see_correlation(per_trial.pSee_TargAcq, isOwnChoiceArray, cfg.pSee_windowSize);
-pSee_TargAcq.corrCoefValue = sessionMetrics.IniTargRel_corrCoefValue;
-pSee_TargAcq.corrPValue = sessionMetrics.IniTargRel_corrPValue;
-pSee_TargAcq.corrCoefAveraged = sessionMetrics.IniTargRel_corrCoefAveraged;
-pSee_TargAcq.corrPValueAveraged = sessionMetrics.IniTargRel_corrPValueAveraged;
+pSee_TargAcq.corrCoefValue = sessionMetrics.TargAcq_corrCoefValue;
+pSee_TargAcq.corrPValue = sessionMetrics.TargAcq_corrPValue;
+pSee_TargAcq.corrCoefAveraged = sessionMetrics.TargAcq_corrCoefAveraged;
+pSee_TargAcq.corrPValueAveraged = sessionMetrics.TargAcq_corrPValueAveraged;
 per_trial.pSee_TargAcq_Cor = pSee_TargAcq;
 
 
