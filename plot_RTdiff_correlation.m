@@ -70,7 +70,7 @@ allOwnChoice = [];
 allInitialFixationTime = [];
 nSession = 5;
 sessionBorderFlaffusCuriusNaive = zeros(1, nSession);
-iSession = 2;
+iSession = 2; %index of the first session for which the border is computed (for the 1st it is 0)
 for i = nFlaffusCuriusNaive-nSession+1:nFlaffusCuriusNaive
     fullname = [folder '\' flaffusCuriusNaiveFilenames{i} '.mat'];
     load(fullname);
