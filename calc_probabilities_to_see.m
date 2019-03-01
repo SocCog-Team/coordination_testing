@@ -1,13 +1,14 @@
+function [ pSee, sigmoid_struct ] = calc_probabilities_to_see( reactionTime, minDRT )
 % calc_probabilitiesToSee computes probabilities to see partner choice for
 % the two players given their reaction times (RT). For this RT difference
 % is computed and then mapped to [0,1] interval by means of logistic curve
 %
 % INPUT
-%   - reactionTime - 2xN array of players reaction times in ms 
-%   - minDRT - the turning point of logistic curve in ms 
+%   - reactionTime - 2xN array of players reaction times in ms
+%   - minDRT - the turning point of logistic curve in ms
 % OUTPUT:
 %   - pSee - 2xN array of probabilities to see partner's choice
-% EXAMPLE of use 
+% EXAMPLE of use
 %{
     % load the data file
     ispc = 1;
@@ -24,11 +25,11 @@
     minDRT = 50;
     pSee = calc_probabilities_to_see(initialFixationTime, minDRT);
 %}
+
 %function pSee = calc_probabilities_to_see(reactionTime, minDRT)
-function pSee = calc_probabilities_to_see(reactionTime)
-minDRT = 50;
+
 k = 0.04; % set the slope of the logistic curve
-          % smaller k - smooth transition, higher k - abrupt transition   
+% smaller k - smooth transition, higher k - abrupt transition
 
 nTrial = length(reactionTime);
 dRT = reactionTime(1,:) - reactionTime(2,:); % compute RT difference
@@ -39,3 +40,12 @@ pSeeBothPlayers =  1./(1 + exp(-k*(absDRT - minDRT)));
 pSee = zeros(2, nTrial);
 pSee(1,player1SeesIndex) = pSeeBothPlayers(player1SeesIndex);
 pSee(2,player2SeesIndex) = pSeeBothPlayers(player2SeesIndex);
+
+% in case one requres to document the parameters somewhere
+sigmoid_struct.slope = k;
+sigmoid_struct.min = 0;
+sigmoid_struct.max = 1;
+sigmoid_struct.turning_point = minDRT;
+
+return
+end
