@@ -8,13 +8,14 @@ function [ coordination_metrics_struct, coordination_metrics_row, coordination_m
 %   suffix
 
 % TODO:
-%   if trial_index, use_all_trials, prefix_string, suffix_string are cell 
+%   if trial_index, use_all_trials, prefix_string, suffix_string are cell
 %   arrays, loop over the elements and create and concatenate all sets.
 %   Calculate and return the coordination measures for the confederate
 %   case, so based on the confederates choices is that possible?
 %   Add the calculation of correlation between chance to follow and RT
 %   difference
 %   Add the average rewrad for by RTdiff (for faster and slower player, test by fisher exact test)
+%   Add the trial sums for all 4 choice combinations
 
 % DONE:
 %   change to take in a list of trial indices and just calculate and return
@@ -24,7 +25,7 @@ function [ coordination_metrics_struct, coordination_metrics_row, coordination_m
 %   will return the exact same measures for each subset.
 %   Allow manual override of the stationarySegmentLength, minStationarySegmentStart
 %   logic to use the full supplied index...
-%   
+%
 
 
 % use the following two to decorate all variable names for the coordination_metrics_row_header
@@ -137,19 +138,28 @@ sessionMetrics.TargAcq_corrPValue = NaN(2, 1);
 sessionMetrics.TargAcq_corrCoefAveraged = NaN(2, 1);
 sessionMetrics.TargAcq_corrPValueAveraged = NaN(2, 1);
 
-
-
+% report some counts for the subsets
+sessionMetrics.nARBR = NaN(1, 1);
+sessionMetrics.nARBL = NaN(1, 1);
+sessionMetrics.nALBR = NaN(1, 1);
+sessionMetrics.nALBL = NaN(1, 1);
+sessionMetrics.nAredBred = NaN(1, 1);
+sessionMetrics.nAredByel = NaN(1, 1);
+sessionMetrics.nAyelBred = NaN(1, 1);
+sessionMetrics.nAyelByel = NaN(1, 1);
+sessionMetrics.nCoordinated = NaN(1, 1);
+sessionMetrics.nNoncoordinated = NaN(1, 1);
 
 % analyse all sessions for the given players pair
 
 % here we consider only equilibrium (stabilized) values
 nTrial = length(isOwnChoiceArray);
-if ~(use_all_trials)    
-    firstTestIndex = max(cfg.minStationarySegmentStart, nTrial-cfg.stationarySegmentLength);       
+if ~(use_all_trials)
+    firstTestIndex = max(cfg.minStationarySegmentStart, nTrial-cfg.stationarySegmentLength);
 else
     firstTestIndex = 1;
 end
-testIndices = firstTestIndex:nTrial; 
+testIndices = firstTestIndex:nTrial;
 nTestIndices = length(testIndices);
 
 % add information about the number of analyzed trials to the output
@@ -158,12 +168,30 @@ info_struct.nTrials = nTrial;
 info_struct.firstTestIndex = firstTestIndex;
 info_struct.nTestIndices = nTestIndices;
 
-
 if isempty(testIndices)
     disp([mfilename, ': found less than ', num2str(cfg.minStationarySegmentStart), ' trials, coordination metrics will not be calculated.']);
     return
 end
-    
+
+
+% report some counts for the subsets
+% objective sides
+sessionMetrics.nARBR = length(find((sideChoiceArray(1, testIndices) == 0) & (sideChoiceArray(2, testIndices) == 0)));
+sessionMetrics.nARBL = length(find((sideChoiceArray(1, testIndices) == 0) & (sideChoiceArray(2, testIndices) == 1)));
+sessionMetrics.nALBR = length(find((sideChoiceArray(1, testIndices) == 1) & (sideChoiceArray(2, testIndices) == 0)));
+sessionMetrics.nALBL = length(find((sideChoiceArray(1, testIndices) == 1) & (sideChoiceArray(2, testIndices) == 1)));
+% value/color
+sessionMetrics.nAredBred = length(find((isOwnChoiceArray(1, testIndices) == 1) & (isOwnChoiceArray(2, testIndices) == 0)));
+sessionMetrics.nAredByel = length(find((isOwnChoiceArray(1, testIndices) == 1) & (isOwnChoiceArray(2, testIndices) == 1)));
+sessionMetrics.nAyelBred = length(find((isOwnChoiceArray(1, testIndices) == 0) & (isOwnChoiceArray(2, testIndices) == 0)));
+sessionMetrics.nAyelByel = length(find((isOwnChoiceArray(1, testIndices) == 0) & (isOwnChoiceArray(2, testIndices) == 1)));
+% coordination
+sessionMetrics.nCoordinated = length(find(isOwnChoiceArray(1, testIndices) ~= isOwnChoiceArray(2, testIndices)));
+sessionMetrics.nNoncoordinated = length(find(isOwnChoiceArray(1, testIndices) == isOwnChoiceArray(2, testIndices)));
+
+
+
+
 % estimate strategy over equilibrium trials
 % this analysis results in the strategy description vectors used in the
 % transparent games simulations.
@@ -287,7 +315,7 @@ per_trial.pSee_TargAcq = calc_probabilities_to_see(targetAcquisitionTime, cfg.mi
 per_trial.full_isOtherChoice = 1 - full_isOwnChoiceArray;
 per_trial.isOtherChoice = 1 - isOwnChoiceArray;
 cfg.pSee_windowSize = 8;
-% these go to the 
+% these go to the
 [sessionMetrics.IniTargRel_corrCoefValue, sessionMetrics.IniTargRel_corrPValue, sessionMetrics.IniTargRel_corrCoefAveraged, sessionMetrics.IniTargRel_corrPValueAveraged] ...
     = calc_prob_to_see_correlation(per_trial.pSee_iniTargRel, isOwnChoiceArray, cfg.pSee_windowSize);
 pSee_iniTargRel.corrCoefValue = sessionMetrics.IniTargRel_corrCoefValue;
@@ -326,20 +354,20 @@ if (linearize_coordination_metrics_struct)
     % TrialsInCurrentSetIdx can not be naively linearized (unequal length) so remove it
     fieldnames_to_remove_list = {'TrialsInCurrentSetIdx'}; % add all fields that should not be linearized to this list
     tmp_cfg = rmfield(cfg, fieldnames_to_remove_list);
-    coordination_metrics_row = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});     
+    coordination_metrics_row = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});
     coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(info_struct, 'add_suffix_to_all_columns', {'_info'})];
-    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(sessionMetrics, 'add_suffix', {'_A', '_B'})];   
-    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'_A', '_B'})];     
+    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(sessionMetrics, 'add_suffix', {'_A', '_B'})];
+    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'_A', '_B'})];
 end
 
 if (create_coordination_metrics_row_header)
     % the cfg variables
-    [~, coordination_metrics_row_header] = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});     
+    [~, coordination_metrics_row_header] = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});
     %coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
-
-    [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(info_struct, 'add_suffix_to_all_columns', {'_info'});     
+    
+    [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(info_struct, 'add_suffix_to_all_columns', {'_info'});
     coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
-
+    
     
     [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics, 'add_suffix', {'_A', '_B'});
     % fix up some column names...
@@ -350,13 +378,13 @@ if (create_coordination_metrics_row_header)
     % the coordStruct
     [ ~, tmp_coordination_metrics_row_header] = fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'_A', '_B'});
     coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
-
+    
     % now unconditionally sandwich all header items between prefix_string and
     % suffix_string
     for i_header_column = 1 : length(coordination_metrics_row_header)
         coordination_metrics_row_header{i_header_column} = [prefix_string, coordination_metrics_row_header{i_header_column}, suffix_string];
     end
-
+    
 end
 
 return
@@ -392,11 +420,11 @@ for i_field = 1 : length(field_list)
             % is scalar value, just grab value and name
             data_row(end + 1) = current_data;
             if (convert_fieldnames_2_column_names)
-               
+                
                 if strcmp(list_handling_command, 'add_suffix_to_all_columns')
-                     header_list{end + 1} = [field_list{i_field}, list_suffix_list{1}];
+                    header_list{end + 1} = [field_list{i_field}, list_suffix_list{1}];
                 else
-                     header_list{end + 1} = field_list{i_field};
+                    header_list{end + 1} = field_list{i_field};
                 end
             end
         else
@@ -424,7 +452,7 @@ for i_field = 1 : length(field_list)
                         end
                     else
                         error(['Encountered data item with more elements than suffixes supplied in list_suffix_list, fix this.']);
-                    end                    
+                    end
                     
                     
                 otherwise
