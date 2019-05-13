@@ -30,10 +30,10 @@ function [ coordination_metrics_struct, coordination_metrics_row, coordination_m
 
 % use the following two to decorate all variable names for the coordination_metrics_row_header
 if ~exist('prefix_string', 'var') || isempty(prefix_string)
-    prefix_string = '';
+	prefix_string = '';
 end
 if ~exist('suffix_string', 'var') || isempty(suffix_string)
-    suffix_string = '';
+	suffix_string = '';
 end
 
 
@@ -43,11 +43,11 @@ linearize_coordination_metrics_struct = 0;
 info_struct = struct();
 
 if nargout > 1
-    linearize_coordination_metrics_struct = 1;
-    structs_to_linearize_list = {'sessionMetrics', 'coordination_struct', 'info_struct'};
+	linearize_coordination_metrics_struct = 1;
+	structs_to_linearize_list = {'sessionMetrics', 'coordination_struct', 'info_struct'};
 end
 if nargout > 2
-    create_coordination_metrics_row_header = 1;
+	create_coordination_metrics_row_header = 1;
 end
 
 coordination_metrics_struct = struct();
@@ -166,9 +166,9 @@ sessionMetrics.nNoncoordinated = NaN(1, 1);
 % here we consider only equilibrium (stabilized) values
 nTrial = length(isOwnChoiceArray);
 if ~(use_all_trials)
-    firstTestIndex = max(cfg.minStationarySegmentStart, nTrial-cfg.stationarySegmentLength);
+	firstTestIndex = max(cfg.minStationarySegmentStart, nTrial-cfg.stationarySegmentLength);
 else
-    firstTestIndex = 1;
+	firstTestIndex = 1;
 end
 testIndices = firstTestIndex:nTrial;
 nTestIndices = length(testIndices);
@@ -180,8 +180,8 @@ info_struct.firstTestIndex = firstTestIndex;
 info_struct.nTestIndices = nTestIndices;
 
 if isempty(testIndices)
-    disp([mfilename, ': found less than ', num2str(cfg.minStationarySegmentStart), ' trials, coordination metrics will not be calculated.']);
-    return
+	disp([mfilename, ': found less than ', num2str(cfg.minStationarySegmentStart), ' trials, coordination metrics will not be calculated.']);
+	return
 end
 
 
@@ -207,10 +207,10 @@ sessionMetrics.nNoncoordinated = length(find(isOwnChoiceArray(1, testIndices) ==
 % this analysis results in the strategy description vectors used in the
 % transparent games simulations.
 [playerStrategy, playerShortStrategy, playerNStateVisit] = ...
-    estimate_strategy(isOwnChoiceArray(:, testIndices), sideChoiceArray(:,testIndices), targetAcquisitionTime(:,testIndices), cfg.minDRT);
+	estimate_strategy(isOwnChoiceArray(:, testIndices), sideChoiceArray(:,testIndices), targetAcquisitionTime(:,testIndices), cfg.minDRT);
 
 [playerStrategy, playerShortStrategy, playerNStateVisit] = ...
-    estimate_strategy(isOwnChoiceArray(:, testIndices), sideChoiceArray(:,testIndices), IniTargRel_05MT_Time(:,testIndices), cfg.minDRT);
+	estimate_strategy(isOwnChoiceArray(:, testIndices), sideChoiceArray(:,testIndices), IniTargRel_05MT_Time(:,testIndices), cfg.minDRT);
 
 
 strategy_struct.playerStrategy = playerStrategy;
@@ -218,10 +218,10 @@ strategy_struct.playerNStateVisit = playerNStateVisit;
 
 
 [sessionMetrics.averReward, ...
-    sessionMetrics.dltReward, ...
-    sessionMetrics.dltSignif, ...
-    sessionMetrics.dltConfInterval(:)] = ...
-    calc_total_average_reward(isOwnChoiceArray(:,testIndices), sideChoiceArray(:,testIndices));
+	sessionMetrics.dltReward, ...
+	sessionMetrics.dltSignif, ...
+	sessionMetrics.dltConfInterval(:)] = ...
+	calc_total_average_reward(isOwnChoiceArray(:,testIndices), sideChoiceArray(:,testIndices));
 
 
 
@@ -232,8 +232,8 @@ sessionMetrics.playerReward(:) = 1 + sessionMetrics.shareOwnChoices(:) + 2*sessi
 x = isOwnChoiceArray(1, testIndices);
 y = isOwnChoiceArray(2, testIndices);
 [sessionMetrics.miTarget, ...
-    sessionMetrics.miTargetSignif, ...
-    sessionMetrics.miTargetThresh] = calc_whole_mutual_information(x, y, cfg.pValueForMI);
+	sessionMetrics.miTargetSignif, ...
+	sessionMetrics.miTargetThresh] = calc_whole_mutual_information(x, y, cfg.pValueForMI);
 teValue1 = calc_transfer_entropy(y, x, cfg.memoryLength, nTestIndices);
 teValue2 = calc_transfer_entropy(x, y, cfg.memoryLength, nTestIndices);
 sessionMetrics.teTarget(:) = [teValue1(1); teValue2(1)];
@@ -243,8 +243,8 @@ sessionMetrics.shareLeftChoices(:) = mean(sideChoiceArray(:, testIndices), 2);
 x = sideChoiceArray(1, testIndices);
 y = sideChoiceArray(2, testIndices);
 [sessionMetrics.miSide, ...
-    sessionMetrics.miSideSignif, ...
-    sessionMetrics.miSideThresh] = calc_whole_mutual_information(x, y, cfg.pValueForMI);
+	sessionMetrics.miSideSignif, ...
+	sessionMetrics.miSideThresh] = calc_whole_mutual_information(x, y, cfg.pValueForMI);
 teValue1 = calc_transfer_entropy(y, x, cfg.memoryLength, nTestIndices);
 teValue2 = calc_transfer_entropy(x, y, cfg.memoryLength, nTestIndices);
 sessionMetrics.teSide(:) = [teValue1(1); teValue2(1)];
@@ -312,7 +312,7 @@ sessionMetrics.avgRewardByIniTargRel_05MTDiffSignif = fet_p;
 % perform coordination tests.
 % To simplify visual inspection, results of all tests are qathered in single table
 coordStruct = ...
-    check_coordination(isOwnChoiceArray(:,testIndices), sideChoiceArray(:,testIndices));
+	check_coordination(isOwnChoiceArray(:,testIndices), sideChoiceArray(:,testIndices));
 
 
 %%% THE FOLLOWING SHOULD MOVE OUT INTO the caller, as this is showing per
@@ -354,7 +354,7 @@ per_trial.isOtherChoice = 1 - isOwnChoiceArray;
 cfg.pSee_windowSize = 8;
 % these go to the
 [sessionMetrics.IniTargRel_corrCoefValue, sessionMetrics.IniTargRel_corrPValue, sessionMetrics.IniTargRel_corrCoefAveraged, sessionMetrics.IniTargRel_corrPValueAveraged] ...
-    = calc_prob_to_see_correlation(per_trial.pSee_iniTargRel, isOwnChoiceArray, cfg.pSee_windowSize);
+	= calc_prob_to_see_correlation(per_trial.pSee_iniTargRel, isOwnChoiceArray, cfg.pSee_windowSize);
 pSee_iniTargRel.corrCoefValue = sessionMetrics.IniTargRel_corrCoefValue;
 pSee_iniTargRel.corrPValue = sessionMetrics.IniTargRel_corrPValue;
 pSee_iniTargRel.corrCoefAveraged = sessionMetrics.IniTargRel_corrCoefAveraged;
@@ -362,7 +362,7 @@ pSee_iniTargRel.corrPValueAveraged = sessionMetrics.IniTargRel_corrPValueAverage
 per_trial.pSee_iniTargRel_Cor = pSee_iniTargRel;
 
 [sessionMetrics.TargAcq_corrCoefValue, sessionMetrics.TargAcq_corrPValue, sessionMetrics.TargAcq_corrCoefAveraged, sessionMetrics.TargAcq_corrPValueAveraged] ...
-    = calc_prob_to_see_correlation(per_trial.pSee_TargAcq, isOwnChoiceArray, cfg.pSee_windowSize);
+	= calc_prob_to_see_correlation(per_trial.pSee_TargAcq, isOwnChoiceArray, cfg.pSee_windowSize);
 pSee_TargAcq.corrCoefValue = sessionMetrics.TargAcq_corrCoefValue;
 pSee_TargAcq.corrPValue = sessionMetrics.TargAcq_corrPValue;
 pSee_TargAcq.corrCoefAveraged = sessionMetrics.TargAcq_corrCoefAveraged;
@@ -371,7 +371,7 @@ per_trial.pSee_TargAcq_Cor = pSee_TargAcq;
 
 
 [sessionMetrics.IniTargRel_05MT_corrCoefValue, sessionMetrics.IniTargRel_05MT_corrPValue, sessionMetrics.IniTargRel_05MT_corrCoefAveraged, sessionMetrics.IniTargRel_05MT_corrPValueAveraged] ...
-    = calc_prob_to_see_correlation(per_trial.pSee_IniTargRel_05MT, isOwnChoiceArray, cfg.pSee_windowSize);
+	= calc_prob_to_see_correlation(per_trial.pSee_IniTargRel_05MT, isOwnChoiceArray, cfg.pSee_windowSize);
 pSee_IniTargRel_05MT.corrCoefValue = sessionMetrics.IniTargRel_05MT_corrCoefValue;
 pSee_IniTargRel_05MT.corrPValue = sessionMetrics.IniTargRel_05MT_corrPValue;
 pSee_IniTargRel_05MT.corrCoefAveraged = sessionMetrics.IniTargRel_05MT_corrCoefAveraged;
@@ -396,40 +396,40 @@ coordination_metrics_struct.info_struct = info_struct;
 %TODO:
 %   linearize the data and create a matching header
 if (linearize_coordination_metrics_struct)
-    % TrialsInCurrentSetIdx can not be naively linearized (unequal length) so remove it
-    fieldnames_to_remove_list = {'TrialsInCurrentSetIdx'}; % add all fields that should not be linearized to this list
-    tmp_cfg = rmfield(cfg, fieldnames_to_remove_list);
-    coordination_metrics_row = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});
-    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(info_struct, 'add_suffix_to_all_columns', {'_info'})];
-    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(sessionMetrics, 'add_suffix', {'_A', '_B'})];
-    coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'_A', '_B'})];
+	% TrialsInCurrentSetIdx can not be naively linearized (unequal length) so remove it
+	fieldnames_to_remove_list = {'TrialsInCurrentSetIdx'}; % add all fields that should not be linearized to this list
+	tmp_cfg = rmfield(cfg, fieldnames_to_remove_list);
+	coordination_metrics_row = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});
+	coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(info_struct, 'add_suffix_to_all_columns', {'_info'})];
+	coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(sessionMetrics, 'add_suffix', {'_A', '_B'})];
+	coordination_metrics_row = [coordination_metrics_row, fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'_A', '_B'})];
 end
 
 if (create_coordination_metrics_row_header)
-    % the cfg variables
-    [~, coordination_metrics_row_header] = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});
-    %coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
-    
-    [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(info_struct, 'add_suffix_to_all_columns', {'_info'});
-    coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
-    
-    
-    [~, tmp_coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics, 'add_suffix', {'_A', '_B'});
-    % fix up some column names...
-    tmp_coordination_metrics_row_header{(strcmp('dltConfInterval_A', tmp_coordination_metrics_row_header))} = 'dltConfInterval_Lower';
-    tmp_coordination_metrics_row_header{(strcmp('dltConfInterval_B', tmp_coordination_metrics_row_header))} = 'dltConfInterval_Upper';
-    coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
-    
-    % the coordStruct
-    [ ~, tmp_coordination_metrics_row_header] = fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'_A', '_B'});
-    coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
-    
-    % now unconditionally sandwich all header items between prefix_string and
-    % suffix_string
-    for i_header_column = 1 : length(coordination_metrics_row_header)
-        coordination_metrics_row_header{i_header_column} = [prefix_string, coordination_metrics_row_header{i_header_column}, suffix_string];
-    end
-    
+	% the cfg variables
+	[~, coordination_metrics_row_header] = fn_linearize_struct(tmp_cfg, 'add_suffix_to_all_columns', {'_cfg'});
+	%coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+	
+	[~, tmp_coordination_metrics_row_header] = fn_linearize_struct(info_struct, 'add_suffix_to_all_columns', {'_info'});
+	coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+	
+	
+	[~, tmp_coordination_metrics_row_header] = fn_linearize_struct(sessionMetrics, 'add_suffix', {'_A', '_B'});
+	% fix up some column names...
+	tmp_coordination_metrics_row_header{(strcmp('dltConfInterval_A', tmp_coordination_metrics_row_header))} = 'dltConfInterval_Lower';
+	tmp_coordination_metrics_row_header{(strcmp('dltConfInterval_B', tmp_coordination_metrics_row_header))} = 'dltConfInterval_Upper';
+	coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+	
+	% the coordStruct
+	[ ~, tmp_coordination_metrics_row_header] = fn_linearize_struct(coordStruct.key_value_struct, 'add_suffix', {'_A', '_B'});
+	coordination_metrics_row_header = [coordination_metrics_row_header, tmp_coordination_metrics_row_header];
+	
+	% now unconditionally sandwich all header items between prefix_string and
+	% suffix_string
+	for i_header_column = 1 : length(coordination_metrics_row_header)
+		coordination_metrics_row_header{i_header_column} = [prefix_string, coordination_metrics_row_header{i_header_column}, suffix_string];
+	end
+	
 end
 
 return
@@ -444,67 +444,67 @@ header_list = {};
 
 convert_fieldnames_2_column_names = 0;
 if (nargout > 1)
-    convert_fieldnames_2_column_names = 1;
+	convert_fieldnames_2_column_names = 1;
 end
 
 field_list = fieldnames(input_struct);
 
 for i_field = 1 : length(field_list)
-    current_data = input_struct.(field_list{i_field});
-    if isstruct(current_data)
-        % oh, this is a struct so recurse
-        error('Not implemented yet.');
-        [sub_data_row, sub_header_list] = fn_linearize_struct(current_data, list_handling_command, list_suffix_list);
-        data_row = [data_row, sub_data_row];
-        if (convert_fieldnames_2_column_names)
-            header_list = [header_list, sub_header_list];
-        end
-        continue
-    else
-        if length(current_data) == 1
-            % is scalar value, just grab value and name
-            data_row(end + 1) = current_data;
-            if (convert_fieldnames_2_column_names)
-                
-                if strcmp(list_handling_command, 'add_suffix_to_all_columns')
-                    header_list{end + 1} = [field_list{i_field}, list_suffix_list{1}];
-                else
-                    header_list{end + 1} = field_list{i_field};
-                end
-            end
-        else
-            switch list_handling_command
-                case 'add_suffix'
-                    % only add a suffix to non-scalar structure fields
-                    if length(current_data) == length(list_suffix_list)
-                        for i_item = 1 : length(current_data)
-                            data_row(end + 1) = current_data(i_item);
-                            if (convert_fieldnames_2_column_names)
-                                header_list{end + 1} = [field_list{i_field}, list_suffix_list{i_item}];
-                            end
-                        end
-                    else
-                        error(['Encountered data item with more elements than suffixes supplied in list_suffix_list, fix this.']);
-                    end
-                case 'add_suffix_to_all_columns'
-                    % append the suffix to all fields
-                    if length(current_data) == length(list_suffix_list)
-                        for i_item = 1 : length(current_data)
-                            data_row(end + 1) = current_data(i_item);
-                            if (convert_fieldnames_2_column_names)
-                                header_list{end + 1} = [field_list{i_field}, list_suffix_list{i_item}];
-                            end
-                        end
-                    else
-                        error(['Encountered data item with more elements than suffixes supplied in list_suffix_list, fix this.']);
-                    end
-                    
-                    
-                otherwise
-                    error(['Encountered unhandled list_handling_command: ', list_handling_command]);
-            end
-        end
-    end
+	current_data = input_struct.(field_list{i_field});
+	if isstruct(current_data)
+		% oh, this is a struct so recurse
+		error('Not implemented yet.');
+		[sub_data_row, sub_header_list] = fn_linearize_struct(current_data, list_handling_command, list_suffix_list);
+		data_row = [data_row, sub_data_row];
+		if (convert_fieldnames_2_column_names)
+			header_list = [header_list, sub_header_list];
+		end
+		continue
+	else
+		if length(current_data) == 1
+			% is scalar value, just grab value and name
+			data_row(end + 1) = current_data;
+			if (convert_fieldnames_2_column_names)
+				
+				if strcmp(list_handling_command, 'add_suffix_to_all_columns')
+					header_list{end + 1} = [field_list{i_field}, list_suffix_list{1}];
+				else
+					header_list{end + 1} = field_list{i_field};
+				end
+			end
+		else
+			switch list_handling_command
+				case 'add_suffix'
+					% only add a suffix to non-scalar structure fields
+					if length(current_data) == length(list_suffix_list)
+						for i_item = 1 : length(current_data)
+							data_row(end + 1) = current_data(i_item);
+							if (convert_fieldnames_2_column_names)
+								header_list{end + 1} = [field_list{i_field}, list_suffix_list{i_item}];
+							end
+						end
+					else
+						error(['Encountered data item with more elements than suffixes supplied in list_suffix_list, fix this.']);
+					end
+				case 'add_suffix_to_all_columns'
+					% append the suffix to all fields
+					if length(current_data) == length(list_suffix_list)
+						for i_item = 1 : length(current_data)
+							data_row(end + 1) = current_data(i_item);
+							if (convert_fieldnames_2_column_names)
+								header_list{end + 1} = [field_list{i_field}, list_suffix_list{i_item}];
+							end
+						end
+					else
+						error(['Encountered data item with more elements than suffixes supplied in list_suffix_list, fix this.']);
+					end
+					
+					
+				otherwise
+					error(['Encountered unhandled list_handling_command: ', list_handling_command]);
+			end
+		end
+	end
 end
 
 return
