@@ -57,6 +57,8 @@ isTrialVisible = PerTrialStruct.isTrialInvisible_AB(trial_index)';
 % reduce the data to the indexed subset
 intialTargetReleaseTime = [PerTrialStruct.A_InitialTargetReleaseRT(trial_index)'; PerTrialStruct.B_InitialTargetReleaseRT(trial_index)'];
 targetAcquisitionTime = [PerTrialStruct.A_TargetAcquisitionRT(trial_index)'; PerTrialStruct.B_TargetAcquisitionRT(trial_index)'];
+IniTargRel_05MT_Time = [PerTrialStruct.A_IniTargRel_05MT_RT(trial_index)'; PerTrialStruct.B_IniTargRel_05MT_RT(trial_index)'];
+
 
 RewardByTrial = [PerTrialStruct.RewardByTrial_A(trial_index)'; PerTrialStruct.RewardByTrial_B(trial_index)'];
 
@@ -125,6 +127,10 @@ sessionMetrics.avgRewardByIniTargRelDiffSignif = NaN(1, 1);
 sessionMetrics.avgRewardFasterTargAcq = NaN(1, 1);
 sessionMetrics.avgRewardSlowerTargAcq = NaN(1, 1);
 sessionMetrics.avgRewardByTargAcqDiffSignif = NaN(1, 1);
+sessionMetrics.avgRewardFasterIniTargRel_05MT = NaN(1, 1);
+sessionMetrics.avgRewardSlowerIniTargRel_05MT = NaN(1, 1);
+sessionMetrics.avgRewardByIniTargRel_05MTDiffSignif = NaN(1, 1);
+
 
 % for the correlation between seeing the other's action and selecting the
 % others target
@@ -137,6 +143,11 @@ sessionMetrics.TargAcq_corrCoefValue = NaN(2, 1);
 sessionMetrics.TargAcq_corrPValue = NaN(2, 1);
 sessionMetrics.TargAcq_corrCoefAveraged = NaN(2, 1);
 sessionMetrics.TargAcq_corrPValueAveraged = NaN(2, 1);
+
+sessionMetrics.IniTargRel_05MT_corrCoefValue = NaN(2, 1);
+sessionMetrics.IniTargRel_05MT_corrPValue = NaN(2, 1);
+sessionMetrics.IniTargRel_05MT_corrCoefAveraged = NaN(2, 1);
+sessionMetrics.IniTargRel_05MT_corrPValueAveraged = NaN(2, 1);
 
 % report some counts for the subsets
 sessionMetrics.nARBR = NaN(1, 1);
@@ -197,6 +208,10 @@ sessionMetrics.nNoncoordinated = length(find(isOwnChoiceArray(1, testIndices) ==
 % transparent games simulations.
 [playerStrategy, playerShortStrategy, playerNStateVisit] = ...
     estimate_strategy(isOwnChoiceArray(:, testIndices), sideChoiceArray(:,testIndices), targetAcquisitionTime(:,testIndices), cfg.minDRT);
+
+[playerStrategy, playerShortStrategy, playerNStateVisit] = ...
+    estimate_strategy(isOwnChoiceArray(:, testIndices), sideChoiceArray(:,testIndices), IniTargRel_05MT_Time(:,testIndices), cfg.minDRT);
+
 
 strategy_struct.playerStrategy = playerStrategy;
 strategy_struct.playerNStateVisit = playerNStateVisit;
@@ -273,6 +288,26 @@ sessionMetrics.avgRewardSlowerTargAcq = nanmean(RewardBySlowerTargAcqList);
 sessionMetrics.avgRewardByTargAcqDiffSignif = fet_p;
 
 
+%IniTargRel_05MT_Time
+IniTargRel_05MT_A_faster_idx = find(IniTargRel_05MT_Time(1,:) > IniTargRel_05MT_Time(2,:));
+IniTargRel_05MT_B_faster_idx = find(IniTargRel_05MT_Time(1,:) < IniTargRel_05MT_Time(2,:));
+IniTargRel_05MT_A_slower_idx = IniTargRel_05MT_B_faster_idx;
+IniTargRel_05MT_B_slower_idx = IniTargRel_05MT_A_faster_idx;
+% collect for each trial the amount of reward earne by the faster and the
+% slower agent
+RewardByFasterIniTargRel_05MTList = [RewardByTrial(1, IniTargRel_05MT_A_faster_idx), RewardByTrial(2, IniTargRel_05MT_B_faster_idx)];
+RewardBySlowerIniTargRel_05MTList = [RewardByTrial(1, IniTargRel_05MT_A_slower_idx), RewardByTrial(2, IniTargRel_05MT_B_slower_idx)];
+
+% now find the number of 4s in each set
+cont_table = [length(find(RewardByFasterIniTargRel_05MTList == 4)), length(RewardByFasterIniTargRel_05MTList); length(find(RewardBySlowerIniTargRel_05MTList == 4)), length(RewardBySlowerIniTargRel_05MTList)];
+[fet_h, fet_p, fet_stats] = fishertest(cont_table, 'Alpha', cfg.pValueForFisherExactTests, 'Tail', 'both');
+
+
+sessionMetrics.avgRewardFasterIniTargRel_05MT = nanmean(RewardByFasterIniTargRel_05MTList);
+sessionMetrics.avgRewardSlowerIniTargRel_05MT = nanmean(RewardBySlowerIniTargRel_05MTList);
+sessionMetrics.avgRewardByIniTargRel_05MTDiffSignif = fet_p;
+
+
 
 % perform coordination tests.
 % To simplify visual inspection, results of all tests are qathered in single table
@@ -310,6 +345,8 @@ per_trial.locMutualInf = locMutualInf;
 % do this for all trials
 per_trial.pSee_iniTargRel = calc_probabilities_to_see(intialTargetReleaseTime, cfg.minDRT);
 per_trial.pSee_TargAcq = calc_probabilities_to_see(targetAcquisitionTime, cfg.minDRT);
+per_trial.pSee_IniTargRel_05MT = calc_probabilities_to_see(IniTargRel_05MT_Time, cfg.minDRT);
+
 % the probability to select the other's target is the inverse of selecting
 % the preferred target
 per_trial.full_isOtherChoice = 1 - full_isOwnChoiceArray;
@@ -332,6 +369,14 @@ pSee_TargAcq.corrCoefAveraged = sessionMetrics.TargAcq_corrCoefAveraged;
 pSee_TargAcq.corrPValueAveraged = sessionMetrics.TargAcq_corrPValueAveraged;
 per_trial.pSee_TargAcq_Cor = pSee_TargAcq;
 
+
+[sessionMetrics.IniTargRel_05MT_corrCoefValue, sessionMetrics.IniTargRel_05MT_corrPValue, sessionMetrics.IniTargRel_05MT_corrCoefAveraged, sessionMetrics.IniTargRel_05MT_corrPValueAveraged] ...
+    = calc_prob_to_see_correlation(per_trial.pSee_IniTargRel_05MT, isOwnChoiceArray, cfg.pSee_windowSize);
+pSee_IniTargRel_05MT.corrCoefValue = sessionMetrics.IniTargRel_05MT_corrCoefValue;
+pSee_IniTargRel_05MT.corrPValue = sessionMetrics.IniTargRel_05MT_corrPValue;
+pSee_IniTargRel_05MT.corrCoefAveraged = sessionMetrics.IniTargRel_05MT_corrCoefAveraged;
+pSee_IniTargRel_05MT.corrPValueAveraged = sessionMetrics.IniTargRel_05MT_corrPValueAveraged;
+per_trial.pSee_IniTargRel_05MT_Cor = pSee_IniTargRel_05MT;
 
 %%% THE PRECEEDING SHOULD MOVE OUT
 
