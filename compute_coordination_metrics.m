@@ -179,6 +179,7 @@ for iSet = 1:nSet
             trialStartTime = [trialStartTime, PerTrialStruct.AB_TrialStartTimeMS'];
             i = i + 1;
         end
+        filenameIndex = i;
         
         trialDuration = diff(trialStartTime);
         trialDuration = medfilt1([trialDuration(1), trialDuration]);
@@ -190,7 +191,6 @@ for iSet = 1:nSet
             continue;
         end
         
-        filenameIndex = i;
         allOwnChoice{iSet, iFile} = isOwnChoice;
         allSideChoice{iSet, iFile} = sideChoice;
         allRT{iSet, iFile} = targetAcquisitionTime;        

@@ -1,4 +1,4 @@
-function [averageTotalReward, deltaTotalReward, deltaTotalSignif, delteConfInterval] = ... 
+function [averageTotalReward, deltaTotalReward, deltaTotalSignif, deltaConfInterval] = ... 
   calc_total_average_reward(isOwnChoice, sideChoice, alpha)
 
 totalReward = 1 + 2.5*(isOwnChoice(1,:)+isOwnChoice(2,:));
@@ -70,7 +70,7 @@ for iOwn = 1:4
 end  
 
 deltaTotalSignif = (averageTotalReward < minChanceReward) | (averageTotalReward > maxChanceReward);
-delteConfInterval = averageTotalReward - [maxChanceReward; minChanceReward];
+deltaConfInterval = averageTotalReward - [maxChanceReward; minChanceReward];
 %maxChanceReward - minChanceReward             
 %disp('************************')
 end
