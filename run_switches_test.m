@@ -2,7 +2,8 @@ if ispc
     %folder = 'Y:\SCP_DATA\ANALYSES\PC1000\2019\CoordinationCheck';
     folder = 'Y:\SCP_DATA\ANALYSES\hms-beagle2\2019\CoordinationCheck';
 else
-    folder = fullfile('/', 'Volumes', 'social_neuroscience_data', 'taskcontroller', 'SCP_DATA', 'ANALYSES', 'PC1000', '2018', 'CoordinationCheck');
+	InputPath = fullfile('/', 'space', 'data_local', 'moeller', 'DPZ', 'taskcontroller', 'SCP_DATA', 'ANALYSES', 'hms-beagle2', '2019');
+    folder = fullfile(InputPath, 'CoordinationCheck');
 end
 
 humanfiles = {'DATA_20171115T165545.A_20013.B_10014.SCP_01.triallog.A.20013.B.10014_IC_JointTrials.isOwnChoice_sideChoice.mat', ...
@@ -61,7 +62,7 @@ confederateFiles = {...
 
 filenames = {humanfiles, naiveFiles, confederateFiles};
 for i = 1:length(filenames)
-    filenames{i} = cellfun(@(x) [folder '\' x], filenames{i}, 'UniformOutput', false);
+    filenames{i} = cellfun(@(x) [folder filesep x], filenames{i}, 'UniformOutput', false);
 end
 
 % various plotting properties, two following require clarifications:
