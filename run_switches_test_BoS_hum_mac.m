@@ -17,7 +17,7 @@ else
 	end
 
     folder = fullfile(InputPath, 'CoordinationCheck');
-	OutputPath = fullfile(folder, '4BoSPaper2019');
+	OutputPath = fullfile(InputPath, '4BoSPaper2019');
 end
 
 if ~isdir(OutputPath)
@@ -123,7 +123,7 @@ minDRT = 50;
     analyse_switches(filenames, plotProp, trialsToConsider, minDRT);
 
 
-legend_text = {'human', 'human turn-taker', 'macaque late', 'F-C late', 'trained F-C', 'trained F-C turn-taking'};
+legend_text = {'Human', 'Human turn-taker', 'Macaque late', 'F-C late', 'Trained F-C', 'Trained F-C turn-taking'};
 legend(legend_ah, legend_text, 'Location', 'NorthWest', 'FontSize', 7, 'Box', 'off');
 
 set( gcf, 'Units', 'centimeters', 'PaperUnits','centimeters' );
@@ -131,6 +131,9 @@ xSize = 20; ySize = 20; %10;
 xLeft = 0; yTop = 0;
 set(gcf, 'PaperSize', [ xSize ySize ], 'PaperOrientation', 'portrait', 'PaperUnits', 'centimeters');
 set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ],  'Position',  [ xLeft yTop xSize ySize ]);
+
+
+
 
 OutPutType = 'pdf';
 outfile_fqn = fullfile(OutputPath, ['ChangesScatterPlot', '.', OutPutType]);
