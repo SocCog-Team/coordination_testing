@@ -36,7 +36,7 @@ else
 	
 	folder =fullfile(InputPath, 'CoordinationCheck');	
 	
-    OutputPath = fullfile(folder, '4BoSPaper2019');
+    OutputPath = fullfile(InputPath, '4BoSPaper2019');
 end
 
 if ~isdir(OutputPath)
@@ -282,10 +282,10 @@ b(2).FaceColor = [0, 0.4470, 0.7410];
 b(1).FaceColor = [0.85, 0.325, 0.098];
 box(gca, 'off');
 set( gca, 'fontsize', FontSize, 'FontName', fontType);
-xlabel( ' pair ', 'fontsize', FontSize, 'FontName', fontType);
+xlabel( 'Pair', 'fontsize', FontSize, 'FontName', fontType);
 set(gca, 'XTick', (1:1:length(index)));
 set(gca, 'XTickLabel', human_sort_index, 'XTickLabelRotation', 90);
-ylabel( ' correlation ', 'fontsize', FontSize, 'FontName', fontType);
+ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', fontType);
 titleText = 'Human pairs';
 title(titleText, 'fontsize', FontSize, 'FontName',fontType)
 axis( [0.5, length(humanCorr)+0.5, -1, 1]);
@@ -306,8 +306,8 @@ for iPlot = 1:2
         set(lHandle, 'fontsize', FontSize, 'FontName',fontType);
     end
     set( gca, 'fontsize', FontSize, 'FontName', fontType);
-    xlabel( ' trials ', 'fontsize', FontSize, 'FontName', fontType);
-    ylabel( ' probability ', 'fontsize', FontSize, 'FontName', fontType);
+    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', fontType);
+    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', fontType);
     
     titleText = ['Pair ', num2str(intended_indexToShow), ' ', playerName{iPlot}, sprintf(', %.2f (%.0d)', humanCorrToShow(iPlot), humanPValueToShow(iPlot))];
     titleText = ['Pair ', num2str(intended_indexToShow), ' ', playerName{iPlot}, ': r(', num2str(nTrial-2),'): ', num2str(humanCorrToShow(iPlot), '%.2f'), ', p <= ', num2str(humanPValueToShow(iPlot), '%.0d')];
@@ -326,8 +326,8 @@ hold off
 set( gca, 'fontsize', FontSize, 'FontName', fontType);
 lHandle = legend(playerName, 'Location', 'SouthEast');
 set(lHandle, 'fontsize', FontSize-4, 'FontName',fontType);
-xlabel( ' session ', 'fontsize', FontSize, 'FontName', fontType);
-ylabel( ' correlation ', 'fontsize', FontSize, 'FontName', fontType);
+xlabel( 'Session', 'fontsize', FontSize, 'FontName', fontType);
+ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', fontType);
 titleText = 'F-C naive';
 title(titleText, 'fontsize', FontSize, 'FontName',fontType)
 axis( [0.8, length(corrCoefAveragedNaive)+0.2, -1, 1]);
@@ -349,8 +349,8 @@ for iPlot = 1:2
     end
     hold off;
     set( gca, 'fontsize', FontSize, 'FontName', fontType);
-    xlabel( ' trials ', 'fontsize', FontSize, 'FontName', fontType);
-    ylabel( ' probability ', 'fontsize', FontSize, 'FontName', fontType);
+    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', fontType);
+    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', fontType);
     %    titleText = ['Player ', num2str(iPlot) ': ' sprintf('%.2f', corrCoefValue(iPlot)) ' (' sprintf('%.0d', corrPValue(iPlot)) ') / ' ...
     %        sprintf('%.2f', corrCoefAveraged(iPlot)) ' (' sprintf('%.0d', corrPValueAveraged(iPlot)) ')'];
     titleText = [num2str(FCnaive_indexToShow), ': ', playerName{iPlot}, sprintf(' late sessions, %.2f (%.0d)', corrCoefFlaffusCuriusNaiveJoint(iPlot), corrPValueFlaffusCuriusNaiveJoint(iPlot))];
@@ -372,8 +372,8 @@ hold off
 set( gca, 'fontsize', FontSize, 'FontName', fontType);
 lHandle = legend(playerName, 'Location', 'SouthEast');
 set(lHandle, 'fontsize', FontSize-4, 'FontName',fontType);
-xlabel( ' session ', 'fontsize', FontSize, 'FontName', fontType);
-ylabel( ' correlation ', 'fontsize', FontSize, 'FontName', fontType);
+xlabel( 'Session', 'fontsize', FontSize, 'FontName', fontType);
+ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', fontType);
 titleText = 'Confederate training';
 title(titleText, 'fontsize', FontSize, 'FontName',fontType)
 axis( [0.8, nSession+0.2, -1, 1]);
@@ -394,8 +394,8 @@ for iPlot = 1:2
     
     hold off;
     set( gca, 'fontsize', FontSize, 'FontName', fontType);
-    xlabel( ' trials ', 'fontsize', FontSize, 'FontName', fontType);
-    ylabel( ' probability ', 'fontsize', FontSize, 'FontName', fontType);
+    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', fontType);
+    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', fontType);
 	
     switch (iPlot)
 		case 1
@@ -429,8 +429,8 @@ hold off
 set( gca, 'fontsize', FontSize, 'FontName', fontType);
 lHandle = legend(playerName, 'Location', 'SouthEast');
 set(lHandle, 'fontsize', FontSize-4, 'FontName',fontType);
-xlabel( ' session ', 'fontsize', FontSize, 'FontName', fontType);
-ylabel( ' correlation ', 'fontsize', FontSize, 'FontName', fontType);
+xlabel( 'Session', 'fontsize', FontSize, 'FontName', fontType);
+ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', fontType);
 titleText = 'F-C trained';
 title(titleText, 'fontsize', FontSize, 'FontName',fontType)
 axis( [0.8, length(corrCoefAveragedConf)+0.2, -1, 1]);
@@ -449,8 +449,8 @@ for iPlot = 1:2
     
     hold off;
     set( gca, 'fontsize', FontSize, 'FontName', fontType);
-    xlabel( ' trials ', 'fontsize', FontSize, 'FontName', fontType);
-    ylabel( ' probability ', 'fontsize', FontSize, 'FontName', fontType);
+    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', fontType);
+    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', fontType);
     %    titleText = ['Player ', num2str(iPlot) ': ' sprintf('%.2f', corrCoefValue(iPlot)) ' (' sprintf('%.0d', corrPValue(iPlot)) ') / ' ...
     %        sprintf('%.2f', corrCoefAveraged(iPlot)) ' (' sprintf('%.0d', corrPValueAveraged(iPlot)) ')'];
     titleText = [num2str(FC_indexToShow), ': ', playerName{iPlot}, sprintf(', %.2f (%.0d)', corrCoefFlaffusCuriusConf(iPlot), corrPValueFlaffusCuriusConf(iPlot))];
