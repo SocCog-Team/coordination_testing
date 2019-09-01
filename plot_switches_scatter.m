@@ -27,26 +27,26 @@ for iPlot = 1:4
 		if (iPlot == 2)
 			data = nUncoordinated{iSet}(:, 2:3);
 			name = 'Uncoordinated trials';
-			yLabel = 'other-other (per 100 trials)';
-			xLabel = 'own-own (per 100 trials)';
+			yLabel = 'Other-other (per 100 trials)';
+			xLabel = 'Own-own (per 100 trials)';
 % 			legend_text = {'human', 'human turn-taker', 'macaque late', 'F-C late', 'trained F-C', 'trained F-C turn-taking'};
 % 			legend(legend_text, 'Location', 'NorthWest', 'FontSize', 8);
 			legend_ah = gca();
 		elseif (iPlot == 4)
 			data = nChallengeResolving{iSet}(:, 2:3);
 			name = 'Challenge resolutions';
-			yLabel = 'faster selects other (per 100 trials)';
-			xLabel = 'faster selects own (per 100 trials)';
+			yLabel = 'Faster selects other (per 100 trials)';
+			xLabel = 'Faster selects own (per 100 trials)';
 		elseif (iPlot == 1)
 			data = nSeamlessSwitch{iSet}(:, 2:3);
 			name = 'Seamless switches';
-			yLabel = 'faster selects other (per 100 trials)';
-			xLabel = 'faster selects own (per 100 trials)';
+			yLabel = 'Faster selects other (per 100 trials)';
+			xLabel = 'Faster selects own (per 100 trials)';
 		elseif (iPlot == 3)
 			data = nChallengeStart{iSet}(:, 2:3);
 			name = 'Challenge initiation';
-			yLabel = 'faster selects other (per 100 trials)';
-			xLabel = 'faster selects own (per 100 trials)';
+			yLabel = 'Faster selects other (per 100 trials)';
+			xLabel = 'Faster selects own (per 100 trials)';
 		end
 		
 		data = data + minValue;
