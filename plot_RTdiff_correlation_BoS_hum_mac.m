@@ -5,6 +5,7 @@ function plot_RTdiff_correlation_BoS_hum_mac(project_name)
 windowSize = 8;
 %ispc = 1;
 minDRT = 50;
+k = 0.04;
 
 A_color = [1 0 0];
 B_color = [0 0 1];
@@ -71,7 +72,7 @@ human_sort_index = [4 19 15 11 5 3 1 14 13 2 12 16 7 9 17 8 6 10 18];
 
 
 [pSeeHUmans, probOtherChoice, corrCoefValue, corrPValue, ...
-    corrCoefAveraged, corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, humanFilenames(human_sort_index), windowSize, index);
+    corrCoefAveraged, corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, humanFilenames(human_sort_index), windowSize, index, minDRT, k);
 intended_indexToShow = 12;
 indexToShow = find(human_sort_index == intended_indexToShow);
 indexToShow_human = indexToShow;
@@ -111,14 +112,32 @@ flaffusCuriusConfFilenames = {...
     'DATA_20180427T142541.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice'
     };
 [pSeeNaiv, pOtherChoiceNaiv, corrCoefValueNaive, corrPValueNaive, ...
-    corrCoefAveragedNaive, corrPValueAveragedNaive] = compute_prob_to_see_for_dataset(folder, flaffusCuriusNaiveFilenames, windowSize);
+    corrCoefAveragedNaive, corrPValueAveragedNaive] = compute_prob_to_see_for_dataset(folder, flaffusCuriusNaiveFilenames, windowSize, [], minDRT, k);
 df_naive = zeros(size(pSeeNaiv));
 for i_sess = 1 : length(pSeeNaiv)
 	df_naive(i_sess) = length(pSeeNaiv{i_sess}) - 2;
 end
 
+% % for stability control
+% [minDRT25_k04.pSeeConf, minDRT25_k04.pOtherChoiceConf, minDRT25_k04.corrCoefValueConf, minDRT25_k04.corrPValueConf, ...
+%     minDRT25_k04.corrCoefAveragedConf, minDRT25_k04.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], 25, k);
+% [minDRT50_k04.pSeeConf, minDRT50_k04.pOtherChoiceConf, minDRT50_k04.corrCoefValueConf, minDRT50_k04.corrPValueConf, ...
+%     minDRT50_k04.corrCoefAveragedConf, minDRT50_k04.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], 50, k);
+% [minDRT75_k04.pSeeConf, minDRT75_k04.pOtherChoiceConf, minDRT75_k04.corrCoefValueConf, minDRT75_k04.corrPValueConf, ...
+%     minDRT75_k04.corrCoefAveragedConf, minDRT75_k04.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], 75, k);
+% [minDRT100_k04.pSeeConf, minDRT100_k04.pOtherChoiceConf, minDRT100_k04.corrCoefValueConf, minDRT100_k04.corrPValueConf, ...
+%     minDRT100_k04.corrCoefAveragedConf, minDRT100_k04.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], 100, k);
+% [minDRT50_k02.pSeeConf, minDRT50_k02.pOtherChoiceConf, minDRT50_k02.corrCoefValueConf, minDRT50_k02.corrPValueConf, ...
+%     minDRT50_k02.corrCoefAveragedConf, minDRT50_k02.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], minDRT, 0.02);
+% [minDRT50_k04.pSeeConf, minDRT50_k04.pOtherChoiceConf, minDRT50_k04.corrCoefValueConf, minDRT50_k04.corrPValueConf, ...
+%     minDRT50_k04.corrCoefAveragedConf, minDRT50_k04.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], minDRT, 0.04);
+% [minDRT50_k08.pSeeConf, minDRT50_k08.pOtherChoiceConf, minDRT50_k08.corrCoefValueConf, minDRT50_k08.corrPValueConf, ...
+%     minDRT50_k08.corrCoefAveragedConf, minDRT50_k08.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], minDRT, 0.08);
+
+
+
 [pSeeConf, pOtherChoiceConf, corrCoefValueConf, corrPValueConf, ...
-    corrCoefAveragedConf, corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize);
+    corrCoefAveragedConf, corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], minDRT, k);
 df_conf = zeros(size(pSeeConf));
 for i_sess = 1 : length(pSeeConf)
 	df_conf(i_sess) = length(pSeeConf{i_sess}) - 2;
@@ -221,7 +240,7 @@ monkeyTrainingPValueToShow = zeros(2,1);
 indexToShow = 15;
 SMF_indexToShow = indexToShow;
 [pSee, probOtherChoice, corrCoef, corrPValue, ...
-    corrCoefAveraged, corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, SMFlaffusFilenames, windowSize);
+    corrCoefAveraged, corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, SMFlaffusFilenames, windowSize, [], minDRT, k);
 pSeeMonkeyTraining{1} = pSee{indexToShow}(2,:);
 pOtherChoiceMonkeyTraining{1} = probOtherChoice{indexToShow}(2,:);
 monkeyTrainingCorr{1} = corrCoefAveraged(2,:);
@@ -241,7 +260,7 @@ end
 indexToShow = 8;
 SMC_indexToShow = indexToShow;
 [pSee, probOtherChoice, corrCoef, corrPValue, ...
-    corrCoefAveraged, corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, SMCuriusFilenames, windowSize);
+    corrCoefAveraged, corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, SMCuriusFilenames, windowSize, [], minDRT, k);
 pSeeMonkeyTraining{2} = pSee{indexToShow}(2,:);
 pOtherChoiceMonkeyTraining{2} = probOtherChoice{indexToShow}(2,:);
 monkeyTrainingCorr{2} = corrCoefAveraged(2,:);
@@ -475,9 +494,9 @@ OutPutType = 'pdf';
 outfile_fqn = fullfile(OutputPath, ['Composite.PseeSotherCCor.byGroup', '.', OutPutType]);
 write_out_figure(composite_figh, outfile_fqn);
 
-OutPutType = 'fig';
-outfile_fqn = fullfile(OutputPath, ['Composite.PseeSotherCCor.byGroup', '.', OutPutType]);
-write_out_figure(composite_figh, outfile_fqn);
+%OutPutType = 'fig';
+%outfile_fqn = fullfile(OutputPath, ['Composite.PseeSotherCCor.byGroup', '.', OutPutType]);
+%write_out_figure(composite_figh, outfile_fqn);
 
 % print ( '-depsc', '-r600', [imageName '.eps']);
 % print ( '-dtiff', '-r600', [imageName '.tiff']);
@@ -496,11 +515,13 @@ end
 
 
 function [pSee, probOtherChoice, corrCoefValue, corrPValue, ...
-    corrCoefAveraged, corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, fileArray, windowSize, sessionIndex)
+    corrCoefAveraged, corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, fileArray, windowSize, sessionIndex, minDRT, k )
 
-minDRT = 50;
+if (~exist('minDRT', 'var') || isempty(minDRT) )
+    minDRT = 50;
+end
 
-if (~exist('sessionIndex', 'var'))
+if (~exist('sessionIndex', 'var') || isempty(sessionIndex) )
     sessionIndex = 1:length(fileArray);
 end
 
@@ -537,7 +558,7 @@ for i = 1:length(fileArray)
         iSession = sessionIndex(i);
         isOwnChoice = 1 - isOtherChoice; % recompute back to  ensure merging of several files
         % copy the rest to the processing function
-        pSeeRaw = calc_probabilities_to_see(current_reference_Time, minDRT);
+        pSeeRaw = calc_probabilities_to_see(current_reference_Time, minDRT, k);
         [corrCoefValue(:,iSession), corrPValue(:,iSession), ...
             corrCoefAveraged(:,iSession), corrPValueAveraged(:,iSession)] ...
             = calc_prob_to_see_correlation(pSeeRaw, isOwnChoice, windowSize);
