@@ -41,6 +41,9 @@ coordination_metrics_row = [];
 coordination_metrics_row_header = {};
 linearize_coordination_metrics_struct = 0;
 info_struct = struct();
+RT_correlation_detrending_order_list = [0, 1, 2]; % which detrend orders to use, 0 de-means but gives the same correlations as without detrending
+
+
 
 if nargout > 1
 	linearize_coordination_metrics_struct = 1;
@@ -378,6 +381,54 @@ pSee_IniTargRel_05MT.corrCoefAveraged = sessionMetrics.IniTargRel_05MT_corrCoefA
 pSee_IniTargRel_05MT.corrPValueAveraged = sessionMetrics.IniTargRel_05MT_corrPValueAveraged;
 per_trial.pSee_IniTargRel_05MT_Cor = pSee_IniTargRel_05MT;
 
+
+% % reduce the data to the indexed subset
+% intialTargetReleaseTime = [PerTrialStruct.A_InitialTargetReleaseRT(trial_index)'; PerTrialStruct.B_InitialTargetReleaseRT(trial_index)'];
+% targetAcquisitionTime = [PerTrialStruct.A_TargetAcquisitionRT(trial_index)'; PerTrialStruct.B_TargetAcquisitionRT(trial_index)'];
+% IniTargRel_05MT_Time = [PerTrialStruct.A_IniTargRel_05MT_RT(trial_index)'; PerTrialStruct.B_IniTargRel_05MT_RT(trial_index)'];
+
+RT_AB_list = {intialTargetReleaseTime, IniTargRel_05MT_Time, targetAcquisitionTime};
+RT_AB_name_list = {'intialTargetReleaseTime', 'IniTargRel_05MT_Time', 'targetAcquisitionTime'};
+for i_detrend_oder =1:length(RT_correlation_detrending_order_list)
+	cur_detrend_order = RT_correlation_detrending_order_list(i_detrend_oder);
+		
+	for i_RT_AB = 1:length(RT_AB_list)
+		cur_RT_name = RT_AB_name_list{i_RT_AB};
+		cur_RT_AB = RT_AB_list{i_RT_AB};
+		cur_RT_A = cur_RT_AB(1, :);
+		cur_RT_B = cur_RT_AB(2, :);
+		% allow to specify order NaN to skip the detrending completely
+		if ~isnan(cur_detrend_order)
+			[cur_RT_A_p, cur_RT_A_s, cur_RT_A_mu] = polyfit(trial_index, cur_RT_A', cur_detrend_order);
+			[cur_RT_B_p, cur_RT_B_s, cur_RT_B_mu] = polyfit(trial_index, cur_RT_B', cur_detrend_order);
+			% store the fitting parameter in the struct list
+			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_A_p = cur_RT_A_p;
+			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_A_s = cur_RT_A_s;
+			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_A_mu = cur_RT_A_mu;
+			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_B_p = cur_RT_B_p;
+			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_B_s = cur_RT_B_s;
+			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_B_mu = cur_RT_B_mu;
+			% no evaluate
+			cur_RT_A_detrended = polyval(cur_RT_A_p, trial_index, [], cur_RT_A_mu)';
+			cur_RT_B_detrended = polyval(cur_RT_B_p, trial_index, [], cur_RT_B_mu)';
+			
+			[cur_RT_AB_r, cur_RT_AB_p] = corrcoef((cur_RT_A - cur_RT_A_detrended), (cur_RT_B - cur_RT_B_detrended));
+		else
+			[cur_RT_AB_r, cur_RT_AB_p] = corrcoef(cur_RT_A, cur_RT_B);
+		end
+		% store the correlations in a struct
+		RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).df = length(trial_index) - 2;
+		RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).r = cur_RT_AB_r;
+		RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).p = cur_RT_AB_p;
+		% also flat in table?
+		sessionMetrics.([cur_RT_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_df']) = length(trial_index) - 2;
+		sessionMetrics.([cur_RT_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_r']) = cur_RT_AB_r(2, 1);
+		sessionMetrics.([cur_RT_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_p']) = cur_RT_AB_p(2, 1);
+		
+	end
+end
+
+
 %%% THE PRECEEDING SHOULD MOVE OUT
 
 
@@ -389,8 +440,7 @@ coordination_metrics_struct.sessionMetrics = sessionMetrics;
 coordination_metrics_struct.coordination_struct = coordStruct;
 coordination_metrics_struct.per_trial = per_trial;
 coordination_metrics_struct.info_struct = info_struct;
-
-
+coordination_metrics_struct.RT_correlation_struct = RT_correlation_struct;
 
 
 %TODO:
