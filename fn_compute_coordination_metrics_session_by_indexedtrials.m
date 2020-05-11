@@ -63,6 +63,12 @@ targetAcquisitionTime = [PerTrialStruct.A_TargetAcquisitionRT(trial_index)'; Per
 IniTargRel_05MT_Time = [PerTrialStruct.A_IniTargRel_05MT_RT(trial_index)'; PerTrialStruct.B_IniTargRel_05MT_RT(trial_index)'];
 
 
+% for the correlation between the choice vector
+PreferableNoneNonpreferableSelected = [PerTrialStruct.PreferableNoneNonpreferableSelected_A(trial_index)'; PerTrialStruct.PreferableNoneNonpreferableSelected_B(trial_index)'];
+RightNoneLeftSelected = [PerTrialStruct.RightNoneLeftSelected_A(trial_index)'; PerTrialStruct.RightNoneLeftSelected_B(trial_index)'];
+SubjectiveRightNoneLeftSelected = [PerTrialStruct.SubjectiveRightNoneLeftSelected_A(trial_index)'; PerTrialStruct.SubjectiveRightNoneLeftSelected_B(trial_index)'];
+
+
 RewardByTrial = [PerTrialStruct.RewardByTrial_A(trial_index)'; PerTrialStruct.RewardByTrial_B(trial_index)'];
 
 full_isOwnChoiceArray = isOwnChoiceArray;
@@ -152,6 +158,19 @@ sessionMetrics.IniTargRel_05MT_corrPValue = NaN(2, 1);
 sessionMetrics.IniTargRel_05MT_corrCoefAveraged = NaN(2, 1);
 sessionMetrics.IniTargRel_05MT_corrPValueAveraged = NaN(2, 1);
 
+
+% for the correlation between the choice vector
+sessionMetrics.PreferableNoneNonpreferableSelected_df = NaN(1, 1);
+sessionMetrics.PreferableNoneNonpreferableSelected_r = NaN(1, 1);
+sessionMetrics.PreferableNoneNonpreferableSelected_p = NaN(1, 1);
+sessionMetrics.RightNoneLeftSelected_df = NaN(1, 1);
+sessionMetrics.RightNoneLeftSelected_r = NaN(1, 1);
+sessionMetrics.RightNoneLeftSelected_p = NaN(1, 1);
+sessionMetrics.SubjectiveRightNoneLeftSelected_df = NaN(1, 1);
+sessionMetrics.SubjectiveRightNoneLeftSelected_r = NaN(1, 1);
+sessionMetrics.SubjectiveRightNoneLeftSelected_p = NaN(1, 1);
+
+
 % report some counts for the subsets
 sessionMetrics.nARBR = NaN(1, 1);
 sessionMetrics.nARBL = NaN(1, 1);
@@ -163,6 +182,18 @@ sessionMetrics.nAyelBred = NaN(1, 1);
 sessionMetrics.nAyelByel = NaN(1, 1);
 sessionMetrics.nCoordinated = NaN(1, 1);
 sessionMetrics.nNoncoordinated = NaN(1, 1);
+
+
+% reaction time measures
+sessionMetrics.avg_intialTargetReleaseTime = NaN(2, 1);
+sessionMetrics.avg_targetAcquisitionTime = NaN(2, 1);
+sessionMetrics.avg_IniTargRel_05MT_Time = NaN(2, 1);
+
+
+sessionMetrics.avg_intialTargetReleaseTime = mean(intialTargetReleaseTime, 2);
+sessionMetrics.avg_targetAcquisitionTime = mean(targetAcquisitionTime, 2);
+sessionMetrics.avg_IniTargRel_05MT_Time = mean(IniTargRel_05MT_Time, 2);
+
 
 % analyse all sessions for the given players pair
 
@@ -426,6 +457,27 @@ for i_detrend_oder =1:length(RT_correlation_detrending_order_list)
 		sessionMetrics.([cur_RT_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_p']) = cur_RT_AB_p(2, 1);
 		
 	end
+end
+
+% signed choices = SC
+SC_AB_list = {PreferableNoneNonpreferableSelected, RightNoneLeftSelected, SubjectiveRightNoneLeftSelected};
+SC_AB_name_list = {'PreferableNoneNonpreferableSelected_AB', 'RightNoneLeftSelected_AB', 'SubjectiveRightNoneLeftSelected_AB'};
+for i_SC_AB = 1:length(SC_AB_list)
+	cur_SC_name = SC_AB_name_list{i_SC_AB};
+	
+	cur_SC_AB = SC_AB_list{i_SC_AB};
+	cur_SC_A = cur_SC_AB(1, :);
+	cur_SC_B = cur_SC_AB(2, :);
+	[cur_RT_AB_r, cur_RT_AB_p] = corrcoef(cur_SC_A, cur_SC_B);
+	
+	% store to table
+	sessionMetrics.([cur_SC_name, '_df']) = length(trial_index) - 2;
+	sessionMetrics.([cur_SC_name, '_r']) = cur_RT_AB_r(2, 1);
+	sessionMetrics.([cur_SC_name, '_p']) = cur_RT_AB_p(2, 1);
+	
+% 	if isnan(cur_RT_AB_r(2, 1)) || isnan(cur_RT_AB_p(2, 1))
+% 		disp('Doh...');
+% 	end
 end
 
 
