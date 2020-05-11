@@ -2,6 +2,14 @@ function plot_RTdiff_correlation_BoS_hum_mac(project_name)
 % Changed for supplementary figure 4 of BoS paper draft
 % function plots the composite figure demonstrating correlation of RT diff
 % and Probability to select anti-preffered target
+
+
+FontSize = 8;
+FontType = 'Arial';
+
+LineWidth = 1.4;
+
+
 windowSize = 8;
 %ispc = 1;
 minDRT = 50;
@@ -12,6 +20,7 @@ B_color = [0 0 1];
 
 B_color = [0, 0.4470, 0.7410];
 A_color = [0.85, 0.325, 0.098];
+
 
 AB_colors = [A_color; B_color];
 
@@ -44,6 +53,68 @@ if ~isdir(OutputPath)
 	mkdir(OutputPath);
 end
 
+
+Macaques_early.filenames = {...
+	'DATA_20181127T122556.A_Curius.B_Linus.SCP_01.triallog.A.Curius.B.Linus_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20180516T090940.A_Tesla.B_Elmo.SCP_01.triallog.A.Tesla.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20180504T114516.A_Tesla.B_Flaffus.SCP_01.triallog.A.Tesla.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20180525T091512.A_Tesla.B_Curius.SCP_01.triallog.A.Tesla.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20180605T091549.A_Curius.B_Elmo.SCP_01.triallog.A.Curius.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20171108T140407.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20171019T132932.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20171129T100056.A_Magnus.B_Flaffus.SCP_01.triallog.A.Magnus.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20181023T103422.A_Linus.B_Elmo.SCP_01.triallog.A.Linus.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+	};
+
+[Macaques_early.pSee, Macaques_early.pOtherChoice, Macaques_early.corrCoefValue, Macaques_early.corrPValue, ...
+    Macaques_early.corrCoefAveraged, Macaques_early.corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, Macaques_early.filenames, windowSize, [], minDRT, k);
+
+Macaques_early.df = zeros(size(Macaques_early.pSee));
+for i_sess = 1 : length(Macaques_early.pSee)
+	Macaques_early.df(i_sess) = length(Macaques_early.pSee{i_sess}) - 2;
+end
+tmp_corr_data_arr = [(1:1:length(Macaques_early.df))', Macaques_early.df', Macaques_early.corrCoefAveraged', Macaques_early.corrPValueAveraged', Macaques_early.corrCoefValue', Macaques_early.corrPValue'];
+xlswrite(fullfile(OutputPath, ['Composite.PseeSotherCCor.Macaques_early', '.xls']), tmp_corr_data_arr);
+
+macaque_pair_ID_list = {'CL', 'TE', 'TF', 'TC', 'CE', 'MC', 'FC', 'MF', 'LE'};
+
+composite_figh = figure('Name', 'pSee_SOtherC_Correlation: Macaques_early');
+axis_h = fn_plot_corr_data( Macaques_early.corrCoefAveraged, {'A', 'B'}, 'bar', AB_colors, LineWidth, macaque_pair_ID_list, 'Pairs', 'Correlation coefficient r', 'Macaques_early', FontSize, FontType);
+fn_configure_paper_for_figure();
+write_out_figure(composite_figh, fullfile(OutputPath, ['Composite.PseeSotherCCor.Macaques_early', '.', 'pdf']));
+
+
+
+Macaques_late.filenames = {...
+	'DATA_20181211T134136.A_Curius.B_Linus.SCP_01.triallog.A.Curius.B.Linus_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20180524T103704.A_Tesla.B_Elmo.SCP_01.triallog.A.Tesla.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20180509T122330.A_Tesla.B_Flaffus.SCP_01.triallog.A.Tesla.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20180530T153325.A_Tesla.B_Curius.SCP_01.triallog.A.Tesla.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20180615T111344.A_Curius.B_Elmo.SCP_01.triallog.A.Curius.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20180214T171119.A_Magnus.B_Curius.SCP_01.triallog.A.Magnus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20171103T143324.A_Flaffus.B_Curius.SCP_01.triallog.A.Flaffus.B.Curius_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20180125T155742.A_Magnus.B_Flaffus.SCP_01.triallog.A.Magnus.B.Flaffus_IC_JointTrials.isOwnChoice_sideChoice', ...
+	'DATA_20181120T083354.A_Linus.B_Elmo.SCP_01.triallog.A.Linus.B.Elmo_IC_JointTrials.isOwnChoice_sideChoice', ...
+	};
+
+[Macaques_late.pSee, Macaques_late.pOtherChoice, Macaques_late.corrCoefValue, Macaques_late.corrPValue, ...
+    Macaques_late.corrCoefAveraged, Macaques_late.corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, Macaques_late.filenames, windowSize, [], minDRT, k);
+
+Macaques_late.df = zeros(size(Macaques_late.pSee));
+for i_sess = 1 : length(Macaques_late.pSee)
+	Macaques_late.df(i_sess) = length(Macaques_late.pSee{i_sess}) - 2;
+end
+tmp_corr_data_arr = [(1:1:length(Macaques_late.df))', Macaques_late.df', Macaques_late.corrCoefAveraged', Macaques_late.corrPValueAveraged', Macaques_late.corrCoefValue', Macaques_late.corrPValue'];
+xlswrite(fullfile(OutputPath, ['Composite.PseeSotherCCor.Macaques_late', '.xls']), tmp_corr_data_arr);
+
+composite_figh = figure('Name', 'pSee_SOtherC_Correlation: Macaques_late');
+axis_h = fn_plot_corr_data( Macaques_late.corrCoefAveraged, {'A', 'B'}, 'bar', AB_colors, LineWidth, macaque_pair_ID_list, 'Pairs', 'Correlation coefficient r', 'Macaques_late', FontSize, FontType);
+fn_configure_paper_for_figure()
+write_out_figure(composite_figh, fullfile(OutputPath, ['Composite.PseeSotherCCor.Macaques_late', '.', 'pdf']));
+
+
+
+
 % compute for humans
 humanFilenames = {...
     'DATA_20171115T165545.A_20013.B_10014.SCP_01.triallog.A.20013.B.10014_IC_JointTrials.isOwnChoice_sideChoice', ...
@@ -71,8 +142,8 @@ index = [1:19];
 human_sort_index = [4 19 15 11 5 3 1 14 13 2 12 16 7 9 17 8 6 10 18];
 
 
-[pSeeHUmans, probOtherChoice, corrCoefValue, corrPValue, ...
-    corrCoefAveraged, corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, humanFilenames(human_sort_index), windowSize, index, minDRT, k);
+[pSeeHUmans, probOtherChoiceHumans, corrCoefValueHumans, corrPValueHumans, ...
+    corrCoefAveragedHumans, corrPValueAveragedHumans] = compute_prob_to_see_for_dataset(folder, humanFilenames(human_sort_index), windowSize, index, minDRT, k);
 intended_indexToShow = 12;
 indexToShow = find(human_sort_index == intended_indexToShow);
 indexToShow_human = indexToShow;
@@ -82,15 +153,37 @@ for i_sess = 1 : length(pSeeHUmans)
 	df_human(i_sess) = length(pSeeHUmans{i_sess}) - 2;
 end
 pSeeHuman = pSeeHUmans{indexToShow};
-pOtherChoiceHuman = probOtherChoice{indexToShow};
+pOtherChoiceHuman = probOtherChoiceHumans{indexToShow};
 % these are already sorted...
-humanCorr = corrCoefAveraged;
-humanCorrPValue = corrPValue;
-humancorrCoefValue = corrCoefValue;
-humancorrPValue = corrPValue;
+humanCorr = corrCoefAveragedHumans;
+humanCorrPValue = corrPValueHumans;
+humancorrCoefValue = corrCoefValueHumans;
+humancorrPValue = corrPValueHumans;
 
-humanCorrToShow = corrCoefAveraged(:,indexToShow);
-humanPValueToShow = corrPValueAveraged(:,indexToShow);
+humanCorrToShow = corrCoefAveragedHumans(:,indexToShow);
+humanPValueToShow = corrPValueAveragedHumans(:,indexToShow);
+
+% the humans in
+Humans.filenames = humanFilenames;
+[Humans.pSee, Humans.pOtherChoice, Humans.corrCoefValue, Humans.corrPValue, ...
+    Humans.corrCoefAveraged, Humans.corrPValueAveraged] = compute_prob_to_see_for_dataset(folder, Humans.filenames(human_sort_index), windowSize, [], minDRT, k);
+
+Humans.df = zeros(size(Humans.pSee));
+for i_sess = 1 : length(Humans.pSee)
+	Humans.df(i_sess) = length(Humans.pSee{i_sess}) - 2;
+end
+pair_ID_list = human_sort_index;
+tmp_corr_data_arr = [pair_ID_list', Humans.df', Humans.corrCoefAveraged', Humans.corrPValueAveraged', Humans.corrCoefValue', Humans.corrPValue'];
+xlswrite(fullfile(OutputPath, ['Composite.PseeSotherCCor.Humans', '.xls']), tmp_corr_data_arr);
+
+composite_figh = figure('Name', 'pSee_SOtherC_Correlation: Humans');
+axis_h = fn_plot_corr_data( Humans.corrCoefAveraged, {'A', 'B'}, 'bar', AB_colors, LineWidth, pair_ID_list, 'Pairs', 'Correlation coefficient r', 'Human', FontSize, FontType);
+fn_configure_paper_for_figure();
+write_out_figure(composite_figh, fullfile(OutputPath, ['Composite.PseeSotherCCor.Humans', '.', 'pdf']));
+
+
+
+
 
 % compute for Flaffus-Curius
 flaffusCuriusNaiveFilenames = {...
@@ -114,27 +207,10 @@ flaffusCuriusConfFilenames = {...
 [pSeeNaiv, pOtherChoiceNaiv, corrCoefValueNaive, corrPValueNaive, ...
     corrCoefAveragedNaive, corrPValueAveragedNaive] = compute_prob_to_see_for_dataset(folder, flaffusCuriusNaiveFilenames, windowSize, [], minDRT, k);
 df_naive = zeros(size(pSeeNaiv));
+naive_indexToShow = 8;
 for i_sess = 1 : length(pSeeNaiv)
 	df_naive(i_sess) = length(pSeeNaiv{i_sess}) - 2;
 end
-
-% % for stability control
-% [minDRT25_k04.pSeeConf, minDRT25_k04.pOtherChoiceConf, minDRT25_k04.corrCoefValueConf, minDRT25_k04.corrPValueConf, ...
-%     minDRT25_k04.corrCoefAveragedConf, minDRT25_k04.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], 25, k);
-% [minDRT50_k04.pSeeConf, minDRT50_k04.pOtherChoiceConf, minDRT50_k04.corrCoefValueConf, minDRT50_k04.corrPValueConf, ...
-%     minDRT50_k04.corrCoefAveragedConf, minDRT50_k04.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], 50, k);
-% [minDRT75_k04.pSeeConf, minDRT75_k04.pOtherChoiceConf, minDRT75_k04.corrCoefValueConf, minDRT75_k04.corrPValueConf, ...
-%     minDRT75_k04.corrCoefAveragedConf, minDRT75_k04.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], 75, k);
-% [minDRT100_k04.pSeeConf, minDRT100_k04.pOtherChoiceConf, minDRT100_k04.corrCoefValueConf, minDRT100_k04.corrPValueConf, ...
-%     minDRT100_k04.corrCoefAveragedConf, minDRT100_k04.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], 100, k);
-% [minDRT50_k02.pSeeConf, minDRT50_k02.pOtherChoiceConf, minDRT50_k02.corrCoefValueConf, minDRT50_k02.corrPValueConf, ...
-%     minDRT50_k02.corrCoefAveragedConf, minDRT50_k02.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], minDRT, 0.02);
-% [minDRT50_k04.pSeeConf, minDRT50_k04.pOtherChoiceConf, minDRT50_k04.corrCoefValueConf, minDRT50_k04.corrPValueConf, ...
-%     minDRT50_k04.corrCoefAveragedConf, minDRT50_k04.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], minDRT, 0.04);
-% [minDRT50_k08.pSeeConf, minDRT50_k08.pOtherChoiceConf, minDRT50_k08.corrCoefValueConf, minDRT50_k08.corrPValueConf, ...
-%     minDRT50_k08.corrCoefAveragedConf, minDRT50_k08.corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], minDRT, 0.08);
-
-
 
 [pSeeConf, pOtherChoiceConf, corrCoefValueConf, corrPValueConf, ...
     corrCoefAveragedConf, corrPValueAveragedConf] = compute_prob_to_see_for_dataset(folder, flaffusCuriusConfFilenames, windowSize, [], minDRT, k);
@@ -161,6 +237,10 @@ iSession = 2;
 % only the last session:
 nSession = 1;
 
+initialFixationTime = [];
+targetAcquisitionTime = [];
+IniTargRel_05MT_Time = [];
+
 for i = nFlaffusCuriusNaive - nSession + 1 : nFlaffusCuriusNaive
     fullname = [folder, filesep, flaffusCuriusNaiveFilenames{i} '.mat'];
     load(fullname);
@@ -169,20 +249,30 @@ for i = nFlaffusCuriusNaive - nSession + 1 : nFlaffusCuriusNaive
     %targetAcquisitionTime = [PerTrialStruct.A_TargetAcquisitionRT'; PerTrialStruct.B_TargetAcquisitionRT'];
     initialFixationTime = [PerTrialStruct.A_InitialTargetReleaseRT'; PerTrialStruct.B_InitialTargetReleaseRT'];
     allInitialFixationTime = [allInitialFixationTime, initialFixationTime];
+	
+    initialFixationTime = [initialFixationTime, [PerTrialStruct.A_InitialTargetReleaseRT'; PerTrialStruct.B_InitialTargetReleaseRT']];
+    targetAcquisitionTime = [targetAcquisitionTime, [PerTrialStruct.A_TargetAcquisitionRT'; PerTrialStruct.B_TargetAcquisitionRT']];
+	IniTargRel_05MT_Time = [IniTargRel_05MT_Time, [PerTrialStruct.A_IniTargRel_05MT_RT'; PerTrialStruct.B_IniTargRel_05MT_RT']];	
+	
     allOwnChoice = [allOwnChoice, isOwnChoice];
     if (iSession <= nSession)
-        sessionBorderFlaffusCuriusNaive(iSession) = length(allInitialFixationTime);
+        sessionBorderFlaffusCuriusNaive(iSession) = length(current_reference_Time);
         iSession = iSession + 1;
     end
 end
+current_reference_Time = IniTargRel_05MT_Time;
+
 FCnaive_indexToShow = nFlaffusCuriusNaive;
 allOtherChoice = 1 - allOwnChoice;
-pSeeRaw = calc_probabilities_to_see(allInitialFixationTime, minDRT);
-[~, ~, corrCoefFlaffusCuriusNaiveJoint, corrPValueFlaffusCuriusNaiveJoint] ...
-    = calc_prob_to_see_correlation(pSeeRaw, allOwnChoice, windowSize);
-pSeeFlaffusCuriusNaiveJoint = movmean(pSeeRaw, windowSize, 2);
+pSeeRawNaive = calc_probabilities_to_see(current_reference_Time, minDRT);
+[tmp_r, tmp_p, corrCoefFlaffusCuriusNaiveJoint, corrPValueFlaffusCuriusNaiveJoint] ...
+    = calc_prob_to_see_correlation(pSeeRawNaive, allOwnChoice, windowSize);
+pSeeFlaffusCuriusNaiveJoint = movmean(pSeeRawNaive, windowSize, 2);
 pOtherChoiceFlaffusCuriusNaiveJoint = movmean(allOtherChoice, windowSize, 2);
 
+%
+[tmp_r_50, tmp_p_50, corrCoefFlaffusCuriusNaiveJoint_50, corrPValueFlaffusCuriusNaiveJoint_50] ...
+    = calc_prob_to_see_correlation(pSeeRawNaive(:, 50:end), allOwnChoice(:, 50:end), windowSize);
 
 
 
@@ -279,9 +369,6 @@ end
 
 
 
-FontSize = 8;
-fontType = 'Arial';
-LineWidth = 1.4;
 % yellow-orange, purple
 plotColor = [0.9290, 0.6940, 0.1250; ...
      0.4940, 0.1840, 0.5560];
@@ -289,27 +376,30 @@ plotColor = [0.9290, 0.6940, 0.1250; ...
 imageName = 'correlationCompositePlot';
 
 composite_figh = figure('Name', 'pSee_SOtherC_Correlation');
-set( axes,'fontsize', FontSize, 'FontName', fontType);
+set( axes,'fontsize', FontSize, 'FontName', FontType);
 
 % plot humans
 playerName = {'A', 'B'};
 subplot(4,3,10)
-b = bar(humanCorr');
+b = bar(corrCoefAveragedHumans');
 % b(1).FaceColor = [0, 0.4470, 0.7410];
 % b(2).FaceColor = [0.85, 0.325, 0.098];
 b(2).FaceColor = [0, 0.4470, 0.7410];
 b(1).FaceColor = [0.85, 0.325, 0.098];
 box(gca, 'off');
-set( gca, 'fontsize', FontSize, 'FontName', fontType);
-xlabel( 'Pair', 'fontsize', FontSize, 'FontName', fontType);
+set( gca, 'fontsize', FontSize, 'FontName', FontType);
+xlabel( 'Pair', 'fontsize', FontSize, 'FontName', FontType);
 set(gca, 'XTick', (1:1:length(index)));
 set(gca, 'XTickLabel', human_sort_index, 'XTickLabelRotation', 90);
-ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', fontType);
+ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', FontType);
 titleText = 'Human pairs';
-title(titleText, 'fontsize', FontSize, 'FontName',fontType)
-axis( [0.5, length(humanCorr)+0.5, -1, 1]);
+title(titleText, 'fontsize', FontSize, 'FontName',FontType)
+axis( [0.5, length(corrCoefAveragedHumans)+0.5, -1, 1]);
 
-tmp_corr_data_arr = [human_sort_index', df_human', humanCorr', humanCorrPValue', humancorrCoefValue', humancorrPValue'];
+%tmp_corr_data_arr = [human_sort_index', df_human', humanCorr', humanCorrPValue', humancorrCoefValue', corrPValueAveraged'];
+tmp_corr_data_arr = [human_sort_index', df_human', corrCoefAveragedHumans', corrPValueAveragedHumans', corrCoefValueHumans', corrPValueHumans'];
+
+
 xlswrite(fullfile(OutputPath, ['Composite.PseeSotherCCor.Human', '.xls']), tmp_corr_data_arr);
 
 for iPlot = 1:2
@@ -322,15 +412,15 @@ for iPlot = 1:2
     hold off;
     if (iPlot == 2)
         lHandle = legend('p_{see}', 'p_{other}', 'Location', 'NorthEast');
-        set(lHandle, 'fontsize', FontSize, 'FontName',fontType);
+        set(lHandle, 'fontsize', FontSize, 'FontName',FontType);
     end
-    set( gca, 'fontsize', FontSize, 'FontName', fontType);
-    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', fontType);
-    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', fontType);
+    set( gca, 'fontsize', FontSize, 'FontName', FontType);
+    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', FontType);
+    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', FontType);
     
     titleText = ['Pair ', num2str(intended_indexToShow), ' ', playerName{iPlot}, sprintf(', %.2f (%.0d)', humanCorrToShow(iPlot), humanPValueToShow(iPlot))];
     titleText = ['Pair ', num2str(intended_indexToShow), ' ', playerName{iPlot}, ': r(', num2str(nTrial-2),'): ', num2str(humanCorrToShow(iPlot), '%.2f'), ', p <= ', num2str(humanPValueToShow(iPlot), '%.0d')];
-    title(titleText, 'fontsize', FontSize, 'FontName',fontType)
+    title(titleText, 'fontsize', FontSize, 'FontName',FontType)
     axis( [0, nTrial, 0, 1.1]);
 end
 
@@ -342,13 +432,13 @@ plot(corrCoefAveragedNaive(1, :), '-o', 'linewidth', LineWidth, 'color', AB_colo
 plot(corrCoefAveragedNaive(2, :), '-o', 'linewidth', LineWidth, 'color', AB_colors(2, :));
 plot([.8, length(corrCoefAveragedNaive)+0.2], [0,0], 'k--', 'linewidth', 1);
 hold off
-set( gca, 'fontsize', FontSize, 'FontName', fontType);
+set( gca, 'fontsize', FontSize, 'FontName', FontType);
 lHandle = legend(playerName, 'Location', 'SouthEast');
-set(lHandle, 'fontsize', FontSize-4, 'FontName',fontType);
-xlabel( 'Session', 'fontsize', FontSize, 'FontName', fontType);
-ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', fontType);
+set(lHandle, 'fontsize', FontSize-4, 'FontName',FontType);
+xlabel( 'Session', 'fontsize', FontSize, 'FontName', FontType);
+ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', FontType);
 titleText = 'F-C naive';
-title(titleText, 'fontsize', FontSize, 'FontName',fontType)
+title(titleText, 'fontsize', FontSize, 'FontName',FontType)
 axis( [0.8, length(corrCoefAveragedNaive)+0.2, -1, 1]);
 
 tmp_corr_data_arr = [(1:1:length(df_naive))', df_naive', corrCoefAveragedNaive', corrPValueAveragedNaive', corrCoefValueNaive', corrPValueNaive'];
@@ -367,15 +457,15 @@ for iPlot = 1:2
         plot([x,x], [0,1.1], '--k', 'linewidth', 1);
     end
     hold off;
-    set( gca, 'fontsize', FontSize, 'FontName', fontType);
-    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', fontType);
-    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', fontType);
+    set( gca, 'fontsize', FontSize, 'FontName', FontType);
+    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', FontType);
+    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', FontType);
     %    titleText = ['Player ', num2str(iPlot) ': ' sprintf('%.2f', corrCoefValue(iPlot)) ' (' sprintf('%.0d', corrPValue(iPlot)) ') / ' ...
     %        sprintf('%.2f', corrCoefAveraged(iPlot)) ' (' sprintf('%.0d', corrPValueAveraged(iPlot)) ')'];
     titleText = [num2str(FCnaive_indexToShow), ': ', playerName{iPlot}, sprintf(' late sessions, %.2f (%.0d)', corrCoefFlaffusCuriusNaiveJoint(iPlot), corrPValueFlaffusCuriusNaiveJoint(iPlot))];
     titleText = [num2str(FCnaive_indexToShow), ': ', playerName{iPlot}, ': r(', num2str(nTrial-2),'): ', num2str(corrCoefFlaffusCuriusNaiveJoint(iPlot), '%.2f'), ', p <= ', num2str(corrPValueFlaffusCuriusNaiveJoint(iPlot), '%.0d')];
 
-    title(titleText, 'fontsize', FontSize, 'FontName',fontType)
+    title(titleText, 'fontsize', FontSize, 'FontName',FontType)
     axis( [0, nTrial, 0, 1.1]);
 end
 
@@ -388,13 +478,13 @@ plot(monkeyTrainingCorr{1}, '-o', 'linewidth', LineWidth, 'color', AB_colors(1, 
 plot(monkeyTrainingCorr{2}, '-o', 'linewidth', LineWidth, 'color', AB_colors(2, :));
 plot([.8, nSession+0.2], [0,0], 'k--', 'linewidth', 1);
 hold off
-set( gca, 'fontsize', FontSize, 'FontName', fontType);
+set( gca, 'fontsize', FontSize, 'FontName', FontType);
 lHandle = legend(playerName, 'Location', 'SouthEast');
-set(lHandle, 'fontsize', FontSize-4, 'FontName',fontType);
-xlabel( 'Session', 'fontsize', FontSize, 'FontName', fontType);
-ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', fontType);
+set(lHandle, 'fontsize', FontSize-4, 'FontName',FontType);
+xlabel( 'Session', 'fontsize', FontSize, 'FontName', FontType);
+ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', FontType);
 titleText = 'Confederate training';
-title(titleText, 'fontsize', FontSize, 'FontName',fontType)
+title(titleText, 'fontsize', FontSize, 'FontName',FontType)
 axis( [0.8, nSession+0.2, -1, 1]);
 
 tmp_corr_data_arr = [[(1:1:length(df_monkeyTraining{1})), (1:1:length(df_monkeyTraining{2}))]', ...
@@ -412,9 +502,9 @@ for iPlot = 1:2
     plot(pOtherChoiceMonkeyTraining{iPlot}, 'color', AB_colors(iPlot, :), 'linewidth', LineWidth);
     
     hold off;
-    set( gca, 'fontsize', FontSize, 'FontName', fontType);
-    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', fontType);
-    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', fontType);
+    set( gca, 'fontsize', FontSize, 'FontName', FontType);
+    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', FontType);
+    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', FontType);
 	
     switch (iPlot)
 		case 1
@@ -426,7 +516,7 @@ for iPlot = 1:2
 	titleText = [num2str(cur_index_to_show), ': ', playerName{iPlot}, sprintf(', %.2f (%.0d)', monkeyTrainingCorrToShow(iPlot), monkeyTrainingPValueToShow(iPlot))];
 	titleText = [num2str(cur_index_to_show), ': ', playerName{iPlot}, ': r(', num2str(nTrial-2),'): ', num2str(monkeyTrainingCorrToShow(iPlot), '%.2f'), ', p <= ', num2str(monkeyTrainingPValueToShow(iPlot), '%.0d')];
 
-    title(titleText, 'fontsize', FontSize, 'FontName',fontType)
+    title(titleText, 'fontsize', FontSize, 'FontName',FontType)
     axis( [0, nTrial, 0, 1.1]);
 end
 
@@ -445,13 +535,13 @@ plot(corrCoefAveragedConf(1, :), '-o', 'linewidth', LineWidth, 'color', AB_color
 plot(corrCoefAveragedConf(2, :), '-o', 'linewidth', LineWidth, 'color', AB_colors(2, :));
 plot([.8, length(corrCoefAveragedConf)+0.2], [0,0], 'k--', 'linewidth', 1);
 hold off
-set( gca, 'fontsize', FontSize, 'FontName', fontType);
+set( gca, 'fontsize', FontSize, 'FontName', FontType);
 lHandle = legend(playerName, 'Location', 'SouthEast');
-set(lHandle, 'fontsize', FontSize-4, 'FontName',fontType);
-xlabel( 'Session', 'fontsize', FontSize, 'FontName', fontType);
-ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', fontType);
+set(lHandle, 'fontsize', FontSize-4, 'FontName',FontType);
+xlabel( 'Session', 'fontsize', FontSize, 'FontName', FontType);
+ylabel( 'Correlation', 'fontsize', FontSize, 'FontName', FontType);
 titleText = 'F-C trained';
-title(titleText, 'fontsize', FontSize, 'FontName',fontType)
+title(titleText, 'fontsize', FontSize, 'FontName',FontType)
 axis( [0.8, length(corrCoefAveragedConf)+0.2, -1, 1]);
 
 tmp_corr_data_arr = [(1:1:length(df_conf))', df_conf', corrCoefAveragedConf', corrPValueAveragedConf', corrCoefValueConf', corrPValueConf'];
@@ -467,14 +557,14 @@ for iPlot = 1:2
     plot(pOtherChoiceFlaffusCuriusConf(iPlot,:), 'color', AB_colors(iPlot, :), 'linewidth', LineWidth);
     
     hold off;
-    set( gca, 'fontsize', FontSize, 'FontName', fontType);
-    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', fontType);
-    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', fontType);
+    set( gca, 'fontsize', FontSize, 'FontName', FontType);
+    xlabel( 'Trials', 'fontsize', FontSize, 'FontName', FontType);
+    ylabel( 'Probability', 'fontsize', FontSize, 'FontName', FontType);
     %    titleText = ['Player ', num2str(iPlot) ': ' sprintf('%.2f', corrCoefValue(iPlot)) ' (' sprintf('%.0d', corrPValue(iPlot)) ') / ' ...
     %        sprintf('%.2f', corrCoefAveraged(iPlot)) ' (' sprintf('%.0d', corrPValueAveraged(iPlot)) ')'];
     titleText = [num2str(FC_indexToShow), ': ', playerName{iPlot}, sprintf(', %.2f (%.0d)', corrCoefFlaffusCuriusConf(iPlot), corrPValueFlaffusCuriusConf(iPlot))];
     titleText = [num2str(FC_indexToShow), ': ', playerName{iPlot}, ': r(', num2str(nTrial-2),'): ', num2str(corrCoefFlaffusCuriusConf(iPlot), '%.2f'), ', p <= ', num2str(corrPValueFlaffusCuriusConf(iPlot), '%.0d')];
-    title(titleText, 'fontsize', FontSize, 'FontName',fontType)
+    title(titleText, 'fontsize', FontSize, 'FontName',FontType)
     axis( [0, nTrial, 0, 1.1]);
 end
 
@@ -484,12 +574,13 @@ end
 % 	set(gcf(), 'Units', 'centimeters', 'Position', output_rect, 'PaperPosition', output_rect);
 
 
-set( gcf, 'Units', 'centimeters', 'PaperUnits','centimeters' );
-xSize = 20; ySize = 20; %10;
-xLeft = 0; yTop = 0;
-set(gcf, 'PaperSize', [ xSize ySize ], 'PaperOrientation', 'portrait', 'PaperUnits', 'centimeters');
-set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ],  'Position',  [ xLeft yTop xSize ySize ]);
+% set( gcf, 'Units', 'centimeters', 'PaperUnits','centimeters' );
+% xSize = 20; ySize = 20; %10;
+% xLeft = 0; yTop = 0;
+% set(gcf, 'PaperSize', [ xSize ySize ], 'PaperOrientation', 'portrait', 'PaperUnits', 'centimeters');
+% set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ],  'Position',  [ xLeft yTop xSize ySize ]);
 
+fn_configure_paper_for_figure();
 OutPutType = 'pdf';
 outfile_fqn = fullfile(OutputPath, ['Composite.PseeSotherCCor.byGroup', '.', OutPutType]);
 write_out_figure(composite_figh, outfile_fqn);
@@ -568,4 +659,65 @@ for i = 1:length(fileArray)
     end
     indexLast = sessionIndex(i);
 end
+end
+
+
+function [ axis_h ] = fn_plot_corr_data( data, row_names, plot_type_string, AB_color_arr, LineWidth, xtick_label_list, xlabel_string, ylabel_string, title_string, FontSize, FontType )
+%TODO turn into function for bar plot and/line plot
+%playerName = {'A', 'B'};
+
+
+set( gca, 'fontsize', FontSize, 'FontName', FontType);
+
+switch plot_type_string
+	case 'bar'
+		axis_h = bar(data');
+		% b(1).FaceColor = [0, 0.4470, 0.7410];
+		% b(2).FaceColor = [0.85, 0.325, 0.098];
+		axis_h(2).FaceColor = AB_color_arr(1, :); %[0, 0.4470, 0.7410];
+		axis_h(1).FaceColor = AB_color_arr(2, :); %[0.85, 0.325, 0.098];
+		box(gca, 'off');
+		axis( [0.5, length(data)+0.5, -1, 1]);
+
+	case 'line'
+		hold on
+		%plot(corrCoefAveragedConf', '-o', 'linewidth', LineWidth);
+		plot(data(1, :), '-o', 'linewidth', LineWidth, 'color', AB_color_arr(1, :));
+		plot(data(2, :), '-o', 'linewidth', LineWidth, 'color', AB_color_arr(2, :));
+		plot([.8, length(data)+0.2], [0,0], 'k--', 'linewidth', 1);
+		hold off	
+		axis( [0.8, length(data)+0.2, -1, 1]);
+end
+
+xlabel( xlabel_string, 'fontsize', FontSize, 'FontName', FontType, 'Interpreter', 'none');
+if ~isempty(xtick_label_list)
+	set(gca, 'XTick', (1:1:length(xtick_label_list)));
+	
+	XTickLabelRotation_val = 0;
+	if length(xtick_label_list) > 12
+		XTickLabelRotation_val = 90;
+	end
+	set(gca, 'XTickLabel', xtick_label_list, 'XTickLabelRotation', XTickLabelRotation_val);
+end
+ylabel( ylabel_string, 'fontsize', FontSize, 'FontName', FontType, 'Interpreter', 'none');
+title(title_string, 'fontsize', FontSize, 'FontName', FontType, 'Interpreter', 'none')
+
+%legend?
+if ~isempty(row_names)
+	lHandle = legend(row_names, 'Location', 'SouthEast');
+	set(lHandle, 'fontsize', FontSize-4, 'FontName', FontType);
+end
+
+return
+end
+
+function [] = fn_configure_paper_for_figure()
+
+set( gcf, 'Units', 'centimeters', 'PaperUnits','centimeters' );
+xSize = 20; ySize = 20; %10;
+xLeft = 0; yTop = 0;
+set(gcf, 'PaperSize', [ xSize ySize ], 'PaperOrientation', 'portrait', 'PaperUnits', 'centimeters');
+set( gcf,'PaperPosition', [ xLeft yTop xSize ySize ],  'Position',  [ xLeft yTop xSize ySize ]);
+
+return
 end
