@@ -42,6 +42,39 @@ coordination_metrics_row_header = {};
 linearize_coordination_metrics_struct = 0;
 info_struct = struct();
 RT_correlation_detrending_order_list = [0, 1, 2]; % which detrend orders to use, 0 de-means but gives the same correlations as without detrending
+RT_confidence_interval_alpha = 0.05;
+RT_AB_name_list = {'intialTargetReleaseTime', 'IniTargRel_05MT_Time', 'targetAcquisitionTime'};
+% we use the RT_correlation_subgroup_idx later to get to the relevant
+% trials
+RT_AB_list = {[PerTrialStruct.A_InitialTargetReleaseRT(:)'; PerTrialStruct.B_InitialTargetReleaseRT(:)'], ...
+	[PerTrialStruct.A_TargetAcquisitionRT(:)'; PerTrialStruct.B_TargetAcquisitionRT(:)'], ...
+	[PerTrialStruct.A_IniTargRel_05MT_RT(:)'; PerTrialStruct.B_IniTargRel_05MT_RT(:)'] };
+
+% names and indices for subsets of trials for which to calculate the
+% RT correlations between A and B
+RT_correlation_subgroup_name_list = {'all', 'AredBred', 'AyelByel', 'AredByel', 'AyelBred', 'Ared', 'Ayel', 'Bred', 'Byel', ...
+										'AsLBsR', 'AsRBsL', 'AsLBsL', 'AsRBsR', 'AsL', 'AsR', 'BsL', 'BsR', ...
+}; %
+
+% get the relevant subsets
+RT_correlation_subgroup_idx_list = {trial_index, ...
+	intersect(trial_index, find(PerTrialStruct.PreferableTargetSelected_A .* PerTrialStruct.NonPreferableTargetSelected_B)), ...
+	intersect(trial_index, find(PerTrialStruct.NonPreferableTargetSelected_A .* PerTrialStruct.PreferableTargetSelected_B)), ...
+	intersect(trial_index, find(PerTrialStruct.PreferableTargetSelected_A .* PerTrialStruct.PreferableTargetSelected_B)), ...
+	intersect(trial_index, find(PerTrialStruct.NonPreferableTargetSelected_A .* PerTrialStruct.NonPreferableTargetSelected_B)), ...
+	intersect(trial_index, find(PerTrialStruct.PreferableTargetSelected_A)), ...	
+	intersect(trial_index, find(PerTrialStruct.NonPreferableTargetSelected_A)), ...	
+	intersect(trial_index, find(PerTrialStruct.NonPreferableTargetSelected_B)), ...	
+	intersect(trial_index, find(PerTrialStruct.PreferableTargetSelected_B)), ...	
+	intersect(trial_index, find(PerTrialStruct.SubjectiveLeftTargetSelected_A .* PerTrialStruct.SubjectiveRightTargetSelected_B)), ...
+	intersect(trial_index, find(PerTrialStruct.SubjectiveRightTargetSelected_A .* PerTrialStruct.SubjectiveLeftTargetSelected_B)), ...
+	intersect(trial_index, find(PerTrialStruct.SubjectiveLeftTargetSelected_A .* PerTrialStruct.SubjectiveLeftTargetSelected_B)), ...
+	intersect(trial_index, find(PerTrialStruct.SubjectiveRightTargetSelected_A .* PerTrialStruct.SubjectiveRightTargetSelected_B)), ...	
+	intersect(trial_index, find(PerTrialStruct.SubjectiveLeftTargetSelected_A)), ...	
+	intersect(trial_index, find(PerTrialStruct.SubjectiveRightTargetSelected_A)), ...	
+	intersect(trial_index, find(PerTrialStruct.SubjectiveLeftTargetSelected_B)), ...	
+	intersect(trial_index, find(PerTrialStruct.SubjectiveRightTargetSelected_B)), ...	
+}; %
 
 
 
@@ -418,44 +451,69 @@ per_trial.pSee_IniTargRel_05MT_Cor = pSee_IniTargRel_05MT;
 % targetAcquisitionTime = [PerTrialStruct.A_TargetAcquisitionRT(trial_index)'; PerTrialStruct.B_TargetAcquisitionRT(trial_index)'];
 % IniTargRel_05MT_Time = [PerTrialStruct.A_IniTargRel_05MT_RT(trial_index)'; PerTrialStruct.B_IniTargRel_05MT_RT(trial_index)'];
 
-RT_AB_list = {intialTargetReleaseTime, IniTargRel_05MT_Time, targetAcquisitionTime};
-RT_AB_name_list = {'intialTargetReleaseTime', 'IniTargRel_05MT_Time', 'targetAcquisitionTime'};
-for i_detrend_oder =1:length(RT_correlation_detrending_order_list)
-	cur_detrend_order = RT_correlation_detrending_order_list(i_detrend_oder);
+
+
+
+
+for i_RT_AB = 1:length(RT_AB_list)
+	cur_RT_name = RT_AB_name_list{i_RT_AB};
+	cur_RT_AB = RT_AB_list{i_RT_AB};
+
+	% process individual sub-sets
+	for i_subset = 1 : length(RT_correlation_subgroup_name_list)
+		cur_subset_name = RT_correlation_subgroup_name_list{i_subset};
+		cur_subset_idx = RT_correlation_subgroup_idx_list{i_subset};
 		
-	for i_RT_AB = 1:length(RT_AB_list)
-		cur_RT_name = RT_AB_name_list{i_RT_AB};
-		cur_RT_AB = RT_AB_list{i_RT_AB};
-		cur_RT_A = cur_RT_AB(1, :);
-		cur_RT_B = cur_RT_AB(2, :);
-		% allow to specify order NaN to skip the detrending completely
-		if ~isnan(cur_detrend_order)
-			[cur_RT_A_p, cur_RT_A_s, cur_RT_A_mu] = polyfit(trial_index, cur_RT_A', cur_detrend_order);
-			[cur_RT_B_p, cur_RT_B_s, cur_RT_B_mu] = polyfit(trial_index, cur_RT_B', cur_detrend_order);
-			% store the fitting parameter in the struct list
-			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_A_p = cur_RT_A_p;
-			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_A_s = cur_RT_A_s;
-			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_A_mu = cur_RT_A_mu;
-			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_B_p = cur_RT_B_p;
-			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_B_s = cur_RT_B_s;
-			RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_B_mu = cur_RT_B_mu;
-			% no evaluate
-			cur_RT_A_detrended = polyval(cur_RT_A_p, trial_index, [], cur_RT_A_mu)';
-			cur_RT_B_detrended = polyval(cur_RT_B_p, trial_index, [], cur_RT_B_mu)';
+		% get some statistics for the reaction times in each subset...
+		sessionMetrics.([cur_RT_name, '_', cur_subset_name, '_mean'])  = mean(cur_RT_AB(:, cur_subset_idx), 2, 'omitnan');
+		sessionMetrics.([cur_RT_name, '_', cur_subset_name, '_std'])  = std(cur_RT_AB(:, cur_subset_idx), 0, 2, 'omitnan');
+		sessionMetrics.([cur_RT_name, '_', cur_subset_name, '_n'])  = sum(~isnan(cur_RT_AB(:, cur_subset_idx)), 2);
+		sessionMetrics.([cur_RT_name, '_', cur_subset_name, '_ci_alpha']) = RT_confidence_interval_alpha;
+		sessionMetrics.([cur_RT_name, '_', cur_subset_name, '_cihw']) = calc_cihw(sessionMetrics.([cur_RT_name, '_', cur_subset_name, '_mean']), sessionMetrics.([cur_RT_name, '_', cur_subset_name, '_n']), sessionMetrics.([cur_RT_name, '_', cur_subset_name, '_ci_alpha']));
+
+		cur_RT_A = cur_RT_AB(1, cur_subset_idx);
+		cur_RT_B = cur_RT_AB(2, cur_subset_idx);
+		%cur_trial_index = trial_index;
+		cur_trial_index = (1:1:length(cur_RT_B))'; % we do not care about the actual trial number here, but want to use each data point
+		
+		for i_detrend_oder =1:length(RT_correlation_detrending_order_list)
+			cur_detrend_order = RT_correlation_detrending_order_list(i_detrend_oder);
 			
-			[cur_RT_AB_r, cur_RT_AB_p] = corrcoef((cur_RT_A - cur_RT_A_detrended), (cur_RT_B - cur_RT_B_detrended));
-		else
-			[cur_RT_AB_r, cur_RT_AB_p] = corrcoef(cur_RT_A, cur_RT_B);
+			% allow to specify order NaN to skip the detrending completely
+			if ~isnan(cur_detrend_order)
+				[cur_RT_A_p, cur_RT_A_s, cur_RT_A_mu] = polyfit(cur_trial_index, cur_RT_A', cur_detrend_order);
+				[cur_RT_B_p, cur_RT_B_s, cur_RT_B_mu] = polyfit(cur_trial_index, cur_RT_B', cur_detrend_order);
+				% store the fitting parameter in the struct list
+				RT_correlation_struct.(cur_RT_name).(cur_subset_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_A_p = cur_RT_A_p;
+				RT_correlation_struct.(cur_RT_name).(cur_subset_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_A_s = cur_RT_A_s;
+				RT_correlation_struct.(cur_RT_name).(cur_subset_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_A_mu = cur_RT_A_mu;
+				RT_correlation_struct.(cur_RT_name).(cur_subset_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_B_p = cur_RT_B_p;
+				RT_correlation_struct.(cur_RT_name).(cur_subset_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_B_s = cur_RT_B_s;
+				RT_correlation_struct.(cur_RT_name).(cur_subset_name).(['detrend_order_', num2str(cur_detrend_order)]).polyval.cur_RT_B_mu = cur_RT_B_mu;
+				% no evaluate
+				cur_RT_A_detrended = polyval(cur_RT_A_p, cur_trial_index, [], cur_RT_A_mu)';
+				cur_RT_B_detrended = polyval(cur_RT_B_p, cur_trial_index, [], cur_RT_B_mu)';
+				
+				[cur_RT_AB_r, cur_RT_AB_p] = corrcoef((cur_RT_A - cur_RT_A_detrended), (cur_RT_B - cur_RT_B_detrended));
+			else
+				[cur_RT_AB_r, cur_RT_AB_p] = corrcoef(cur_RT_A, cur_RT_B);
+			end
+			% store the correlations in a struct
+			RT_correlation_struct.(cur_RT_name).(cur_subset_name).(['detrend_order_', num2str(cur_detrend_order)]).df = length(cur_trial_index) - 2;
+			RT_correlation_struct.(cur_RT_name).(cur_subset_name).(['detrend_order_', num2str(cur_detrend_order)]).r = cur_RT_AB_r;
+			RT_correlation_struct.(cur_RT_name).(cur_subset_name).(['detrend_order_', num2str(cur_detrend_order)]).p = cur_RT_AB_p;
+			% also flat in table?
+			sessionMetrics.([cur_RT_name, '_', cur_subset_name,'corr_detrend_order_', num2str(cur_detrend_order), '_df']) = length(cur_trial_index) - 2;
+			
+			if ~isnan(cur_RT_AB_r)
+				sessionMetrics.([cur_RT_name, '_', cur_subset_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_r']) = cur_RT_AB_r(2, 1);
+				sessionMetrics.([cur_RT_name, '_', cur_subset_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_p']) = cur_RT_AB_p(2, 1);
+			else
+				sessionMetrics.([cur_RT_name, '_', cur_subset_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_r']) = NaN;
+				sessionMetrics.([cur_RT_name, '_', cur_subset_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_p']) = NaN;
+			end
+			
 		end
-		% store the correlations in a struct
-		RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).df = length(trial_index) - 2;
-		RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).r = cur_RT_AB_r;
-		RT_correlation_struct.(cur_RT_name).(['detrend_order_', num2str(cur_detrend_order)]).p = cur_RT_AB_p;
-		% also flat in table?
-		sessionMetrics.([cur_RT_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_df']) = length(trial_index) - 2;
-		sessionMetrics.([cur_RT_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_r']) = cur_RT_AB_r(2, 1);
-		sessionMetrics.([cur_RT_name, 'corr_detrend_order_', num2str(cur_detrend_order), '_p']) = cur_RT_AB_p(2, 1);
-		
 	end
 end
 
@@ -475,9 +533,9 @@ for i_SC_AB = 1:length(SC_AB_list)
 	sessionMetrics.([cur_SC_name, '_r']) = cur_RT_AB_r(2, 1);
 	sessionMetrics.([cur_SC_name, '_p']) = cur_RT_AB_p(2, 1);
 	
-% 	if isnan(cur_RT_AB_r(2, 1)) || isnan(cur_RT_AB_p(2, 1))
-% 		disp('Doh...');
-% 	end
+	% 	if isnan(cur_RT_AB_r(2, 1)) || isnan(cur_RT_AB_p(2, 1))
+	% 		disp('Doh...');
+	% 	end
 end
 
 
